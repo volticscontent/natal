@@ -6,9 +6,9 @@ import { getUtmSessionId } from './utm-session';
  * Configurações de domínio por locale
  */
 const DOMAIN_CONFIG = {
-  pt: 'elfisanta.com.br',
-  en: 'elfisanta.com',
-  es: 'elfisanta.com'
+  pt: 'videodonoel.shop',
+  en: 'videodonoel.shop',
+  es: 'videodonoel.shop'
 } as const;
 
 /**
@@ -71,7 +71,7 @@ export function buildCompleteUrl(config: UrlConfig): string {
     baseUrl = `https://${domain}`;
     
     // Adiciona locale se não for o padrão (pt para .com.br)
-    if (locale !== 'pt' || domain !== 'elfisanta.com.br') {
+    if (locale !== 'pt' || domain !== 'videodonoel.shop') {
       baseUrl += `/${locale}`;
     }
   }

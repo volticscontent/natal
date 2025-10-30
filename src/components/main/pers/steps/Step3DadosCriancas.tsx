@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PersData, Crianca, ContactData, STORAGE_KEYS } from '../types';
@@ -127,7 +127,10 @@ export default function Step3DadosCriancas({
     
     // Carregar order bumps e determinar se deve incluir fotos
     setOrderBumps(persData.order_bumps || []);
-    const shouldIncludePhotos = persData.order_bumps && persData.order_bumps.includes('child-photo');
+    const shouldIncludePhotos = persData.order_bumps && (
+      persData.order_bumps.includes('child-photo') || 
+      persData.order_bumps.includes('combo-addons')
+    );
     setIncluirFotos(shouldIncludePhotos || false);
     
     // Marcar como inicializado
@@ -157,8 +160,9 @@ export default function Step3DadosCriancas({
       if (currentOrderBumps !== newOrderBumps) {
         setOrderBumps(persData.order_bumps);
         
-        // Atualizar estado de incluir fotos baseado no order bump 'child-photo'
-        const shouldIncludePhotos = persData.order_bumps.includes('child-photo');
+        // Atualizar estado de incluir fotos baseado nos order bumps 'child-photo' ou 'combo-addons'
+        const shouldIncludePhotos = persData.order_bumps.includes('child-photo') || 
+                                   persData.order_bumps.includes('combo-addons');
         setIncluirFotos(shouldIncludePhotos);
       }
     };
@@ -171,8 +175,9 @@ export default function Step3DadosCriancas({
     };
   }, [quantidadeCriancas, orderBumps]);
 
-  // Função para salvar dados usando useCallback
-  const saveData = useCallback(() => {
+  // Salvar dados automaticamente usando as funções de dataStorage
+  useEffect(() => {
+    // Só salvar após a inicialização para evitar sobrescrever dados carregados
     if (!isInitialized) return;
     
     const dataToSave: Partial<PersData> = {
@@ -185,12 +190,7 @@ export default function Step3DadosCriancas({
     };
     
     savePersonalizationData(dataToSave);
-  }, [isInitialized, quantidadeCriancas, children, mensagem, contactData, orderBumps, incluirFotos]);
-
-  // Salvar dados automaticamente quando houver mudanças
-  useEffect(() => {
-    saveData();
-  }, [saveData]);
+  }, [children, mensagem, contactData, quantidadeCriancas, orderBumps, incluirFotos, isInitialized]);
 
   const updateChild = (index: number, field: keyof Crianca, value: string | number) => {
     const updatedChildren = [...children];
