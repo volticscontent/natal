@@ -57,6 +57,10 @@
     "personalMessage": "Mensaje Personalizado",
     "messagePlaceholder": "Escribe un mensaje especial para que Papá Noel incluya en el video...",
     "contactInfo": "Información de Contacto",
+    "photoUpload": {
+      "title": "Incluir fotos de los niños en el video",
+      "description": "Agrega fotos de los niños para hacer el video aún más personalizado"
+    },
     "validation": {
       "nameRequired": "El nombre del niño {index} es obligatorio",
       "ageRequired": "La edad es obligatoria",
@@ -68,19 +72,6 @@
       "contactEmailRequired": "El email es obligatorio",
       "contactEmailInvalid": "Email inválido",
       "contactPhoneRequired": "El teléfono es obligatorio",
-      "navigationError": "Error al navegar al siguiente paso"
-    }
-  },
-      "title": "Incluir fotos de los niños en el video",
-      "description": "Agrega fotos de los niños para hacer el video aún más personalizado"
-    },
-    "validation": {
-      "nameRequired": "El nombre del niño {index} es obligatorio",
-      "ageRequired": "La edad es obligatoria",
-      "ageInvalid": "La edad del niño {index} debe estar entre 1 y 12 años",
-      "behaviorRequired": "El comportamiento es obligatorio",
-      "minOneChild": "Agrega al menos un niño",
-      "messageRequired": "El mensaje personalizado es obligatorio",
       "navigationError": "Error al navegar al siguiente paso"
     }
   },

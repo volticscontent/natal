@@ -128,11 +128,16 @@ export const useLastLinkUrlMapper = () => {
    */
   const buildCompleteLastLinkUrl = useMemo(() => {
     return (mapping: LastLinkUrlMapping, baseUrl: string = 'https://lastlink.com'): string => {
+      console.log('🔍 buildCompleteLastLinkUrl - mapping:', mapping);
+      console.log('🔍 buildCompleteLastLinkUrl - baseUrl:', baseUrl);
+      
       // Usar o novo formato: https://lastlink.com/p/{urlKey}/checkout-payment/
       const url = new URL(`${baseUrl}/p/${mapping.finalUrl}/checkout-payment/`);
+      console.log('🔍 buildCompleteLastLinkUrl - URL base construída:', url.toString());
       
       // Adicionar parâmetros de autopopulação se disponíveis
       if (mapping.customerParams) {
+        console.log('🔍 buildCompleteLastLinkUrl - adicionando customerParams:', mapping.customerParams);
         Object.entries(mapping.customerParams).forEach(([key, value]) => {
           if (value) {
             url.searchParams.set(key, value);
@@ -142,13 +147,16 @@ export const useLastLinkUrlMapper = () => {
 
       // Adicionar parâmetros UTM salvos
       const utmParams = getUtmParams();
+      console.log('🔍 buildCompleteLastLinkUrl - UTM params:', utmParams);
       Object.entries(utmParams).forEach(([key, value]) => {
         if (value && typeof value === 'string') {
           url.searchParams.set(key, value);
         }
       });
       
-      return url.toString();
+      const finalUrl = url.toString();
+      console.log('🔍 buildCompleteLastLinkUrl - URL final:', finalUrl);
+      return finalUrl;
     };
   }, [getUtmParams]);
 

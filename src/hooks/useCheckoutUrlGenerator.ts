@@ -44,8 +44,11 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
   const generateCheckoutUrl = useMemo(() => {
     return (persData: PersData): CheckoutUrlResult => {
       try {
+        console.log('🔍 generateCheckoutUrl iniciado com persData:', persData);
+        
         // Validações básicas
         if (!persData.children || persData.children.length === 0) {
+          console.log('❌ Validação falhou: nenhuma criança');
           return {
             success: false,
             error: 'Nenhuma criança foi adicionada',
@@ -56,9 +59,11 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
         // Determinar o provedor de checkout
         const checkoutProvider = getCheckoutProvider(locale);
         const providerName = checkoutProvider.name.toLowerCase() as 'lastlink' | 'cartpanda';
+        console.log('🔍 Provedor de checkout:', providerName, checkoutProvider);
 
         // Se não for LastLink, retornar erro (por enquanto só suportamos LastLink)
         if (providerName !== 'lastlink') {
+          console.log('❌ Provedor não suportado:', providerName);
           return {
             success: false,
             error: `Provedor ${providerName} não suportado ainda`,
@@ -68,9 +73,12 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
 
         // Obter produto baseado no número de crianças
         const childrenCount = persData.children.length;
+        console.log('🔍 Número de crianças:', childrenCount);
         const product = getMainProductByChildren(childrenCount);
+        console.log('🔍 Produto encontrado:', product);
 
         if (!product) {
+          console.log('❌ Produto não encontrado para', childrenCount, 'criança(s)');
           return {
             success: false,
             error: `Produto não encontrado para ${childrenCount} criança(s)`,
@@ -80,7 +88,9 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
 
         // Validar se o produto tem todas as URLs necessárias
         const validation = validateProductUrls(product);
+        console.log('🔍 Validação das URLs do produto:', validation);
         if (!validation.isValid) {
+          console.log('❌ URLs do produto incompletas:', validation.missingUrls);
           return {
             success: false,
             error: `Produto ${product.id} está com URLs incompletas: ${validation.missingUrls.join(', ')}`,
@@ -95,6 +105,7 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
 
         // Converter order bumps para o formato do mapper
         const orderBumpSelection = convertOrderBumpsToSelection(persData.order_bumps || []);
+        console.log('🔍 Order bumps selecionados:', orderBumpSelection);
 
         // Preparar dados do cliente para autopopulação
         const customerData: CustomerData = {
@@ -104,14 +115,18 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
           cpf: persData.contato?.cpf,
           cnpj: persData.contato?.cnpj,
         };
+        console.log('🔍 Dados do cliente:', customerData);
 
         // Gerar URL completa
+        console.log('🔍 Gerando URL completa com:', { product: product.id, orderBumpSelection, baseUrl: checkoutProvider.baseUrl });
         const { mapping, completeUrl } = generateCompleteUrl(
           product, 
           orderBumpSelection,
           checkoutProvider.baseUrl,
           customerData
         );
+        console.log('🔍 URL gerada:', completeUrl);
+        console.log('🔍 Mapping:', mapping);
 
         return {
           success: true,
@@ -126,6 +141,7 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
         };
 
       } catch (err) {
+        console.error('❌ Erro no generateCheckoutUrl:', err);
         return {
           success: false,
           error: err instanceof Error ? err.message : 'Erro desconhecido',
@@ -141,11 +157,17 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
   const generateAndRedirect = useMemo(() => {
     return (persData: PersData): Promise<CheckoutUrlResult> => {
       return new Promise((resolve) => {
+        console.log('🔄 generateAndRedirect iniciado com persData:', persData);
+        
         const result = generateCheckoutUrl(persData);
+        console.log('🔄 Resultado do generateCheckoutUrl:', result);
         
         if (result.success && result.url) {
+          console.log('✅ URL gerada com sucesso, redirecionando para:', result.url);
           // Redirecionar para a URL gerada
           window.location.href = result.url;
+        } else {
+          console.error('❌ Falha na geração da URL:', result.error);
         }
         
         resolve(result);
