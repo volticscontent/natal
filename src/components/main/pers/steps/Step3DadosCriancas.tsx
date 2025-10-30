@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PersData, Crianca, ContactData, STORAGE_KEYS } from '../types';
+import { getPersonalizationData, savePersonalizationData } from '../utils/dataStorage';
 import { useCheckoutUrlGenerator } from '../../../../hooks/useCheckoutUrlGenerator';
 import { useN8NIntegration } from '../../../../hooks/useN8NIntegration';
 import { useProducts } from '../../../../hooks/useProducts';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
 import { useDataLayer } from '../../../../hooks/useDataLayer';
+import { useUtmTracking } from '../../../../hooks/useUtmTracking';
 import ProgressBar from '../shared/ProgressBar';
 import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
@@ -73,7 +75,8 @@ export default function Step3DadosCriancas({
   const { getMainProductByChildren, getOrderBumps, getProductPrice } = useProducts();
   const isMobile = useIsMobile(1024);
   const { trackPageView, trackFormInteraction, trackStepProgress, trackBeginCheckout } = useDataLayer();
-  const [children, setChildren] = useState<Crianca[]>([]);
+  const { sessionId } = useUtmTracking();
+  const [children, setChildren] = useState<Crianca[]>([{ nome: '' }]); // Inicializar com pelo menos uma criança
   const [mensagem, setMensagem] = useState('');
   const [contactData, setContactData] = useState<ContactData>({
     nome: '',
@@ -82,8 +85,11 @@ export default function Step3DadosCriancas({
     cpf: ''
   });
   const [quantidadeCriancas, setQuantidadeCriancas] = useState<number>(1);
+  const [orderBumps, setOrderBumps] = useState<string[]>([]);
+  const [incluirFotos, setIncluirFotos] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Track page view
   useEffect(() => {
@@ -95,51 +101,96 @@ export default function Step3DadosCriancas({
     });
   }, [trackPageView, locale]);
 
-  // Carregar dados salvos
+  // Carregar dados salvos na inicialização usando as funções de dataStorage
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
-    if (savedData) {
-      try {
-        const parsedData: PersData = JSON.parse(savedData);
-        
-        // Carregar quantidade de crianças do Step 1
-        if (parsedData.quantidade_criancas) {
-          setQuantidadeCriancas(parsedData.quantidade_criancas);
-          
-          // Inicializar array de crianças baseado na quantidade
-          const initialChildren = Array.from({ length: parsedData.quantidade_criancas }, (_, index) => {
-            return parsedData.children && parsedData.children[index] ? parsedData.children[index] : { nome: '' };
-          });
-          setChildren(initialChildren);
-        }
-        
-        // Carregar outros dados
-        if (parsedData.mensagem) {
-          setMensagem(parsedData.mensagem);
-        }
-        
-        if (parsedData.contato) {
-          setContactData(parsedData.contato);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-      }
+    const persData = getPersonalizationData();
+    
+    // Carregar quantidade de crianças
+    const quantidade = persData.quantidade_criancas || 1;
+    setQuantidadeCriancas(quantidade);
+    
+    // Inicializar array de crianças baseado na quantidade
+    // Garantir que sempre temos pelo menos uma criança
+    const initialChildren = Array.from({ length: Math.max(quantidade, 1) }, (_, index) => {
+      return persData.children && persData.children[index] ? persData.children[index] : { nome: '' };
+    });
+    setChildren(initialChildren);
+    
+    // Carregar outros dados
+    if (persData.mensagem && persData.mensagem !== 'default') {
+      setMensagem(persData.mensagem);
     }
+    
+    if (persData.contato) {
+      setContactData(persData.contato);
+    }
+    
+    // Carregar order bumps e determinar se deve incluir fotos
+    setOrderBumps(persData.order_bumps || []);
+    const shouldIncludePhotos = persData.order_bumps && persData.order_bumps.includes('child-photo');
+    setIncluirFotos(shouldIncludePhotos || false);
+    
+    // Marcar como inicializado
+    setIsInitialized(true);
   }, []);
 
-  // Salvar dados automaticamente
+  // Escutar mudanças no localStorage (quando outros steps atualizam os dados)
   useEffect(() => {
-    const currentData: PersData = {
+    const handleStorageChange = () => {
+      const persData = getPersonalizationData();
+      
+      // Verificar se a quantidade de crianças mudou
+      if (persData.quantidade_criancas !== quantidadeCriancas) {
+        setQuantidadeCriancas(persData.quantidade_criancas);
+        
+        // Atualizar array de crianças preservando dados existentes
+        const updatedChildren = Array.from({ length: persData.quantidade_criancas }, (_, index) => {
+          return persData.children && persData.children[index] ? persData.children[index] : { nome: '' };
+        });
+        setChildren(updatedChildren);
+      }
+      
+      // Atualizar order bumps se mudaram
+      const currentOrderBumps = JSON.stringify(orderBumps.sort());
+      const newOrderBumps = JSON.stringify(persData.order_bumps.sort());
+      
+      if (currentOrderBumps !== newOrderBumps) {
+        setOrderBumps(persData.order_bumps);
+        
+        // Atualizar estado de incluir fotos baseado no order bump 'child-photo'
+        const shouldIncludePhotos = persData.order_bumps.includes('child-photo');
+        setIncluirFotos(shouldIncludePhotos);
+      }
+    };
+
+    // Escutar evento customizado de mudança no localStorage
+    window.addEventListener('localStorageChange', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('localStorageChange', handleStorageChange);
+    };
+  }, [quantidadeCriancas, orderBumps]);
+
+  // Função para salvar dados usando useCallback
+  const saveData = useCallback(() => {
+    if (!isInitialized) return;
+    
+    const dataToSave: Partial<PersData> = {
       quantidade_criancas: quantidadeCriancas,
       children: children,
       mensagem: mensagem,
-      incluir_fotos: false,
-      fotos: [],
-      order_bumps: [],
-      contato: contactData
+      contato: contactData,
+      order_bumps: orderBumps,
+      incluir_fotos: incluirFotos
     };
-    localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(currentData));
-  }, [children, mensagem, contactData, quantidadeCriancas]);
+    
+    savePersonalizationData(dataToSave);
+  }, [isInitialized, quantidadeCriancas, children, mensagem, contactData, orderBumps, incluirFotos]);
+
+  // Salvar dados automaticamente quando houver mudanças
+  useEffect(() => {
+    saveData();
+  }, [saveData]);
 
   const updateChild = (index: number, field: keyof Crianca, value: string | number) => {
     const updatedChildren = [...children];
@@ -164,6 +215,84 @@ export default function Step3DadosCriancas({
         updateChild(index, 'foto', base64);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  // Função para fazer upload das fotos para R2
+  const uploadPhotosToR2 = async (sessionId: string, persData: PersData, contactData: ContactData): Promise<string[]> => {
+    const photosToUpload = children.filter(child => child.foto && child.foto.startsWith('data:'));
+    
+    if (photosToUpload.length === 0) {
+      return [];
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('session_id', sessionId);
+
+      // Adicionar dados de contato
+      formData.append('nome', contactData.nome);
+      formData.append('email', contactData.email);
+      formData.append('telefone', contactData.telefone);
+      formData.append('cpf', contactData.cpf);
+
+      // Adicionar dados das crianças
+      const criancasNomes = persData.children.map(child => child.nome);
+      formData.append('criancas', JSON.stringify(criancasNomes));
+
+      // Adicionar mensagem
+      formData.append('mensagem', persData.mensagem);
+
+      // Adicionar order bumps
+      formData.append('order_bumps_site', JSON.stringify(persData.order_bumps));
+
+      // Converter base64 para File objects
+      for (let i = 0; i < photosToUpload.length; i++) {
+        const child = photosToUpload[i];
+        if (child.foto) {
+          try {
+            // Converter base64 para blob de forma mais robusta
+            const base64Data = child.foto.split(',')[1]; // Remove o prefixo data:image/...;base64,
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            
+            for (let j = 0; j < byteCharacters.length; j++) {
+              byteNumbers[j] = byteCharacters.charCodeAt(j);
+            }
+            
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'image/jpeg' });
+            
+            // Criar File object
+            const file = new File([blob], `child_${i + 1}_photo.jpg`, { type: 'image/jpeg' });
+            formData.append(`file${i}`, file);
+          } catch (conversionError) {
+            console.error(`Erro ao converter foto da criança ${i + 1}:`, conversionError);
+            throw new Error(`Erro ao processar foto da criança ${i + 1}`);
+          }
+        }
+      }
+
+      const uploadResponse = await fetch('/api/save-photos', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        throw new Error(`Upload failed: ${uploadResponse.status} - ${errorText}`);
+      }
+
+      const result = await uploadResponse.json();
+      
+      if (result.success && result.data?.fotos_salvas) {
+        return result.data.fotos_salvas;
+      } else {
+        throw new Error(result.error || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer upload das fotos:', error);
+      throw error;
     }
   };
 
@@ -219,7 +348,7 @@ export default function Step3DadosCriancas({
           children: [],
           mensagem: '',
           incluir_fotos: false,
-          order_bumps: []
+          order_bumps: orderBumps
         };
       }
 
@@ -227,6 +356,7 @@ export default function Step3DadosCriancas({
       persData.children = children;
       persData.mensagem = mensagem;
       persData.contato = contactData;
+      persData.order_bumps = orderBumps; // Atualizar order bumps com o estado atual
 
       // Salvar dados
       localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
@@ -240,7 +370,7 @@ export default function Step3DadosCriancas({
 
       // Track checkout initiation
       const mainProduct = getMainProductByChildren(persData.quantidade_criancas);
-      const orderBumps = getOrderBumps();
+      const availableOrderBumps = getOrderBumps();
       
       if (mainProduct) {
         const checkoutItems = [
@@ -252,7 +382,7 @@ export default function Step3DadosCriancas({
             quantity: 1
           },
           ...persData.order_bumps.map(bumpId => {
-            const bump = orderBumps.find(b => b.id === bumpId);
+            const bump = availableOrderBumps.find(b => b.id === bumpId);
             return {
               item_id: bumpId,
               item_name: bump?.title?.pt || 'Order Bump',
@@ -273,20 +403,51 @@ export default function Step3DadosCriancas({
         });
       }
 
-      // Validar para checkout e submeter para N8N
+      // Validar para checkout
       const isValid = validateForCheckout(persData);
       if (isValid) {
-        console.log('Dados válidos, enviando para N8N...', persData);
+        console.log('Dados válidos, processando fotos e enviando para N8N...', persData);
         
-        // Submeter para N8N primeiro
-        const n8nResult = await validateAndSubmit(persData, contactData);
-        
-        if (n8nResult.success) {
-          console.log('Dados enviados para N8N com sucesso, redirecionando para checkout...');
-          await generateAndRedirect(persData);
-        } else {
-          console.error('Falha ao enviar dados para N8N:', n8nResult.error);
-          setErrors([n8nResult.error || 'Erro ao processar pedido. Tente novamente.']);
+        try {
+          // Fazer upload das fotos primeiro (se houver)
+          const hasPhotos = children.some(child => child.foto && child.foto.startsWith('data:'));
+          let photoUrls: string[] = [];
+          
+          if (hasPhotos) {
+            console.log('📸 Fazendo upload das fotos...');
+            console.log('Crianças com fotos para upload:', children.filter(child => child.foto && child.foto.startsWith('data:')));
+            
+            photoUrls = await uploadPhotosToR2(sessionId, persData, contactData);
+            console.log('✅ Upload das fotos concluído:', photoUrls);
+            console.log('Número de URLs retornadas:', photoUrls.length);
+            
+            // Atualizar persData com as URLs das fotos (usar 'fotos' em vez de 'photo_urls')
+            persData.fotos = photoUrls;
+            persData.incluir_fotos = true;
+            
+            console.log('📝 Atualizando persData com fotos:', {
+              fotos: persData.fotos,
+              incluir_fotos: persData.incluir_fotos
+            });
+            
+            // Salvar dados atualizados
+            localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
+            console.log('💾 Dados salvos no localStorage com fotos atualizadas');
+          }
+          
+          // Submeter para N8N
+          const n8nResult = await validateAndSubmit(persData, contactData);
+          
+          if (n8nResult.success) {
+            console.log('Dados enviados para N8N com sucesso, redirecionando para checkout...');
+            await generateAndRedirect(persData);
+          } else {
+            console.error('Falha ao enviar dados para N8N:', n8nResult.error);
+            setErrors([n8nResult.error || 'Erro ao processar pedido. Tente novamente.']);
+          }
+        } catch (photoError) {
+          console.error('Erro ao fazer upload das fotos:', photoError);
+          setErrors(['Erro ao fazer upload das fotos. Tente novamente.']);
         }
       } else {
         setErrors(['Erro ao processar checkout']);
@@ -331,36 +492,41 @@ export default function Step3DadosCriancas({
  
         {/* Form */}
         <div className="backdrop-blur-sm rounded-3xl mb-8 animate-slide-up">
-          {children && children.length > 0 ? (
+          
+
+
+          {/* Campos das crianças */}
+          {children.length > 0 ? (
             children.map((child, index) => (
-              <div key={index} className="mb-8 py-2 bg-white rounded-2xl transition-all duration-300 group animate-fade-in-up" style={{animationDelay: `${index * 100}ms`}}>
-                <div className="flex justify-between items-center mb-2">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-red-600 border-2 border-red-500 rounded-xl flex items-center justify-center shadow-lg">
-                      <span className="text-white font-bold font-fertigo text-lg">{index + 1}</span>
-                    </div>
-                    <h3 className="text-2xl font-bold font-fertigo text-black">
-                      {(t && t('step3.childTitle')) || 'Criança'} {index + 1}
-                    </h3>
+            <div key={index} className="mb-8 py-2 bg-white rounded-2xl transition-all duration-300 group animate-fade-in-up" style={{animationDelay: `${index * 100}ms`}}>
+              <div className="flex justify-between items-center mb-2">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-red-600 border-2 border-red-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold font-fertigo text-lg">{index + 1}</span>
                   </div>
+                  <h3 className="text-2xl font-bold font-fertigo text-black">
+                    {(t && t('step3.childTitle')) || 'Criança'} {index + 1}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+                {/* Nome da criança */}
+                <div className="space-y-2">
+                  <label className="block text-xl font-medium text-black">
+                    Nome da Criança *
+                  </label>
+                  <input
+                    type="text"
+                    value={child.nome}
+                    onChange={(e) => updateChild(index, 'nome', e.target.value)}
+                    placeholder={(t && t('step3.namePlaceholder')) || 'Digite o nome da criança'}
+                    className="w-full px-4 py-3 border text-black border-gray-300 text-black rounded-xl transition-all duration-200"
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-                  {/* Nome da criança */}
-                  <div className="space-y-2">
-                    <label className="block text-xl font-medium text-black">
-                      Nome da Criança *
-                    </label>
-                    <input
-                      type="text"
-                      value={child.nome}
-                      onChange={(e) => updateChild(index, 'nome', e.target.value)}
-                      placeholder={(t && t('step3.namePlaceholder')) || 'Digite o nome da criança'}
-                      className="w-full px-4 py-3 border text-black border-gray-300 text-black rounded-xl transition-all duration-200"
-                    />
-                  </div>
-
-                  {/* Foto da criança */}
+                {/* Foto da criança - só mostrar se incluirFotos for true */}
+                {incluirFotos && (
                   <div className="space-y-2">
                     <label className="block text-xl font-medium text-gray-700">
                       {t('step3.childPhoto') || 'Foto da Criança'}
@@ -399,12 +565,13 @@ export default function Step3DadosCriancas({
                       </label>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
-            ))
+            </div>
+          ))
           ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-500">Carregando dados das crianças...</p>
+            <div className="mb-4 p-4 bg-red-100 rounded">
+              <p>Nenhuma criança encontrada. Array children está vazio.</p>
             </div>
           )}
 
@@ -434,7 +601,7 @@ export default function Step3DadosCriancas({
 
           {/* Campos de Contato */}
           <div className="mb-8 py-6 bg-white rounded-2xl transition-all duration-300 animate-fade-in-up">
-            <div className="p-6">
+            <div className="">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-lg">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

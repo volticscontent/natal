@@ -124,10 +124,16 @@ export default function Step1QuantidadeCriancas({
       if (existingData) {
         persData = JSON.parse(existingData);
         persData.quantidade_criancas = quantity;
+        // Inicializar array de crianças se não existir ou se o tamanho mudou
+        if (!persData.children || persData.children.length !== quantity) {
+          persData.children = Array.from({ length: quantity }, (_, index) => 
+            persData.children && persData.children[index] ? persData.children[index] : { nome: '' }
+          );
+        }
       } else {
         persData = {
           quantidade_criancas: quantity,
-          children: [],
+          children: Array.from({ length: quantity }, () => ({ nome: '' })),
           mensagem: '',
           incluir_fotos: false,
           order_bumps: []
@@ -171,10 +177,16 @@ export default function Step1QuantidadeCriancas({
         if (existingData) {
           persData = JSON.parse(existingData);
           persData.quantidade_criancas = selectedQuantity;
+          // Inicializar array de crianças se não existir ou se o tamanho mudou
+          if (!persData.children || persData.children.length !== selectedQuantity) {
+            persData.children = Array.from({ length: selectedQuantity }, (_, index) => 
+              persData.children && persData.children[index] ? persData.children[index] : { nome: '' }
+            );
+          }
         } else {
           persData = {
             quantidade_criancas: selectedQuantity,
-            children: [],
+            children: Array.from({ length: selectedQuantity }, () => ({ nome: '' })),
             mensagem: '',
             incluir_fotos: false,
             order_bumps: []

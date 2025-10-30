@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['www.elfisanta.com.br'],
   },
+  // Configurações específicas para Vercel - sintaxe atualizada
+  serverExternalPackages: ['@aws-sdk/client-s3'],
+  // Configurações de build
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
 };
 
 export default withNextIntl(nextConfig);

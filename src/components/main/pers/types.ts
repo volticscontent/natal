@@ -22,6 +22,7 @@ export interface PersData {
   mensagem: string;            // Mensagem personalizada obrigatória
   incluir_fotos?: boolean;     // Se o order bump de fotos foi selecionado (opcional)
   fotos?: string[];            // URLs das fotos das crianças (opcional)
+  photo_urls?: string[];       // URLs das fotos processadas pelo R2 (opcional)
   order_bumps: string[];       // Máximo 4 valores
   observacoes?: string;        // Campo opcional para observações especiais
   contato?: ContactData;       // Dados de contato

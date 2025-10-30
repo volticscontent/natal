@@ -57,6 +57,20 @@ const defaultConfig: N8NWebhookConfig = {
 };
 
 /**
+ * Mapeia IDs dos order bumps para nomes legíveis
+ */
+function mapOrderBumpIdsToNames(orderBumpIds: string[]): string[] {
+  const orderBumpMapping: Record<string, string> = {
+    '4k-quality': 'Qualidade 4K',
+    'fast-delivery': 'Entrega Rápida',
+    'child-photo': 'Foto da Criança',
+    'combo-addons': 'Combo Completo (4K + Entrega + Foto)'
+  };
+
+  return orderBumpIds.map(id => orderBumpMapping[id] || id);
+}
+
+/**
  * Converte dados do formulário para o formato esperado pelo N8N
  */
 export function convertToN8NPayload(
@@ -69,7 +83,10 @@ export function convertToN8NPayload(
   const criancasNomes = persData.children.map(child => child.nome);
   
   // Determina prioridade baseada no order bump de entrega rápida
-  const prioridade = persData.order_bumps.includes('entrega_rapida') ? 1 : null;
+  const prioridade = persData.order_bumps.includes('fast-delivery') ? 1 : null;
+  
+  // Mapeia order bumps para nomes legíveis
+  const orderBumpsNomes = mapOrderBumpIdsToNames(persData.order_bumps);
   
   // Monta payload
   const payload: N8NWebhookPayload = {
@@ -83,7 +100,7 @@ export function convertToN8NPayload(
       criancas: criancasNomes,
       fotos: persData.fotos && persData.fotos.length > 0 ? persData.fotos : null,
       mensagem: persData.mensagem,
-      order_bumps_site: persData.order_bumps,
+      order_bumps_site: orderBumpsNomes, // Agora envia nomes legíveis
     },
     informacoes_utms: {
       source: utmParams?.utm_source,

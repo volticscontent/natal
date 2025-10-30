@@ -30,8 +30,26 @@ interface SavePhotosResponse {
  */
 export async function POST(request: NextRequest): Promise<NextResponse<SavePhotosResponse>> {
   try {
-    const formData = await request.formData();
+    console.log('[SAVE-PHOTOS] Iniciando processamento da requisição...');
+    console.log('[SAVE-PHOTOS] Content-Type:', request.headers.get('content-type'));
+    console.log('[SAVE-PHOTOS] Method:', request.method);
+    
+    let formData;
+    try {
+      formData = await request.formData();
+      console.log('[SAVE-PHOTOS] FormData processado com sucesso');
+    } catch (formDataError) {
+      console.error('[SAVE-PHOTOS] Erro ao processar FormData:', formDataError);
+      const errorMessage = formDataError instanceof Error ? formDataError.message : String(formDataError);
+      return NextResponse.json({
+        success: false,
+        message: 'Erro ao processar dados do formulário',
+        error: `FORMDATA_ERROR: ${errorMessage}`
+      }, { status: 400 });
+    }
+    
     const session_id = formData.get('session_id') as string;
+    console.log('[SAVE-PHOTOS] Session ID:', session_id);
     
     // Validação do session_id
     if (!session_id) {
@@ -91,6 +109,45 @@ export async function POST(request: NextRequest): Promise<NextResponse<SavePhoto
       cpf: formData.get('cpf') as string || undefined,
     };
 
+    // Extrair dados adicionais do FormData
+    const criancasData = formData.get('criancas') as string;
+    const mensagem = formData.get('mensagem') as string;
+    const orderBumpsData = formData.get('order_bumps_site') as string;
+
+    let criancas: string[] = [];
+    let orderBumps: string[] = [];
+
+    try {
+      if (criancasData) {
+        criancas = JSON.parse(criancasData);
+      }
+    } catch (error) {
+      console.error('[SAVE-PHOTOS] Erro ao parsear criancas:', error);
+    }
+
+    try {
+      if (orderBumpsData) {
+        orderBumps = JSON.parse(orderBumpsData);
+      }
+    } catch (error) {
+      console.error('[SAVE-PHOTOS] Erro ao parsear order_bumps:', error);
+    }
+
+    // Função para mapear IDs dos order bumps para nomes legíveis
+    const mapOrderBumpIdsToNames = (orderBumpIds: string[]): string[] => {
+      const orderBumpMapping: Record<string, string> = {
+        '4k-quality': 'Qualidade 4K',
+        'fast-delivery': 'Entrega Rápida',
+        'child-photo': 'Foto da Criança',
+        'combo-addons': 'Combo Completo (4K + Entrega + Foto)'
+      };
+
+      return orderBumpIds.map(id => orderBumpMapping[id] || id);
+    };
+
+    // Mapear order bumps para nomes legíveis
+    const orderBumpsNomes = mapOrderBumpIdsToNames(orderBumps);
+
     // 3. Monta payload do N8N para salvar no PostgreSQL
     const n8nPayload: Partial<N8NWebhookPayload> = {
       informacoes_contato: {
@@ -100,10 +157,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<SavePhoto
         cpf: savePayload.cpf || '',
       },
       informacoes_pers: {
-        criancas: [], // Será preenchido posteriormente
+        criancas: criancas,
         fotos: savePayload.fotos,
-        mensagem: '', // Será preenchido posteriormente
-        order_bumps_site: [], // Será preenchido posteriormente
+        mensagem: mensagem || '',
+        order_bumps_site: orderBumpsNomes,
       },
       informacoes_utms: {
         session_id: savePayload.session_id,
@@ -111,9 +168,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<SavePhoto
       metadata: {
         timestamp: new Date().toISOString(),
         locale: 'pt-BR',
-        total_criancas: 0,
+        total_criancas: criancas.length,
         incluir_fotos: true,
-        prioridade: null,
+        prioridade: orderBumps.includes('fast-delivery') ? 1 : null,
       },
     };
 

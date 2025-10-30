@@ -158,10 +158,10 @@ export const useProducts = (locale: 'pt' | 'en' | 'es' = 'pt') => {
     }
 
     const urls = product.checkoutUrls.lastlink;
-    const hasCombo = selectedBumps.includes('combo');
-    const has4K = selectedBumps.includes('4k');
-    const hasFastDelivery = selectedBumps.includes('fast_delivery');
-    const hasPhoto = selectedBumps.includes('photo');
+    const hasCombo = selectedBumps.includes('combo-addons');
+    const has4K = selectedBumps.includes('4k-quality');
+    const hasFastDelivery = selectedBumps.includes('fast-delivery');
+    const hasPhoto = selectedBumps.includes('child-photo');
 
     // Lógica para determinar qual URL usar baseado nos order bumps
     if (hasCombo) {

@@ -66,23 +66,41 @@ export default function Step2OrderBumps({
   // Salvar dados automaticamente e recalcular preços
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
-    let currentData: PersData = {
-      quantidade_criancas: 1,
-      children: [],
-      mensagem: 'default',
-      incluir_fotos: false,
-      fotos: [],
-      order_bumps: selectedBumps,
-      observacoes: ''
-    };
+    let currentData: PersData;
 
     if (savedData) {
       try {
         const parsedData: PersData = JSON.parse(savedData);
-        currentData = { ...parsedData, order_bumps: selectedBumps };
+        // Preservar todos os dados existentes, apenas atualizar order_bumps e incluir_fotos
+        currentData = { 
+          ...parsedData, 
+          order_bumps: selectedBumps, 
+          incluir_fotos: selectedBumps.includes('child-photo') 
+        };
       } catch (error) {
         console.error('Erro ao carregar dados existentes:', error);
+        // Fallback apenas se houver erro no parse
+        currentData = {
+          quantidade_criancas: 1,
+          children: [],
+          mensagem: 'default',
+          incluir_fotos: selectedBumps.includes('child-photo'),
+          fotos: [],
+          order_bumps: selectedBumps,
+          observacoes: ''
+        };
       }
+    } else {
+      // Dados padrão apenas se não houver dados salvos
+      currentData = {
+        quantidade_criancas: 1,
+        children: [],
+        mensagem: 'default',
+        incluir_fotos: selectedBumps.includes('child-photo'),
+        fotos: [],
+        order_bumps: selectedBumps,
+        observacoes: ''
+      };
     }
 
     localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(currentData));

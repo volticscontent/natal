@@ -61,6 +61,9 @@ class LocalStorageManager implements StorageManager {
       localStorage.setItem(key, serializedData);
       logStorageOperation('SAVE', key, data, true);
       
+      // Disparar evento customizado para notificar outros componentes
+      window.dispatchEvent(new Event('localStorageChange'));
+      
       // Log do estado atual após salvar
       if (process.env.NODE_ENV === 'development') {
         setTimeout(() => logCurrentStorageState(), 100);
@@ -134,7 +137,7 @@ export const getPersonalizationData = (): PersData => {
   if (!data || typeof data !== 'object') {
     const defaultData = {
       quantidade_criancas: 1,
-      children: [],
+      children: [{ nome: '' }], // Garantir pelo menos uma criança
       mensagem: 'default',
       incluir_fotos: false,
       fotos: [],
@@ -148,7 +151,7 @@ export const getPersonalizationData = (): PersData => {
   
   const result = {
     quantidade_criancas: data.quantidade_criancas || 1,
-    children: data.children || [],
+    children: data.children && data.children.length > 0 ? data.children : [{ nome: '' }], // Garantir pelo menos uma criança
     mensagem: data.mensagem || 'default',
     incluir_fotos: data.incluir_fotos || false,
     fotos: data.fotos || [],
