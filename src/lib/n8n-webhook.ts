@@ -108,8 +108,8 @@ export function convertToN8NPayload(
   return payload;
 }
 
-// Interface para resposta do webhook N8N
-interface N8NWebhookResponse {
+// Interface para resposta do N8N Webhook
+export interface N8NWebhookResponse {
   success?: boolean;
   message?: string;
   data?: Record<string, unknown>;

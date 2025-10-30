@@ -17,7 +17,40 @@ type UserDataInput = {
   external_id?: string | number;
   [key: string]: string | number | undefined;
 };
-type EventDataInput = Record<string, string | number | boolean | undefined>;
+type EventDataInput = {
+  event_name?: string;
+  event_time?: number;
+  event_id?: string;
+  event_source_url?: string;
+  user_data?: {
+    email?: string;
+    phone?: string;
+    first_name?: string;
+    last_name?: string;
+    city?: string;
+    state?: string;
+    zip_code?: string;
+    country?: string;
+    external_id?: string;
+    client_ip_address?: string;
+    client_user_agent?: string;
+    fbc?: string;
+    fbp?: string;
+  };
+  custom_data?: {
+    value?: number;
+    currency?: string;
+    content_ids?: string[];
+    content_type?: string;
+    content_name?: string;
+    content_category?: string;
+    num_items?: number;
+    order_id?: string;
+    delivery_category?: string;
+    [key: string]: string | number | boolean | string[] | undefined;
+  };
+  [key: string]: string | number | boolean | undefined | object;
+};
 type PurchaseData = {
   value?: number;
   currency?: string;
@@ -125,6 +158,19 @@ function normalizeUserData(userData: UserDataInput) {
   }
   
   return normalized;
+}
+
+function convertToGoogleEnhancedData(userData: UserDataInput): GoogleEnhancedConversionData {
+  return {
+    email: userData.email ? String(userData.email) : undefined,
+    phone_number: userData.phone ? String(userData.phone) : undefined,
+    first_name: userData.first_name ? String(userData.first_name) : undefined,
+    last_name: userData.last_name ? String(userData.last_name) : undefined,
+    city: userData.city ? String(userData.city) : undefined,
+    region: userData.state ? String(userData.state) : undefined,
+    postal_code: userData.zip_code ? String(userData.zip_code) : undefined,
+    country: userData.country ? String(userData.country) : undefined,
+  };
 }
 
 // Obter dados do cliente (IP, User Agent, etc.)
@@ -270,24 +316,28 @@ export async function sendTikTokEvent(eventData: EventDataInput) {
   }
 
   try {
+    // Garantir que user_data é um objeto
+    const userData = eventData.user_data && typeof eventData.user_data === 'object' ? eventData.user_data : {};
+    const customData = eventData.custom_data && typeof eventData.custom_data === 'object' ? eventData.custom_data : {};
+
     const payload = {
       pixel_code: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID,
       event: eventData.event_name,
       event_id: eventData.event_id || `${Date.now()}_${Math.random()}`,
       timestamp: eventData.event_time || Math.floor(Date.now() / 1000),
       context: {
-        user_agent: eventData.user_data?.client_user_agent,
-        ip: eventData.user_data?.client_ip_address,
+        user_agent: userData.client_user_agent,
+        ip: userData.client_ip_address,
         page: {
           url: eventData.event_source_url
         },
         user: {
-          email: eventData.user_data?.email,
-          phone: eventData.user_data?.phone,
-          external_id: eventData.user_data?.external_id
+          email: userData.email,
+          phone: userData.phone,
+          external_id: userData.external_id
         }
       },
-      properties: eventData.custom_data || {}
+      properties: customData
     };
 
     const response = await fetch('https://business-api.tiktok.com/open_api/v1.3/event/track/', {
@@ -332,9 +382,9 @@ export async function sendServerSideEvent(
       ...normalizeUserData(userData),
       ...clientData
     },
-    custom_data: eventData,
+    custom_data: eventData.custom_data,
     action_source: 'website',
-    ...clientData
+    event_source_url: eventData.event_source_url
   };
 
   const promises = [];
@@ -347,22 +397,36 @@ export async function sendServerSideEvent(
   );
 
   // Google Enhanced Conversions
+  const googleEventParams: EventParameters = {};
+  if (eventData.custom_data) {
+    Object.entries(eventData.custom_data).forEach(([key, value]) => {
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === undefined) {
+        googleEventParams[key] = value;
+      }
+    });
+  }
+  
   promises.push(
-    sendGoogleEnhancedConversion(eventName, userData, {
-      ...eventData,
-      client_id: eventData.client_id,
-      session_id: eventData.session_id
-    }).catch(error => 
+    sendGoogleEnhancedConversion(eventName, convertToGoogleEnhancedData(userData), googleEventParams).catch(error => 
       console.error('Google Enhanced Conversion falhou:', error)
     )
   );
 
   // TikTok Events API
+  const tikTokEventData: EventDataInput = {
+    event_name: eventName,
+    event_time: eventTime,
+    event_id: eventData.event_id,
+    event_source_url: eventData.event_source_url,
+    user_data: {
+      ...normalizeUserData(userData),
+      ...clientData
+    },
+    custom_data: eventData.custom_data
+  };
+  
   promises.push(
-    sendTikTokEvent({
-      ...baseEventData,
-      event_id: eventData.event_id
-    }).catch(error => 
+    sendTikTokEvent(tikTokEventData).catch(error => 
       console.error('TikTok Event falhou:', error)
     )
   );
@@ -406,8 +470,8 @@ export const serverSideTracking = {
   // Visualização de conteúdo
   viewContent: async (userData: UserDataInput, contentData: ContentData, request?: Request) => {
     await sendServerSideEvent('ViewContent', userData, {
-      content_ids: [contentData.content_id],
-      content_type: contentData.content_type || 'product',
+      content_ids: contentData.content_ids || [],
+      content_type: 'product',
       content_name: contentData.content_name,
       content_category: contentData.content_category,
       value: contentData.value,
