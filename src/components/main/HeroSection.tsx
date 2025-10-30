@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import VideoPopup from './VideoPopup';
 
 interface HeroSectionProps {
   onCtaClick?: () => void;
@@ -18,6 +19,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const t = useTranslations('hero');
   const isMobile = useIsMobile();
+  const [isVideoPopupOpen, setIsVideoPopupOpen] = useState(false);
+
+  const handleWatchVideoClick = () => {
+    setIsVideoPopupOpen(true);
+  };
 
   return (
     <section className="relative h-[82vh] flex items-center justify-center overflow-hidden md:h-[96vh]">{/* Hero com altura de 68% da viewport */}
@@ -52,7 +58,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                 {t('createVideo')}
               </button>
               
-              <button className="flex items-center gap-2 text-red-600 hover:text-red-200 transition-colors duration-300 w-full sm:w-auto justify-center sm:justify-start">
+              <button 
+                onClick={handleWatchVideoClick}
+                className="flex items-center gap-2 text-red-600 hover:text-red-200 transition-colors duration-300 w-full sm:w-auto justify-center sm:justify-start"
+              >
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center backdrop-blur-sm">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"/>
@@ -77,6 +86,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               </div>
             </div>
       </div>
+
+      {/* Video Popup */}
+      <VideoPopup
+        isOpen={isVideoPopupOpen}
+        onClose={() => setIsVideoPopupOpen(false)}
+        videoSrc="/videos/modelo/sessãoVideo/mobileVd.webm"
+        title="Veja como será o seu vídeo personalizado!"
+      />
 
     </section>
   );

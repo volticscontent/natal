@@ -60,8 +60,8 @@ export const processLastLinkCheckout = async (checkoutData: CheckoutData): Promi
     // 2. Validar dados específicos do Brasil
     validateBrazilianData(payload);
     
-    // 3. Construir URL de checkout
-    const checkoutUrl = buildLastLinkCheckoutUrl(payload);
+    // 3. Construir URL de checkout (agora é async)
+    const checkoutUrl = await buildLastLinkCheckoutUrl(payload);
     
     // 4. Redirecionar
     window.location.href = checkoutUrl;
@@ -136,30 +136,95 @@ const validateBrazilianData = (payload: LastLinkPayload): void => {
 };
 
 // 🔗 Construir URL de checkout LastLink
-const buildLastLinkCheckoutUrl = (payload: LastLinkPayload): string => {
-  const baseUrl = `${LASTLINK_CONFIG.baseUrl}/checkout/${LASTLINK_CONFIG.productId}`;
-  
-  const params = new URLSearchParams({
-    // Dados básicos
-    session_id: payload.session_id,
+const buildLastLinkCheckoutUrl = async (payload: LastLinkPayload): Promise<string> => {
+  try {
+    // Determinar número de crianças
+    const childrenCount = payload.personalization.children.length;
     
-    // Dados do cliente
-    customer_name: payload.customer.name,
-    customer_email: payload.customer.email,
-    customer_phone: payload.customer.phone,
+    // Buscar dados do produto
+    const response = await fetch('/api/checkout/products');
+    const data: { mainProducts: Array<{ id: string; childrenCount: number; checkoutUrls: { lastlink: Record<string, string> } }> } = await response.json();
     
-    // Personalização (JSON encoded)
-    personalization: JSON.stringify(payload.personalization),
+    if (!data.mainProducts) {
+      throw new Error('Produtos não encontrados');
+    }
     
-    // Preços
-    total: payload.pricing.total.toString(),
-    currency: payload.pricing.currency,
+    // Encontrar produto baseado no número de crianças
+    let product: { checkoutUrls: { lastlink: Record<string, string> } } | undefined = data.mainProducts.find(p => p.childrenCount === childrenCount);
     
-    // UTM params
-    ...payload.utm_params
-  });
-  
-  return `${baseUrl}?${params.toString()}`;
+    // Fallback para produto de 3+ crianças se não encontrar exato
+    if (!product && childrenCount >= 3) {
+      product = data.mainProducts.find(p => p.childrenCount === 3);
+    }
+    
+    if (!product || !product.checkoutUrls?.lastlink) {
+      throw new Error(`Produto não encontrado para ${childrenCount} criança(s)`);
+    }
+    
+    // Determinar qual URL usar baseado nos order bumps
+    const orderBumps = payload.personalization.order_bumps || [];
+    const { lastlink } = product.checkoutUrls;
+    
+    let urlKey: string;
+    
+    // Lógica de seleção de URL baseada nos order bumps
+    const hasCombo = orderBumps.includes('combo-addons');
+    const has4K = orderBumps.includes('4k-quality');
+    const hasFastDelivery = orderBumps.includes('fast-delivery');
+    const hasPhoto = orderBumps.includes('child-photo');
+    
+    if (hasCombo) {
+      urlKey = lastlink.withCombo || lastlink.base;
+    } else if (has4K && hasFastDelivery && hasPhoto) {
+      urlKey = lastlink.withAll || lastlink.base;
+    } else if (has4K && hasFastDelivery) {
+      urlKey = lastlink.with4KAndFastDelivery || lastlink.base;
+    } else if (has4K && hasPhoto) {
+      urlKey = lastlink.with4KAndPhoto || lastlink.base;
+    } else if (hasFastDelivery && hasPhoto) {
+      urlKey = lastlink.withFastDeliveryAndPhoto || lastlink.base;
+    } else if (has4K) {
+      urlKey = lastlink.with4K || lastlink.base;
+    } else if (hasFastDelivery) {
+      urlKey = lastlink.withFastDelivery || lastlink.base;
+    } else if (hasPhoto) {
+      urlKey = lastlink.withPhoto || lastlink.base;
+    } else {
+      urlKey = lastlink.base;
+    }
+    
+    // Construir URL no formato correto do LastLink
+    const baseUrl = `https://lastlink.com/p/${urlKey}/checkout-payment/`;
+    const url = new URL(baseUrl);
+    
+    // Adicionar dados do cliente como parâmetros
+    if (payload.customer.name) {
+      url.searchParams.set('customer_name', payload.customer.name);
+    }
+    if (payload.customer.email) {
+      url.searchParams.set('customer_email', payload.customer.email);
+    }
+    if (payload.customer.phone) {
+      url.searchParams.set('customer_phone', payload.customer.phone);
+    }
+    
+    // Adicionar UTM params
+    if (payload.utm_params) {
+      Object.entries(payload.utm_params).forEach(([key, value]) => {
+        if (value) {
+          url.searchParams.set(key, value);
+        }
+      });
+    }
+    
+    console.log('🔗 URL do LastLink construída:', url.toString());
+    return url.toString();
+    
+  } catch (error) {
+    console.error('Erro ao construir URL do LastLink:', error);
+    // Fallback para URL base se houver erro
+    return `https://lastlink.com/p/C0EE44F93/checkout-payment/`;
+  }
 };
 
 // 🔍 Recuperar parâmetros UTM salvos

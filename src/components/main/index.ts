@@ -1,6 +1,7 @@
 // Main Components Export
 export { default as PromoBanner } from './PromoBanner';
 export { default as HeroSection } from './HeroSection';
+export { default as VideoPopup } from './VideoPopup';
 export { default as ProductCarousel } from './ProductCarousel';
 export { default as FooterSection } from './FooterSection';
 export { default as FloatingCarousel } from './FloatingCarousel';

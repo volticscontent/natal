@@ -124,11 +124,12 @@ export const useLastLinkUrlMapper = () => {
   }, []);
 
   /**
-   * Gera a URL completa da LastLink com o domínio
+   * Gera a URL completa da LastLink com o novo formato
    */
   const buildCompleteLastLinkUrl = useMemo(() => {
-    return (mapping: LastLinkUrlMapping, baseUrl: string = 'https://pay.lastlink.com.br'): string => {
-      const url = new URL(`${baseUrl}/${mapping.finalUrl}`);
+    return (mapping: LastLinkUrlMapping, baseUrl: string = 'https://lastlink.com'): string => {
+      // Usar o novo formato: https://lastlink.com/p/{urlKey}/checkout-payment/
+      const url = new URL(`${baseUrl}/p/${mapping.finalUrl}/checkout-payment/`);
       
       // Adicionar parâmetros de autopopulação se disponíveis
       if (mapping.customerParams) {
