@@ -1,0 +1,300 @@
+{
+  "mainProducts": [
+    {
+      "id": "video-1-crianca",
+      "title": {
+        "pt": "Vídeo Personalizado - 1 Criança",
+        "en": "Personalized Video - 1 Child",
+        "es": "Video Personalizado - 1 Niño"
+      },
+      "pricing": {
+        "lastlink": {
+          "price": 49.99,
+          "originalPrice": 69.99,
+          "currency": "BRL"
+        },
+        "cartpanda": {
+          "price": 29.99,
+          "originalPrice": 49.99,
+          "currency": "USD"
+        }
+      },
+      "image": "/images/produto+v.webp",
+      "description": {
+        "pt": "Vídeo personalizado do Papai Noel com o nome da criança e mensagem especial",
+        "en": "Personalized Santa Claus video with child's name and special message",
+        "es": "Video personalizado de Papá Noel con el nombre del niño y mensaje especial"
+      },
+      "features": {
+        "pt": [
+          "Nome personalizado",
+          "Mensagem única",
+          "Qualidade HD",
+          "Entrega em até 24h"
+        ],
+        "en": [
+          "Personalized name",
+          "Unique message",
+          "HD quality",
+          "Delivery within 24h"
+        ],
+        "es": [
+          "Nombre personalizado",
+          "Mensaje único",
+          "Calidad HD",
+          "Entrega en hasta 24h"
+        ]
+      },
+      "childrenCount": 1,
+      "checkoutUrls": {
+        "lastlink": {
+          "base": "C0EE44F93",
+          "with4K": "CDA6777BF",
+          "withFastDelivery": "C4611BC02",
+          "withPhoto": "C4240D0D9",
+          "with4KAndFastDelivery": "CD130B4F2",
+          "with4KAndPhoto": "C9C9B03E3",
+          "withFastDeliveryAndPhoto": "CDA157BB1",
+          "withAll": "C87D15C87",
+          "withCombo": "CC81F4813"
+        }
+      }
+    },
+    {
+      "id": "video-2-criancas",
+      "title": {
+        "pt": "Vídeo Personalizado - 2 Crianças",
+        "en": "Personalized Video - 2 Children",
+        "es": "Video Personalizado - 2 Niños"
+      },
+      "pricing": {
+        "lastlink": {
+          "price": 59.99,
+          "originalPrice": 79.99,
+          "currency": "BRL"
+        },
+        "cartpanda": {
+          "price": 39.99,
+          "originalPrice": 59.99,
+          "currency": "USD"
+        }
+      },
+      "image": "/images/produto+v.webp",
+      "description": {
+        "pt": "Vídeo personalizado do Papai Noel para duas crianças com nomes e mensagens especiais",
+        "en": "Personalized Santa Claus video for two children with names and special messages",
+        "es": "Video personalizado de Papá Noel para dos niños con nombres y mensajes especiales"
+      },
+      "features": {
+        "pt": [
+          "2 nomes personalizados",
+          "Mensagens únicas",
+          "Qualidade HD",
+          "Entrega em até 24h"
+        ],
+        "en": [
+          "2 personalized names",
+          "Unique messages",
+          "HD quality",
+          "Delivery within 24h"
+        ],
+        "es": [
+          "2 nombres personalizados",
+          "Mensajes únicos",
+          "Calidad HD",
+          "Entrega en hasta 24h"
+        ]
+      },
+      "childrenCount": 2,
+      "checkoutUrls": {
+        "lastlink": {
+          "base": "C93ACA8B6",
+          "with4K": "C45ED916B",
+          "withFastDelivery": "CC4DC9AE4",
+          "withPhoto": "C73BCEC41",
+          "with4KAndFastDelivery": "CAE24A1A8",
+          "with4KAndPhoto": "C083D7CE5",
+          "withFastDeliveryAndPhoto": "CCD33E991",
+          "withAll": "C2A46559E",
+          "withCombo": "CD9EFF4C9"
+        }
+      }
+    },
+    {
+      "id": "video-3-ou-mais-criancas",
+      "title": {
+        "pt": "Vídeo Personalizado - 3+ Crianças",
+        "en": "Personalized Video - 3+ Children",
+        "es": "Video Personalizado - 3+ Niños"
+      },
+      "pricing": {
+        "lastlink": {
+          "price": 69.99,
+          "originalPrice": 99.99,
+          "currency": "BRL"
+        },
+        "cartpanda": {
+          "price": 49.99,
+          "originalPrice": 69.99,
+          "currency": "USD"
+        }
+      },
+      "image": "/images/produto+v.webp",
+      "description": {
+        "pt": "Vídeo personalizado do Papai Noel para três ou mais crianças com nomes e mensagens especiais",
+        "en": "Personalized Santa Claus video for three or more children with names and special messages",
+        "es": "Video personalizado de Papá Noel para tres o más niños con nombres y mensajes especiales"
+      },
+      "features": {
+        "pt": [
+          "3+ nomes personalizados",
+          "Mensagens únicas",
+          "Qualidade HD",
+          "Entrega em até 24h"
+        ],
+        "en": [
+          "3+ personalized names",
+          "Unique messages",
+          "HD quality",
+          "Delivery within 24h"
+        ],
+        "es": [
+          "3+ nombres personalizados",
+          "Mensajes únicos",
+          "Calidad HD",
+          "Entrega en hasta 24h"
+        ]
+      },
+      "childrenCount": 3,
+      "checkoutUrls": {
+        "lastlink": {
+          "base": "C81BBAC35",
+          "with4K": "C45ED916B",
+          "withFastDelivery": "CF799CB6D",
+          "withPhoto": "C50663D83",
+          "with4KAndFastDelivery": "C0AEA4D21",
+          "with4KAndPhoto": "C7C011D46",
+          "withFastDeliveryAndPhoto": "C7D6B6AE2",
+          "withAll": "C8BAACD7C",
+          "withCombo": "CA196C8C0"
+        }
+      }
+    }
+  ],
+  "orderBumps": [
+    {
+      "id": "4k-quality",
+      "title": {
+        "pt": "Qualidade 4K",
+        "en": "4K Quality",
+        "es": "Calidad 4K"
+      },
+      "pricing": {
+        "lastlink": {
+          "price": 12.00,
+          "currency": "BRL"
+        },
+        "cartpanda": {
+          "price": 4.99,
+          "currency": "USD"
+        }
+      },
+      "description": {
+        "pt": "Upgrade para qualidade 4K ultra HD",
+        "en": "Upgrade to 4K ultra HD quality",
+        "es": "Actualización a calidad 4K ultra HD"
+      },
+      "features": {
+        "pt": ["Resolução 4K", "Qualidade cinematográfica", "Detalhes nítidos"],
+        "en": ["4K resolution", "Cinematic quality", "Sharp details"],
+        "es": ["Resolución 4K", "Calidad cinematográfica", "Detalles nítidos"]
+      }
+    },
+    {
+      "id": "fast-delivery",
+      "title": {
+        "pt": "Entrega Rápida",
+        "en": "Fast Delivery",
+        "es": "Entrega Rápida"
+      },
+      "pricing": {
+        "lastlink": {
+          "price": 12.00,
+          "currency": "BRL"
+        },
+        "cartpanda": {
+          "price": 2.99,
+          "currency": "USD"
+        }
+      },
+      "description": {
+        "pt": "Receba seu vídeo em até 2 horas",
+        "en": "Receive your video within 2 hours",
+        "es": "Recibe tu video en hasta 2 horas"
+      },
+      "features": {
+        "pt": ["Entrega em até 2h", "Prioridade máxima", "Suporte dedicado"],
+        "en": ["Delivery within 2h", "Maximum priority", "Dedicated support"],
+        "es": ["Entrega en hasta 2h", "Máxima prioridad", "Soporte dedicado"]
+      }
+    },
+    {
+      "id": "child-photo",
+      "title": {
+        "pt": "Foto da Criança",
+        "en": "Child Photo",
+        "es": "Foto del Niño"
+      },
+      "pricing": {
+        "lastlink": {
+          "price": 14.90,
+          "currency": "BRL"
+        },
+        "cartpanda": {
+          "price": 4.99,
+          "currency": "USD"
+        }
+      },
+      "description": {
+        "pt": "Adicione fotos das crianças no vídeo",
+        "en": "Add children's photos to the video",
+        "es": "Añade fotos de los niños al video"
+      },
+      "features": {
+        "pt": ["Fotos personalizadas", "Até 3 fotos por criança", "Integração perfeita"],
+        "en": ["Personalized photos", "Up to 3 photos per child", "Perfect integration"],
+        "es": ["Fotos personalizadas", "Hasta 3 fotos por niño", "Integración perfecta"]
+      }
+    },
+
+    {
+      "id": "combo-addons",
+      "title": {
+        "pt": "Combo de Adicionais",
+        "en": "Add-ons Combo",
+        "es": "Combo de Adicionales"
+      },
+      "pricing": {
+        "lastlink": {
+          "price": 29.99,
+          "currency": "BRL"
+        },
+        "cartpanda": {
+          "price": 9.99,
+          "currency": "USD"
+        }
+      },
+      "description": {
+        "pt": "4K + Entrega Rápida + Foto da Criança",
+        "en": "4K + Fast Delivery + Child Photo",
+        "es": "4K + Entrega Rápida + Foto del Niño"
+      },
+      "features": {
+        "pt": ["Qualidade 4K", "Entrega em 2h", "Fotos personalizadas", "Economia de R$ 8,91"],
+        "en": ["4K quality", "2h delivery", "Personalized photos", "Save $2.98"],
+        "es": ["Calidad 4K", "Entrega en 2h", "Fotos personalizadas", "Ahorro de $2.98"]
+      },
+      "includes": ["4k-quality", "fast-delivery", "child-photo"]
+    }
+  ]
+}

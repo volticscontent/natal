@@ -1,0 +1,52 @@
+{
+  "name": "recadinhos-papai-noel",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint",
+    "translate": "node scripts/advanced-translation-system.js translate",
+    "translate:incremental": "node scripts/advanced-translation-system.js incremental",
+    "translate:detect": "node scripts/advanced-translation-system.js detect",
+    "translate:watch": "node scripts/translation-watcher.js",
+    "translate:cli": "node scripts/translation-cli.js",
+    "translate:setup": "node scripts/translation-cli.js setup",
+    "translate:validate": "node scripts/translation-cli.js validate",
+    "translate:stats": "node scripts/translation-cli.js stats"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.920.0",
+    "@aws-sdk/s3-request-presigner": "^3.920.0",
+    "@next/third-parties": "^16.0.0",
+    "dotenv": "^17.2.3",
+    "embla-carousel-react": "^8.6.0",
+    "jose": "^6.1.0",
+    "lucide-react": "^0.548.0",
+    "next": "15.5.6",
+    "next-intl": "^4.3.12",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-gtm-module": "^2.0.11"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@google-cloud/translate": "^8.5.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
+    "axios": "^1.7.9",
+    "chalk": "^5.3.0",
+    "chokidar": "^4.0.1",
+    "commander": "^12.1.0",
+    "deepl-node": "^1.14.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.6",
+    "inquirer": "^12.0.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

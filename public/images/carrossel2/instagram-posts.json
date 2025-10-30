@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "totalPosts": 8,
+    "generatedAt": "2025-10-28T20:24:44.113Z",
+    "description": "Dados dos posts do Instagram para o carrossel social #GerandoSorrisos"
+  },
+  "posts": [
+    {
+      "id": 1,
+      "username": "majmuchy",
+      "postUrl": "https://www.instagram.com/p/BrCwJObFTzW",
+      "avatar": "/images/carrossel2/avatars/avatar-1.jpg",
+      "image": "/images/carrossel2/post-1.jpg",
+      "likes": 208,
+      "comments": 20,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/9/f8aaa3aa0cf43e6c9f2ff47a48fdbc97.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/9/229cbab21037233df8ff06c1b6bea338.jpg"
+    },
+    {
+      "id": 2,
+      "username": "ilpiccolomondodiaurora",
+      "postUrl": "https://www.instagram.com/p/B6kgR-FIitA/",
+      "avatar": "/images/carrossel2/avatars/avatar-2.jpg",
+      "image": "/images/carrossel2/post-2.jpg",
+      "likes": 0,
+      "comments": 0,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/14/9754c59be416d949e6c0e6953b8a2b8c.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/14/a4fcf8b6608af81af6c8821edc9a64f3.jpg"
+    },
+    {
+      "id": 3,
+      "username": "pribrenner",
+      "postUrl": "https://www.instagram.com/p/B5i-VgoAIya/",
+      "avatar": "/images/carrossel2/avatars/avatar-3.jpg",
+      "image": "/images/carrossel2/post-3.jpg",
+      "likes": 16,
+      "comments": 134,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/16/0b1ff2b191840e30754a7f56abe33253.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/16/e42afa588215081ff929a4913f3d0426.jpg"
+    },
+    {
+      "id": 4,
+      "username": "maede3mais1",
+      "postUrl": "https://www.instagram.com/p/B53us3Ehb3P/",
+      "avatar": "/images/carrossel2/avatars/avatar-4.jpg",
+      "image": "/images/carrossel2/post-4.jpg",
+      "likes": 543,
+      "comments": 48,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/17/104028104da6cd1e7dc845979b1c8e25.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/17/83b61705cdb6fc383b0de65d6d6dc021.jpg"
+    },
+    {
+      "id": 5,
+      "username": "paulitataa",
+      "postUrl": "https://www.instagram.com/p/BrBT1qrF8f0",
+      "avatar": "/images/carrossel2/avatars/avatar-5.jpg",
+      "image": "/images/carrossel2/post-5.jpg",
+      "likes": 75,
+      "comments": 0,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/10/097dcd2b51453b845de386becb66278f.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/10/ae9e632a5c4444ce42a8fe85a8266596.jpg"
+    },
+    {
+      "id": 6,
+      "username": "motheratorka",
+      "postUrl": "https://www.instagram.com/p/BNFlPyqhTER",
+      "avatar": "/images/carrossel2/avatars/avatar-6.jpg",
+      "image": "/images/carrossel2/post-6.jpg",
+      "likes": 177,
+      "comments": 6,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/13/67258b316ea3f2798599c82a9082fc54.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/13/a69d3d20d4c9f2d8e5fdf48894198df0.jpg"
+    },
+    {
+      "id": 7,
+      "username": "angy_mammatris",
+      "postUrl": "https://www.instagram.com/p/B5CnIA7I8wx/",
+      "avatar": "/images/carrossel2/avatars/avatar-7.jpg",
+      "image": "/images/carrossel2/post-7.jpg",
+      "likes": 603,
+      "comments": 81,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/42/6a4f93104b8df7afd76649e8d580b2e7.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/42/28c823a2226a90d4a9d753e7884fa5d4.jpg"
+    },
+    {
+      "id": 8,
+      "username": "kasia_satala",
+      "postUrl": "https://www.instagram.com/p/B5XEKkgFSIt/",
+      "avatar": "/images/carrossel2/avatars/avatar-8.jpg",
+      "image": "/images/carrossel2/post-8.jpg",
+      "likes": 736,
+      "comments": 56,
+      "originalAvatarUrl": "https://www.elfisanta.com.br/data/instagram/37/5cfed3a8c3549f3bba8044091fe7ffef.jpg",
+      "originalImageUrl": "https://www.elfisanta.com.br/data/instagram/37/57f283dedd389a19c50b41a81a28be9e.jpg"
+    }
+  ]
+}

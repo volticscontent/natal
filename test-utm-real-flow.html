@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste UTM - Fluxo Real</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        .success {
+            border-left-color: #28a745;
+            background-color: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .utm-params {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .url-result {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            word-break: break-all;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste UTM - Fluxo Real</h1>
+        <p>Este teste simula o fluxo completo de captura e uso de UTMs no sistema.</p>
+
+        <div class="step">
+            <h3>Passo 1: Simular chegada com UTMs</h3>
+            <p>Clique no botão para simular uma chegada com parâmetros UTM:</p>
+            <button onclick="simulateUtmArrival()">Simular Chegada com UTMs</button>
+            <div id="utm-capture-result"></div>
+        </div>
+
+        <div class="step">
+            <h3>Passo 2: Verificar localStorage</h3>
+            <p>Verificar se as UTMs foram salvas no localStorage:</p>
+            <button onclick="checkLocalStorage()">Verificar localStorage</button>
+            <div id="localstorage-result"></div>
+        </div>
+
+        <div class="step">
+            <h3>Passo 3: Simular geração de URL LastLink</h3>
+            <p>Simular a geração da URL da LastLink com as UTMs:</p>
+            <button onclick="generateLastLinkUrl()">Gerar URL LastLink</button>
+            <div id="url-generation-result"></div>
+        </div>
+
+        <div class="step">
+            <h3>Passo 4: Verificar UTMs na URL final</h3>
+            <div id="final-verification"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simular parâmetros UTM
+        const mockUtmParams = {
+            utm_source: 'facebook',
+            utm_medium: 'social',
+            utm_campaign: 'natal_2024',
+            utm_term: 'recadinhos_papai_noel',
+            utm_content: 'video_promocional',
+            utm_session_id: 'sess_' + Date.now()
+        };
+
+        function simulateUtmArrival() {
+            console.log('🔄 Simulando chegada com UTMs...');
+            
+            // Simular a captura de UTMs (como faria o useUtmTracking)
+            localStorage.setItem('pers_utm_params', JSON.stringify(mockUtmParams));
+            
+            const resultDiv = document.getElementById('utm-capture-result');
+            resultDiv.innerHTML = `
+                <div class="success">
+                    <h4>✅ UTMs capturadas com sucesso!</h4>
+                    <div class="utm-params">${JSON.stringify(mockUtmParams, null, 2)}</div>
+                </div>
+            `;
+        }
+
+        function checkLocalStorage() {
+            console.log('🔍 Verificando localStorage...');
+            
+            try {
+                const saved = localStorage.getItem('pers_utm_params');
+                const resultDiv = document.getElementById('localstorage-result');
+                
+                if (saved) {
+                    const parsedUtms = JSON.parse(saved);
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ UTMs encontradas no localStorage!</h4>
+                            <div class="utm-params">${JSON.stringify(parsedUtms, null, 2)}</div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Nenhuma UTM encontrada no localStorage</h4>
+                            <p>Execute o Passo 1 primeiro.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                const resultDiv = document.getElementById('localstorage-result');
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Erro ao verificar localStorage</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function generateLastLinkUrl() {
+            console.log('🔗 Gerando URL da LastLink...');
+            
+            try {
+                // Recuperar UTMs do localStorage (como faz o useLastLinkUrlMapper)
+                const saved = localStorage.getItem('pers_utm_params');
+                const utmParams = saved ? JSON.parse(saved) : {};
+                
+                // Simular dados do cliente
+                const customerData = {
+                    customer_name: 'Maria Silva',
+                    customer_email: 'maria@teste.com',
+                    customer_phone: '11999999999',
+                    customer_cpf: '123.456.789-00'
+                };
+
+                // Construir URL da LastLink
+                const baseUrl = 'https://pay.lastlink.com.br';
+                const productUrl = 'checkout/PROD123';
+                const url = new URL(`${baseUrl}/${productUrl}`);
+
+                // Adicionar dados do cliente
+                Object.entries(customerData).forEach(([key, value]) => {
+                    url.searchParams.set(key, value);
+                });
+
+                // Adicionar UTMs
+                Object.entries(utmParams).forEach(([key, value]) => {
+                    if (value && typeof value === 'string') {
+                        url.searchParams.set(key, value);
+                    }
+                });
+
+                const resultDiv = document.getElementById('url-generation-result');
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ URL gerada com sucesso!</h4>
+                        <div class="url-result">${url.toString()}</div>
+                    </div>
+                `;
+
+                // Verificar se todas as UTMs estão na URL
+                verifyUtmsInUrl(url, utmParams);
+
+            } catch (error) {
+                const resultDiv = document.getElementById('url-generation-result');
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Erro ao gerar URL</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function verifyUtmsInUrl(url, expectedUtms) {
+            const verificationDiv = document.getElementById('final-verification');
+            let allUtmsPresent = true;
+            let verificationHtml = '<h4>🔍 Verificação das UTMs na URL:</h4><ul>';
+
+            Object.entries(expectedUtms).forEach(([key, expectedValue]) => {
+                const actualValue = url.searchParams.get(key);
+                const isPresent = actualValue === expectedValue;
+                
+                if (!isPresent) allUtmsPresent = false;
+                
+                const status = isPresent ? '✅' : '❌';
+                verificationHtml += `<li>${status} <strong>${key}</strong>: ${actualValue || 'AUSENTE'} ${isPresent ? '' : `(esperado: ${expectedValue})`}</li>`;
+            });
+
+            verificationHtml += '</ul>';
+
+            const finalStatus = allUtmsPresent ? 
+                '<div class="success"><h4>🎉 SUCESSO! Todas as UTMs estão presentes na URL da LastLink.</h4></div>' :
+                '<div class="error"><h4>⚠️ FALHA! Algumas UTMs estão ausentes na URL.</h4></div>';
+
+            verificationDiv.innerHTML = verificationHtml + finalStatus;
+        }
+
+        // Auto-executar teste completo
+        function runFullTest() {
+            setTimeout(() => simulateUtmArrival(), 500);
+            setTimeout(() => checkLocalStorage(), 1000);
+            setTimeout(() => generateLastLinkUrl(), 1500);
+        }
+
+        // Executar teste completo ao carregar a página
+        window.onload = () => {
+            console.log('🚀 Iniciando teste automático...');
+            runFullTest();
+        };
+    </script>
+</body>
+</html>

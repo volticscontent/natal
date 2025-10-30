@@ -1,0 +1,387 @@
+{
+  "countryDetection": {
+    "title": "¡Detectamos tu país!",
+    "subtitle": "Confirma para una mejor experiencia",
+    "detectedMessage": "Detectamos que estás navegando desde {{country}}",
+    "confirmButton": "¡Sí, es correcto!",
+    "changeButton": "Cambiar país/idioma",
+    "infoMessage": "Puedes cambiar el idioma en cualquier momento en el menú superior"
+  },
+  "hero": {
+    "title": "Esparce alegría infantil",
+    "subtitle": "Video personalizado de Papá Noel para tu niño.",
+    "createVideo": "Crear video",
+    "watchVideo": "Ver video",
+    "rating": "4,7 de 1409 comentarios",
+    "brandName": "Elfi"
+  },
+  "features": {
+    "customize": "Personaliza el video en 5 minutos",
+    "rating": "Calificación 4,7 de 1405 comentarios",
+    "delivery": "Entrega desde 2 horas",
+    "support": "Apoyamos al Hospital GRAACC",
+    "guarantee": "Tienes 180 días para devolución gratuita",
+    "surprise": "Sorpresa navideña para un niño querido"
+  },
+  "product": {
+    "title": "Video de Papá Noel",
+    "description": "Regala a tus seres queridos un video único, con nombre y foto. Crea recuerdos mágicos que acercan y unen. Papá Noel dirá el nombre de la persona, verá las fotos que agregaste e incluso leerá el mensaje que escribiste.",
+    "price": "$49,99",
+    "videoTitle": "Video Personalizado",
+    "clickToWatch": "Haz clic para ver",
+    "features": {
+      "new2025": "Video y llamada inéditos 2025",
+      "personalization": "Personalización incomparable",
+      "quality": "Calidad cinematográfica",
+      "comment": "Agrega tu propio comentario",
+      "quickOrder": "Pedido rápido: menos de 5 minutos",
+      "fastDelivery": "Entrega a tu email en hasta 2 horas"
+    }
+  },
+  "calendar": {
+    "title": "GRATIS Calendario de Adviento",
+    "description": "¡Diviértete mientras esperas la llegada de la Navidad con nuestro Calendario de Adviento! Es gratis. ¡Personaliza, agrega una foto, imprime y disfruta la cuenta regresiva con tu familia!",
+    "freeLabel": "GRATIS",
+    "downloadButton": "Descargar Calendario Gratis 📅",
+    "features": {
+      "new2025": "Nuevo calendario 2025",
+      "free": "Descarga gratuita",
+      "customizable": "Personalizable",
+      "printable": "Imprime tú mismo"
+    }
+  },
+  "testimonials": {
+    "title": "#CreandoSonrisas",
+    "subtitle": "Únete a 450,000 ayudantes de Papá Noel",
+    "description": "Probablemente sea la mejor sorpresa navideña, y abajo puedes ver a sus pequeños grandes destinatarios. Crea un mensaje de Papá Noel ahora y trae un poco de magia a la Navidad de este año.",
+    "testimonial1": {
+      "name": "María Silva",
+      "location": "São Paulo, Brasil",
+      "comment": "¡A mi hija le encantó! No podía creer que Papá Noel supiera su nombre y su juguete favorito. ¡Fue mágico!"
+    },
+    "testimonial2": {
+      "name": "Carlos Rodríguez",
+      "location": "Madrid, España",
+      "comment": "El mejor regalo de Navidad que he dado. La calidad es increíble y la personalización es perfecta."
+    },
+    "testimonial3": {
+      "name": "Jennifer Smith",
+      "location": "Nueva York, EE.UU.",
+      "comment": "¡Increíble! Mis hijos vieron el video una y otra vez. Papá Noel realmente parecía conocerlos personalmente."
+    }
+  },
+  "expert": {
+    "author": "Eva Brozyna",
+    "credentials": "Psicóloga, psicoterapeuta Gestalt certificada",
+    "quote": "Los videos de Elfi traen alegría y crean recuerdos maravillosos para toda la familia. Hacen que los niños se sientan vistos y aceptados como son, mientras fortalecen su autoconfianza.",
+    "title": "Evaluación de expertos",
+    "subtitle": "Diversión y desarrollo.",
+    "badges": {
+      "psychologist": "Psicóloga",
+      "psychotherapist": "Psicoterapeuta"
+    },
+    "benefits": {
+      "cognitive": {
+        "title": "Desarrollo Cognitivo",
+        "description": "Estimula la imaginación y creatividad"
+      },
+      "family": {
+        "title": "Vínculos Familiares",
+        "description": "Fortalece los lazos entre padres e hijos"
+      },
+      "selfEsteem": {
+        "title": "Autoestima",
+        "description": "Aumenta la confianza y autoconcepto"
+      }
+    }
+  },
+  "charity": {
+    "title": "Esparciendo bondad",
+    "description": "Envía un video y ayuda al Hospital GRAACC a brindar tratamiento a niños y adolescentes con cáncer.",
+    "amount": "Gracias a ti, recaudamos y donamos $123,000 a varias instituciones alrededor del mundo.",
+    "socialSupport": "APOYO SOCIAL",
+    "hospitalName": "Hospital GRAACC",
+    "hospitalDesc": "Cada video vendido contribuye al tratamiento de niños y adolescentes con cáncer. Juntos, marcamos la diferencia en las vidas de quienes más lo necesitan.",
+    "amountDesc": "Cantidad recaudada y donada a instituciones alrededor del mundo",
+    "makingDifference": "Haciendo la Diferencia",
+    "helpTreatment": "Tu compra ayuda en el tratamiento de niños con cáncer",
+    "joinChain": "Sé Parte de Esta Cadena del Bien",
+    "chainDesc": "Al crear un video personalizado, no solo traes alegría a tu familia, sino que también ayudas a otros niños a sonreír.",
+    "createAndHelp": "Crear Video y Ayudar 💝",
+    "certifications": {
+      "certified": "Certificado",
+      "partnership": "Asociación",
+      "transparency": "Transparencia",
+      "impact": "Impacto"
+    }
+  },
+  "footer": {
+    "heroText": "Creamos recuerdos, no productos. Siente la magia de la Navidad en tu hogar y forma lazos que resisten el paso del tiempo.",
+    "logoAlt": "Logo de Elfi",
+    "newsletter": {
+      "title": "Suscríbete al Newsletter de Elfi",
+      "placeholder": "Tu dirección de correo electrónico...",
+      "button": "Agregar",
+      "privacyPolicy": "Política de Datos de Elfi"
+    },
+    "products": {
+      "title": "Productos",
+      "santaVideo": "Video de Papá Noel",
+      "free": "Gratis",
+      "adventCalendar": "Calendario de Adviento",
+      "reviews": "Reseñas",
+      "priceList": "Lista de Precios"
+    },
+    "copyright": "Hecho con alegría por Papá Noel y sus duendes",
+    "brandName": "Mensajes de Papá Noel",
+    "support": "Soporte",
+    "prices": "Precios",
+    "helpCenter": "Centro de Ayuda",
+    "contact": "Contacto",
+    "returns": "Devoluciones",
+    "faq": "FAQ"
+  },
+  "socialProof": {
+    "title": "Más de 40.000 familias satisfechas",
+    "subtitle": "Mira lo que dicen nuestros clientes sobre nosotros",
+    "reviewsText": "de {totalReviews} reseñas en"
+  },
+  "header": {
+    "brandName": "Mensajes de Papá Noel",
+    "santaVideo": "Video de Papá Noel",
+    "priceList": "Lista de Precios",
+    "accountLogin": "Cuenta (Iniciar Sesión)",
+    "languages": {
+      "portuguese": "Português",
+      "english": "English",
+      "spanish": "Español"
+    }
+  },
+  "video": {
+    "title": "Video de Papá Noel",
+    "subtitle": "Regala a tus seres queridos un video único, con nombre y foto. Crea recuerdos mágicos que acercan y unen. Papá Noel dirá el nombre de la persona, verá las fotos que agregaste e incluso leerá el mensaje que escribiste.",
+    "badge": "Nuevo 2025",
+    "muteButton": "Activar sonido",
+    "unmuteButton": "Desactivar sonido",
+    "videoNotSupported": "Tu navegador no soporta el elemento de video.",
+    "createVideo": "Crear video",
+    "features": {
+      "newVideo": {
+        "title": "Nuevo video para 2025",
+        "description": "Más realista y con calidad cinematográfica"
+      },
+      "personalization": "Añade nombre y foto",
+      "quality": "Calidad cinematográfica",
+      "comment": "Añade tu propio comentario",
+      "fastOrder": "Pedido rápido en 2 minutos",
+      "delivery": {
+        "title": "Entrega en hasta 2 horas",
+        "description": "Recibe vía WhatsApp o email"
+      }
+    }
+  },
+  "productCarousel": {
+    "title": "Más Vendidos",
+    "productTitle": "Video Personalizado de Papá Noel",
+    "price": "$12.99",
+    "originalPrice": "$18.99",
+    "discount": "-29%",
+    "description": "Video personalizado con el nombre del niño y mensaje especial",
+    "features": [
+      "Nombre personalizado",
+      "Mensaje único",
+      "Calidad HD",
+      "Entrega en hasta 24h"
+    ],
+    "createVideo": "Crear video"
+   },
+   "calendar": {
+    "badge": "GRATIS",
+    "title": "Calendario de Adviento",
+    "description": "¡Diviértete mientras esperas la llegada de la Navidad con nuestro Calendario de Adviento! Es gratuito. ¡Personaliza, añade una foto, imprime y disfruta la cuenta regresiva con tu familia!",
+    "features": [
+      "Nuevo calendario 2025",
+      "Descarga gratuita",
+      "Personalizable",
+      "Imprímelo tú mismo"
+    ],
+    "ctaButton": "Más"
+  },
+  "reviewCards": {
+    "title": "Más de 40.000 familias satisfechas",
+    "subtitle": "Mira lo que dicen nuestros clientes sobre nosotros",
+    "reviewsText": "de {count} reseñas",
+    "platformText": "en {platform}",
+    "platforms": {
+      "trustpilot": "Trustpilot",
+      "elfi": "Elfi Santa",
+      "facebook": "Facebook"
+    }
+  },
+  "expertSection": {
+    "badge": "Evaluación de Especialista",
+    "title": "Recomendado por Psicólogos",
+    "subtitle": "Nuestros videos están desarrollados basándose en principios psicológicos que promueven el desarrollo saludable de la autoestima infantil.",
+    "expertName": "Eva Brozyna",
+    "expertTitle": "Psicóloga",
+    "expertCredentials": "Psicoterapeuta Gestalt Certificada",
+    "testimonial": {
+      "paragraph1": "En los videos, los niños son tratados con genuino respeto e importancia. Papá Noel les habla de forma respetuosa y muestra que sabe mucho sobre sus logros y actitudes que necesitan mejorar.",
+      "paragraph2": "Esta atención personalizada hace que los niños se sientan verdaderamente importantes y notados. Reconocer y reflexionar sobre sus esfuerzos es esencial para que se valoren, lo que más tarde contribuye a un sentido saludable de autoestima.",
+      "paragraph3": "Papá Noel elogia de forma indirecta, diciendo cosas como 'puedes estar orgulloso de ti mismo', lo que ayuda a los niños a desarrollar motivación interna.",
+      "paragraph4": "Me gustan los videos, no solo por la alegría que traen a los niños y las memorias que crean para las familias. También contribuyen al desarrollo del niño al hacerlos sentir vistos y aceptados como son, lo que puede aumentar su confianza. ¡Los recomiendo mucho!"
+    },
+    "professionalRating": "Evaluación Profesional",
+    "ctaTitle": "Invierte en el desarrollo saludable de tu hijo",
+    "ctaSubtitle": "Más que un regalo, es una herramienta de desarrollo emocional aprobada por especialistas.",
+    "ctaButton": "Crear video ahora",
+    "ctaDisclaimer": "* Recomendado por psicólogos • Desarrollo saludable • Memorias para toda la vida"
+  },
+  "charitySection": {
+    "institutionLabel": "Institución Beneficiada",
+    "title": "Esparciendo bondad",
+    "description": "Envía un video y ayuda al Hospital GRAACC a brindar tratamiento a niños y adolescentes con cáncer. Gracias a ti, hemos recaudado y donado R$ 123.000 a varias instituciones alrededor del mundo.",
+    "ctaButton": "Más ›"
+  },
+  "testimonials": {
+    "title": "#CreandoSonrisas",
+    "subtitle": "Únete a 450,000 ayudantes de Papá Noel",
+    "description": "Es probablemente la mejor sorpresa navideña, y abajo puedes ver a sus pequeños grandes destinatarios. Crea un mensaje de Papá Noel ahora y trae un poco de magia a esta Navidad.",
+    "testimonial1": {
+      "name": "María García",
+      "location": "Madrid, España",
+      "comment": "¡Mi hija lo adoró! No podía creer que Papá Noel conociera su nombre y su juguete favorito. ¡Fue mágico!"
+    },
+    "testimonial2": {
+      "name": "Carlos Rodríguez",
+      "location": "Barcelona, España",
+      "comment": "El mejor regalo navideño que he dado. La calidad es increíble y la personalización es perfecta."
+    },
+    "testimonial3": {
+      "name": "Ana López",
+      "location": "Valencia, España",
+      "comment": "¡Increíble! Mis hijos vieron el video una y otra vez. Papá Noel realmente parecía conocerlos personalmente."
+    },
+    "testimonial4": {
+      "name": "José Martín",
+      "location": "Sevilla, España",
+      "comment": "Servicio fantástico! El video llegó rápidamente y la calidad superó las expectativas. ¡Los niños lo adoraron!"
+    }
+  },
+  "faq": {
+    "items": [
+      {
+        "title": "Descarga gratuita",
+        "description": "Calendario de Adviento, Cartas para Papá Noel, Fondos de Pantalla Elfo."
+      },
+      {
+        "title": "Tienes 180 días para solicitar el reembolso del valor pagado",
+        "description": "Compra libremente y devuelve en cualquier momento. Sin ninguna justificación."
+      },
+      {
+        "title": "Aprobado por los padres",
+        "description": "60.671 consumidores satisfechos."
+      },
+      {
+        "title": "Métodos de pago",
+        "description": "Ve todas las formas de pago."
+      }
+    ]
+  },
+  "howToOrder": {
+    "title": "¿Cómo pedir?",
+    "steps": [
+      {
+        "title": "Guión",
+        "description": "Elige un modelo de video"
+      },
+      {
+        "title": "Personalización",
+        "description": "Personaliza tu video en 5 minutos (nombre, fotos, etc.)"
+      },
+      {
+        "title": "Sorpresa",
+        "description": "Encanta a los niños y lleva la inolvidable atmósfera navideña a tu hogar."
+      }
+    ]
+  },
+  "floatingCarousel": {
+    "cards": [
+      {
+        "title": "Entrega desde",
+        "subtitle": "1 hora"
+      },
+      {
+        "title": "Nota 4,7",
+        "subtitle": "de 1409 comentarios"
+      },
+      {
+        "title": "Personalización",
+        "subtitle": "¡Para hasta 3 niños!"
+      },
+      {
+        "title": "Ayuda a los niños",
+        "subtitle": "Donamos 30% del valor"
+      }
+    ]
+  },
+  "floatingCarousel2": {
+    "text": "Lleva la magia de la Navidad a tu hogar",
+    "magicPhrase": "magia de la Navidad"
+  },
+  "descontoCard": {
+    "title": "Descuento -20%",
+    "description": "📕 ¡20% de descuento en TODO!",
+    "code": "LIBRO",
+    "validUntil": "28.10",
+    "buttonText": "Comprar ahora",
+    "imageAlt": "Descuento de Navidad",
+    "codeLabel": "Código",
+    "validUntilDate": "28.10"
+  },
+  "redirectPages": {
+    "notFound": "Página no encontrada",
+    "redirecting": "Redirigiendo...",
+    "redirectingToPersonalization": "Redirigiendo a personalización..."
+  },
+  "christmasSpirit": {
+    "title": "Lleva el espíritu navideño a quienes amas.",
+    "subtitle": "Únete a más de 30.000 clientes satisfechos."
+  },
+  "promoBanner": {
+    "message": "🍂 Descuento de primavera ya disponible - ¡20% en TODO! 🍂 válido hasta 23.10 Código: PUMPKINBR"
+  },
+  "socialCarousel": {
+    "title": "#GenerandoSonrisas",
+    "joinCustomers": "Únete a 450,000 clientes",
+    "description": {
+      "part1": "Es probablemente la mejor sorpresa de Navidad, y abajo puedes ver a sus pequeños grandes destinatarios. Crea",
+      "link": "un mensaje de Papá Noel",
+      "part2": "ahora y trae un poco de magia a la Navidad de este año."
+    },
+    "followInstagram": "Sigue a Elfi en Instagram"
+  },
+  "thankYouLastLink": {
+    "processing": "Procesando tu pedido...",
+    "logoAlt": "Mensajes de Papá Noel",
+    "title": "🎉 ¡Pedido Confirmado!",
+    "thankYou": "Gracias",
+    "orderProcessed": "¡Tu pedido ha sido procesado exitosamente! 🎅",
+    "personalizedMessages": "Los mensajes personalizados para",
+    "child": "niño",
+    "children": "niños",
+    "beingPrepared": "están siendo preparados con mucho cariño.",
+    "orderDetails": "Detalles del Pedido",
+    "orderNumber": "Número de Pedido:",
+    "totalAmount": "Monto Total:",
+    "sessionId": "ID de Sesión:",
+    "nextSteps": "📧 Próximos Pasos",
+    "step1": "Recibirás un email de confirmación en unos minutos",
+    "step2": "Nuestro equipo comenzará a preparar los mensajes personalizados",
+    "step3": "Recibirás los mensajes por email en un plazo de 24 horas",
+    "shareText": "¡Comparte la magia de la Navidad! 🎄",
+    "whatsappShare": "¡Acabo de hacer mensajes personalizados de Papá Noel! 🎅 Mira:",
+    "backHome": "🏠 Volver al Inicio",
+    "footer": "© 2024 Mensajes de Papá Noel - ¡Esparciendo alegría navideña! 🎅"
+  }
+}

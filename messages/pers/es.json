@@ -1,0 +1,159 @@
+{
+  "title": "Personaliza tu Video de Papá Noel",
+  "subtitle": "¡Crea un video mágico y personalizado en solo 3 pasos simples!",
+  "checkout": {
+    "provider": "Checkout",
+    "currency": "Moneda",
+    "price": "Precio"
+  },
+  "progress": {
+    "step1": "Cantidad de Niños",
+    "step2": "Productos Extras",
+    "step3": "Datos de los Niños y Contacto"
+  },
+  "form": {
+    "childName": "Nombre del Niño",
+    "childNamePlaceholder": "Ingresa el nombre del niño",
+    "childAge": "Edad",
+    "childAgePlaceholder": "Edad del niño",
+    "childBehavior": "Comportamiento",
+    "childBehaviorPlaceholder": "¿Cómo se ha portado el niño este año?",
+    "addChild": "Agregar Niño",
+    "removeChild": "Eliminar",
+    "nextStep": "Siguiente Paso",
+    "previousStep": "Volver",
+    "maxChildren": "Máximo 3 niños",
+    "skip": "Saltar",
+    "finalize": "Finalizar Pedido"
+  },
+  "step1": {
+    "title": "¿Cuántos niños recibirán el video?",
+    "subtitle": "Selecciona la cantidad de niños que recibirán el video personalizado de Papá Noel",
+    "selectQuantity": "Selecciona una cantidad",
+    "options": {
+      "one": {
+        "title": "1 Niño",
+        "description": "Video personalizado para un niño especial"
+      },
+      "two": {
+        "title": "2 Niños", 
+        "description": "Video personalizado para dos niños"
+      },
+      "three": {
+        "title": "3 Niños",
+        "description": "Video personalizado para tres niños"
+      }
+    }
+  },
+  "step3": {
+    "title": "Datos de los Niños y Contacto",
+    "subtitle": "Completa los datos de los niños y tu información de contacto",
+    "childTitle": "Niño",
+    "namePlaceholder": "Ingresa el nombre del niño",
+    "behaviorGood": "Se portó bien",
+    "behaviorNaughty": "Fue travieso(a)",
+    "years": "años",
+    "childPhoto": "Foto del Niño",
+    "personalMessage": "Mensaje Personalizado",
+    "messagePlaceholder": "Escribe un mensaje especial para que Papá Noel incluya en el video...",
+    "contactInfo": "Información de Contacto",
+    "validation": {
+      "nameRequired": "El nombre del niño {index} es obligatorio",
+      "ageRequired": "La edad es obligatoria",
+      "ageInvalid": "La edad del niño {index} debe estar entre 1 y 12 años",
+      "behaviorRequired": "El comportamiento es obligatorio",
+      "minOneChild": "Agrega al menos un niño",
+      "messageRequired": "El mensaje personalizado es obligatorio",
+      "contactNameRequired": "El nombre completo es obligatorio",
+      "contactEmailRequired": "El email es obligatorio",
+      "contactEmailInvalid": "Email inválido",
+      "contactPhoneRequired": "El teléfono es obligatorio",
+      "navigationError": "Error al navegar al siguiente paso"
+    }
+  },
+      "title": "Incluir fotos de los niños en el video",
+      "description": "Agrega fotos de los niños para hacer el video aún más personalizado"
+    },
+    "validation": {
+      "nameRequired": "El nombre del niño {index} es obligatorio",
+      "ageRequired": "La edad es obligatoria",
+      "ageInvalid": "La edad del niño {index} debe estar entre 1 y 12 años",
+      "behaviorRequired": "El comportamiento es obligatorio",
+      "minOneChild": "Agrega al menos un niño",
+      "messageRequired": "El mensaje personalizado es obligatorio",
+      "navigationError": "Error al navegar al siguiente paso"
+    }
+  },
+  "step2": {
+    "title": "Productos Extras",
+    "subtitle": "Haz la experiencia aún más especial con nuestros productos adicionales",
+    "orderBumps": {
+      "title": "Productos Extras",
+      "description": "Haz la experiencia aún más especial con nuestros productos adicionales"
+    },
+    "noProducts": "No hay productos extras disponibles en este momento",
+    "total": "Total",
+    "selected": "seleccionado(s)",
+    "orderSummary": "Resumen del Pedido",
+    "baseVideo": "Video Personalizado"
+  },
+  "step3": {
+    "title": "Información de Contacto",
+    "subtitle": "Completa tu pedido con tu información de contacto y entrega",
+    "contact": {
+      "name": "Nombre Completo",
+      "namePlaceholder": "Tu nombre completo",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "(11) 99999-9999"
+    },
+    "address": {
+      "street": "Dirección",
+      "streetPlaceholder": "Calle, número",
+      "city": "Ciudad",
+      "cityPlaceholder": "Tu ciudad",
+      "state": "Estado",
+      "statePlaceholder": "SP",
+      "zipCode": "Código Postal",
+      "zipCodePlaceholder": "00000-000"
+    },
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "emailInvalid": "Correo electrónico inválido",
+      "phoneRequired": "El teléfono es obligatorio",
+      "streetRequired": "La dirección es obligatoria",
+      "cityRequired": "La ciudad es obligatoria",
+      "stateRequired": "El estado es obligatorio",
+      "zipCodeRequired": "El código postal es obligatorio"
+    },
+    "summary": {
+      "title": "Resumen del Pedido",
+      "children": "Niños",
+      "extras": "Productos Extras",
+      "total": "Total"
+    }
+  },
+  "tip": {
+    "title": "💡 Consejo",
+    "content": "¡Cuantos más detalles proporciones, más personalizado será el video de Papá Noel!"
+  },
+  "navigation": {
+    "continue": "Continuar"
+  },
+  "features": {
+    "personalizedVideo": {
+      "title": "Video Personalizado",
+      "description": "Papá Noel dice el nombre de cada niño"
+    },
+    "fastDelivery": {
+      "title": "Entrega Rápida",
+      "description": "Recibe en 24 horas"
+    },
+    "magicGuaranteed": {
+      "title": "Magia Garantizada",
+      "description": "100% satisfacción o te devolvemos tu dinero"
+    }
+  }
+}

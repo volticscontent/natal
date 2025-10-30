@@ -1,0 +1,372 @@
+{
+  "countryDetection": {
+    "title": "Detectamos seu país!",
+    "subtitle": "Confirme para uma melhor experiência",
+    "detectedMessage": "Detectamos que você está navegando do(a) {{country}}",
+    "confirmButton": "Sim, está correto!",
+    "changeButton": "Alterar país/idioma",
+    "infoMessage": "Você pode alterar o idioma a qualquer momento no menu superior"
+  },
+  "hero": {
+    "title": "Espalhe alegria infantil",
+    "subtitle": "Vídeo personalizado do Papai Noel para sua criança.",
+    "createVideo": "Criar vídeo",
+    "watchVideo": "Veja o vídeo",
+    "rating": "4,7 de 1409 comentários",
+    "brandName": "Elfi"
+  },
+  "features": {
+    "customize": "Personalize o vídeo em 5 minutos",
+    "rating": "Nota 4,7 de 1405 comentários",
+    "delivery": "Entrega a partir de 2 horas",
+    "support": "Nós apoiamos o Hospital do GRAACC",
+    "guarantee": "Você tem 180 dias para devolução gratuita",
+    "surprise": "Surpresa de natal para uma criança querida"
+  },
+  "product": {
+    "title": "Vídeo do Papai Noel",
+    "description": "Presenteie quem você ama com um vídeo único, com nome e foto. Crie memórias mágicas que aproximam e unem. O Papai Noel vai dizer o nome da pessoa, ver as fotos que você adicionou e até ler a mensagem que você escreveu.",
+    "price": "R$ 49,99",
+    "videoTitle": "Vídeo Personalizado",
+    "clickToWatch": "Clique para assistir",
+    "features": {
+      "new2025": "Vídeo e ligação inéditos 2025",
+      "personalization": "Personalização incomparável",
+      "quality": "Qualidade cinematográfica",
+      "comment": "Adicione seu próprio comentário",
+      "quickOrder": "Encomenda rápida: menos de 5 minutos",
+      "fastDelivery": "Entrega no seu e-mail em até 2 horas"
+    }
+  },
+  "calendar": {
+    "title": "Mais de 40.000 famílias satisfeitas",
+    "description": "Divirta-se enquanto espera a chegada do Natal com o nosso Calendário do Advento! Ele é gratuito. Personalize, adicione uma foto, imprima e curta a contagem regressiva com a sua família!",
+    "freeLabel": "GRÁTIS",
+    "downloadButton": "Baixar Calendário Grátis 📅",
+    "features": {
+      "new2025": "Novo calendário 2025",
+      "free": "Download gratuito",
+      "customizable": "Personalizável",
+      "printable": "Imprima você mesmo"
+    }
+  },
+  "testimonials": {
+    "title": "#GerandoSorrisos",
+    "subtitle": "Junte-se a mais de 40.000 clientes satisfeitos",
+    "description": "É provavelmente a melhor surpresa do Natal, e abaixo você pode ver seus pequenos grandes destinatários. Crie uma mensagem do Papai Noel agora e traga um pouco de magia para o Natal deste ano."
+  },
+  "expert": {
+    "author": "Eva Brozyna",
+    "credentials": "Psicóloga, psicoterapeuta Gestalt certificada",
+    "quote": "Os vídeos da Elfi trazem alegria e criam lembranças maravilhosas para toda a família. Eles fazem às crianças se sentirem vistas e aceitas como são, ao mesmo tempo que fortalecem a sua autoconfiança.",
+    "title": "Avaliação de especialistas",
+    "subtitle": "Diversão e desenvolvimento.",
+    "badges": {
+      "psychologist": "Psicóloga",
+      "psychotherapist": "Psicoterapeuta"
+    },
+    "benefits": {
+      "cognitive": {
+        "title": "Desenvolvimento Cognitivo",
+        "description": "Estimula a imaginação e criatividade"
+      },
+      "family": {
+        "title": "Vínculos Familiares",
+        "description": "Fortalece laços entre pais e filhos"
+      },
+      "selfEsteem": {
+        "title": "Autoestima",
+        "description": "Aumenta a confiança e autoconceito"
+      }
+    }
+  },
+  "charity": {
+    "title": "Espalhando bondade",
+    "description": "Envie um vídeo e ajude o Hospital do GRAACC a oferecer tratamento à crianças e adolescentes com câncer.",
+    "amount": "Graças a você, arrecadamos e doamos R$ 123 000 para várias instituições ao redor do mundo.",
+    "socialSupport": "APOIO SOCIAL",
+    "hospitalName": "Hospital GRAACC",
+    "hospitalDesc": "Cada vídeo vendido contribui para o tratamento de crianças e adolescentes com câncer. Juntos, fazemos a diferença na vida de quem mais precisa.",
+    "amountDesc": "Valor arrecadado e doado para instituições ao redor do mundo",
+    "makingDifference": "Fazendo a Diferença",
+    "helpTreatment": "Sua compra ajuda no tratamento de crianças com câncer",
+    "joinChain": "Seja Parte Desta Corrente do Bem",
+    "chainDesc": "Ao criar um vídeo personalizado, você não apenas traz alegria para sua família, mas também ajuda outras crianças a sorrirem.",
+    "createAndHelp": "Criar Vídeo e Ajudar 💝",
+    "certifications": {
+      "certified": "Certificado",
+      "partnership": "Parceria", 
+      "transparency": "Transparência",
+      "impact": "Impacto"
+    }
+  },
+  "footer": {
+    "heroText": "Criamos memórias, não produtos. Sinta a magia do Natal em sua casa e forme laços que resistem ao tempo.",
+    "logoAlt": "Elfi Logo",
+    "newsletter": {
+      "title": "Inscreva-se na Newsletter da Elfi",
+      "placeholder": "Seu endereço de e-mail...",
+      "button": "Adicionar",
+      "privacyPolicy": "Política de Dados da Elfi"
+    },
+    "products": {
+      "title": "Produtos",
+      "santaVideo": "Vídeo do Papai Noel",
+      "free": "Grátis",
+      "adventCalendar": "Calendário do Advento",
+      "reviews": "Avaliações",
+      "priceList": "Lista de Preços"
+    },
+    "copyright": "Feito com alegria por Papai Noel e seus duendes",
+    "brandName": "Recadinhos do Papai Noel",
+    "support": "Suporte",
+    "prices": "Preços",
+    "helpCenter": "Central de Ajuda",
+    "contact": "Contato",
+    "returns": "Devoluções",
+    "faq": "FAQ"
+  },
+  "socialProof": {
+    "title": "Mais de 40.000 famílias satisfeitas",
+    "subtitle": "Veja o que nossos clientes dizem sobre nós",
+    "reviewsText": "de {totalReviews} avaliações em"
+  },
+  "header": {
+    "brandName": "Recadinhos do Papai Noel",
+    "santaVideo": "Vídeo do Papai Noel",
+    "priceList": "Lista de Preços",
+    "accountLogin": "Conta (Login)",
+    "languages": {
+      "portuguese": "Português",
+      "english": "English",
+      "spanish": "Español"
+    }
+  },
+  "video": {
+    "title": "Vídeo Papai Noel",
+    "subtitle": "Presenteie quem você ama com um vídeo único, com nome e foto. Crie memórias mágicas que aproximam e unem. O Papai Noel vai dizer o nome da pessoa, ver as fotos que você adicionou e até ler a mensagem que você escreveu.",
+    "badge": "Novo 2025",
+    "muteButton": "Ativar som",
+    "unmuteButton": "Desativar som",
+    "videoNotSupported": "Seu navegador não suporta o elemento de vídeo.",
+    "createVideo": "Criar vídeo",
+    "features": {
+      "newVideo": {
+        "title": "Novo vídeo para 2025",
+        "description": "Mais realista e com qualidade cinematográfica"
+      },
+      "personalization": "Adicione nome e foto",
+      "quality": "Qualidade cinematográfica",
+      "comment": "Adicione seu próprio comentário",
+      "fastOrder": "Pedido rápido em 2 minutos",
+      "delivery": {
+        "title": "Entrega em até 2 horas",
+        "description": "Receba via WhatsApp ou email"
+      }
+    }
+  },
+  "productCarousel": {
+    "title": "Mais vendidos",
+    "productTitle": "Vídeo Personalizado do Papai Noel",
+    "price": "R$ 49,99",
+    "originalPrice": "R$ 69,99",
+    "discount": "-29%",
+    "description": "Vídeo personalizado com o nome da criança e mensagem especial",
+    "features": [
+      "Nome personalizado",
+      "Mensagem única",
+      "Qualidade HD",
+      "Entrega em até 24h"
+    ],
+    "createVideo": "Criar vídeo"
+   },
+   "calendar": {
+    "badge": "GRÁTIS",
+    "title": "Calendário do Advento",
+    "description": "Divirta-se enquanto espera a chegada do Natal com o nosso Calendário do Advento! Ele é gratuito. Personalize, adicione uma foto, imprima e curta a contagem regressiva com a sua família!",
+    "features": [
+      "Novo calendário 2025",
+      "Download gratuito",
+      "Personalizável",
+      "Imprima você mesmo"
+    ],
+    "ctaButton": "Mais"
+  },
+  "reviewCards": {
+    "title": "Mais de 40.000 famílias satisfeitas",
+    "subtitle": "Veja o que nossos clientes dizem sobre nós",
+    "reviewsText": "de {count} avaliações",
+    "platformText": "em {platform}",
+    "platforms": {
+      "trustpilot": "Trustpilot",
+      "elfi": "Elfi Santa",
+      "facebook": "Facebook"
+    }
+  },
+  "expertSection": {
+    "badge": "Avaliação de Especialista",
+    "title": "Recomendado por Psicólogos",
+    "subtitle": "Nossos vídeos são desenvolvidos com base em princípios psicológicos que promovem o desenvolvimento saudável da autoestima infantil.",
+    "expertName": "Eva Brozyna",
+    "expertTitle": "Psicóloga",
+    "expertCredentials": "Psicoterapeuta Gestalt Certificada",
+    "testimonial": {
+      "paragraph1": "Nos vídeos, as crianças são tratadas com genuíno respeito e importância. O Papai Noel fala com elas de forma respeitosa e mostra que sabe muito sobre suas conquistas e atitudes que precisam de melhoria.",
+      "paragraph2": "Essa atenção personalizada faz com que as crianças se sintam verdadeiramente importantes e notadas. Reconhecer e refletir sobre seus esforços é essencial para que se valorizem, o que mais tarde contribui para um saudável senso de autoestima.",
+      "paragraph3": "O Papai Noel elogia de forma indireta, dizendo coisas como você pode ter orgulho de si mesmo, o que ajuda as crianças a desenvolverem motivação interna.",
+      "paragraph4": "Eu gosto dos vídeos, não só pela alegria que trazem às crianças e pelas memórias que criam para as famílias. Eles também contribuem para o desenvolvimento da criança ao fazê-las sentir-se vistas e aceitas como são, o que pode aumentar sua confiança. Eu recomendo muito!"
+    },
+    "professionalRating": "Avaliação Profissional",
+    "ctaTitle": "Invista no desenvolvimento saudável do seu filho",
+    "ctaSubtitle": "Mais que um presente, é uma ferramenta de desenvolvimento emocional aprovada por especialistas.",
+    "ctaButton": "Criar vídeo agora",
+    "ctaDisclaimer": "* Recomendado por psicólogos • Desenvolvimento saudável • Memórias para toda vida"
+  },
+  "charitySection": {
+    "institutionLabel": "Instituição Beneficiada",
+    "title": "Espalhando bondade",
+    "description": "Envie um vídeo e ajude o Hospital do GRAACC a oferecer tratamento a crianças e adolescentes com câncer. Graças a você, arrecadamos e doamos R$ 123.000 para várias instituições ao redor do mundo.",
+    "ctaButton": "Mais ›"
+  },
+  "testimonials": {
+    "title": "#GerandoSorrisos",
+    "subtitle": "Junte-se a 450.000 ajudantes do Papai Noel",
+    "description": "É provavelmente a melhor surpresa do Natal, e abaixo você pode ver seus pequenos grandes destinatários. Crie uma mensagem do Papai Noel agora e traga um pouco de magia para o Natal deste ano.",
+    "testimonial1": {
+      "name": "Maria Silva",
+      "location": "São Paulo, BR",
+      "comment": "Minha filha ficou encantada! O vídeo ficou perfeito e ela acredita que o Papai Noel realmente a conhece. Recomendo muito!"
+    },
+    "testimonial2": {
+      "name": "Ana Costa", 
+      "location": "Lisboa, PT",
+      "comment": "Serviço fantástico! O vídeo chegou rapidamente e a qualidade superou as expectativas. As crianças adoraram!"
+    },
+    "testimonial3": {
+      "name": "João Santos",
+      "location": "Rio de Janeiro, BR",
+      "comment": "Incrível! Meus filhos assistiram o vídeo várias vezes. O Papai Noel realmente parecia conhecê-los pessoalmente."
+    },
+    "testimonial4": {
+      "name": "Carla Oliveira",
+      "location": "Porto, PT",
+      "comment": "O melhor presente de Natal que já dei. A qualidade é incrível e a personalização é perfeita."
+    }
+  },
+  "faq": {
+    "items": [
+      {
+        "title": "Baixe gratuitamente",
+        "description": "Calendário do Advento, Cartas para Papai Noel, Papéis de Parede Elfi."
+      },
+      {
+        "title": "Você tem 180 dias para solicitar o reembolso do valor pago",
+        "description": "Comprar livremente e devolver a qualquer momento. Sem qualquer justificativa."
+      },
+      {
+        "title": "Aprovado pelos pais",
+        "description": "60.671 consumidores satisfeitos."
+      },
+      {
+        "title": "Métodos de pagamento",
+        "description": "Veja todas as formas de pagamento."
+      }
+    ]
+  },
+  "howToOrder": {
+    "title": "Como pedir?",
+    "steps": [
+      {
+        "title": "Roteiro",
+        "description": "Escolha um modelo de vídeo"
+      },
+      {
+        "title": "Personalização",
+        "description": "Personalize seu vídeo em 5 minutos (nome, fotos, etc.)"
+      },
+      {
+        "title": "Surpresa",
+        "description": "Encante a criançada e leve a inesquecível atmosfera natalina para seu lar."
+      }
+    ]
+  },
+  "floatingCarousel": {
+    "cards": [
+      {
+        "title": "Entrega à partir",
+        "subtitle": "de 1 hora"
+      },
+      {
+        "title": "Nota 4,7",
+        "subtitle": "de 1409 comentários"
+      },
+      {
+        "title": "Personalização",
+        "subtitle": "Para até 3 crianças!"
+      },
+      {
+        "title": "Ajude as crianças",
+        "subtitle": "Doamos 30% do valor"
+      }
+    ]
+  },
+  "floatingCarousel2": {
+    "text": "Leve a magia do Natal para seu lar",
+    "magicPhrase": "magia do Natal"
+  },
+  "descontoCard": {
+    "title": "Desconto -20%",
+    "description": "📕 20% de desconto em TUDO!",
+    "code": "LIVRO",
+    "validUntil": "28.10",
+    "buttonText": "Compre agora",
+    "imageAlt": "Desconto de Natal",
+    "codeLabel": "Código",
+    "validUntilDate": "28.10"
+  },
+  "redirectPages": {
+    "notFound": "Página não encontrada",
+    "redirecting": "Redirecionando...",
+    "redirectingToPersonalization": "Redirecionando para personalização..."
+  },
+  "christmasSpirit": {
+    "title": "Leve o espírito natalino para quem você ama.",
+    "subtitle": "Junte-se à mais de 30.000 clientes satisfeitos."
+  },
+  "promoBanner": {
+    "message": "🍂 Desconto de primavera já disponível - 20% em TODO! 🍂 válido até 23.10 Código: PUMPKINBR"
+  },
+  "socialCarousel": {
+    "title": "#GerandoSorrisos",
+    "joinCustomers": "Junte-se a 450.000 clientes",
+    "description": {
+      "part1": "É provavelmente a melhor surpresa do Natal, e abaixo você pode ver seus pequenos grandes destinatários. Crie",
+      "link": "um recadinho do Papai Noel",
+      "part2": "agora e traga um pouco de magia para o Natal deste ano."
+    },
+    "followInstagram": "Siga Elfi no Instagram"
+  },
+  "thankYouLastLink": {
+    "processing": "Processando seu pedido...",
+    "logoAlt": "Recadinhos do Papai Noel",
+    "title": "🎉 Pedido Confirmado!",
+    "thankYou": "Obrigado",
+    "orderProcessed": "Seu pedido foi processado com sucesso! 🎅",
+    "personalizedMessages": "Os recadinhos personalizados para",
+    "child": "criança",
+    "children": "crianças",
+    "beingPrepared": "estão sendo preparados com muito carinho.",
+    "orderDetails": "Detalhes do Pedido",
+    "orderNumber": "Número do Pedido:",
+    "totalAmount": "Valor Total:",
+    "sessionId": "ID da Sessão:",
+    "nextSteps": "📧 Próximos Passos",
+    "step1": "Você receberá um e-mail de confirmação em alguns minutos",
+    "step2": "Nossa equipe começará a preparar os recadinhos personalizados",
+    "step3": "Você receberá os recadinhos por e-mail em até 24 horas",
+    "shareText": "Compartilhe a magia do Natal! 🎄",
+    "whatsappShare": "Acabei de fazer recadinhos personalizados do Papai Noel! 🎅 Confira:",
+    "backHome": "🏠 Voltar ao Início",
+    "footer": "© 2024 Recadinhos do Papai Noel - Espalhando alegria natalina! 🎅"
+  }
+}

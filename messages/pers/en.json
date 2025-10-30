@@ -1,0 +1,146 @@
+{
+  "title": "Personalize your Santa Video",
+  "subtitle": "Create a magical and personalized video in just 3 simple steps!",
+  "checkout": {
+    "provider": "Checkout",
+    "currency": "Currency",
+    "price": "Price"
+  },
+  "progress": {
+    "step1": "Number of Children",
+    "step2": "Extra Products",
+    "step3": "Children's Data and Contact"
+  },
+  "form": {
+    "childName": "Child's Name",
+    "childNamePlaceholder": "Enter child's name",
+    "childAge": "Age",
+    "childAgePlaceholder": "Child's age",
+    "childBehavior": "Behavior",
+    "childBehaviorPlaceholder": "How has the child behaved this year?",
+    "addChild": "Add Child",
+    "removeChild": "Remove",
+    "nextStep": "Next Step",
+    "previousStep": "Back",
+    "maxChildren": "Maximum 3 children",
+    "skip": "Skip",
+    "finalize": "Finalize Order"
+  },
+  "step1": {
+    "title": "How many children will receive the video?",
+    "subtitle": "Select the number of children who will receive the personalized Santa video",
+    "selectQuantity": "Select a quantity",
+    "options": {
+      "one": {
+        "title": "1 Child",
+        "description": "Personalized video for one special child"
+      },
+      "two": {
+        "title": "2 Children", 
+        "description": "Personalized video for two children"
+      },
+      "three": {
+        "title": "3 Children",
+        "description": "Personalized video for three children"
+      }
+    }
+  },
+  "step3": {
+    "title": "Children's Data and Contact",
+    "subtitle": "Fill in the children's information and your contact details",
+    "childTitle": "Child",
+    "namePlaceholder": "Enter the child's name",
+    "behaviorGood": "Well-behaved",
+    "behaviorNaughty": "Naughty",
+    "years": "years",
+    "childPhoto": "Child's Photo",
+    "personalMessage": "Personal Message",
+    "messagePlaceholder": "Type a special message for Santa to include in the video...",
+    "contactInfo": "Contact Information",
+    "validation": {
+      "nameRequired": "Child {index} name is required",
+      "ageRequired": "Age is required",
+      "ageInvalid": "Child {index} age must be between 1 and 12 years",
+      "behaviorRequired": "Behavior is required",
+      "minOneChild": "Add at least one child",
+      "messageRequired": "Personal message is required",
+      "contactNameRequired": "Full name is required",
+      "contactEmailRequired": "Email is required",
+      "contactEmailInvalid": "Invalid email",
+      "contactPhoneRequired": "Phone is required",
+      "navigationError": "Error navigating to next step"
+    }
+  },
+  "step2": {
+    "title": "Extra Products",
+    "subtitle": "Make the experience even more special with our additional products",
+    "orderBumps": {
+      "title": "Extra Products",
+      "description": "Make the experience even more special with our additional products"
+    },
+    "noProducts": "No extra products available at the moment",
+    "total": "Total",
+    "selected": "selected",
+    "orderSummary": "Order Summary",
+    "baseVideo": "Personalized Video"
+  },
+  "step3": {
+    "title": "Contact Information",
+    "subtitle": "Complete your order with your contact and delivery information",
+    "contact": {
+      "name": "Full Name",
+      "namePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone",
+      "phonePlaceholder": "(11) 99999-9999"
+    },
+    "address": {
+      "street": "Address",
+      "streetPlaceholder": "Street, number",
+      "city": "City",
+      "cityPlaceholder": "Your city",
+      "state": "State",
+      "statePlaceholder": "SP",
+      "zipCode": "ZIP Code",
+      "zipCodePlaceholder": "00000-000"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "phoneRequired": "Phone is required",
+      "streetRequired": "Address is required",
+      "cityRequired": "City is required",
+      "stateRequired": "State is required",
+      "zipCodeRequired": "ZIP Code is required"
+    },
+    "summary": {
+      "title": "Order Summary",
+      "children": "Children",
+      "extras": "Extra Products",
+      "total": "Total"
+    }
+  },
+  "tip": {
+    "title": "💡 Tip",
+    "content": "The more details you provide, the more personalized Santa's video will be!"
+  },
+  "navigation": {
+    "continue": "Continue"
+  },
+  "features": {
+    "personalizedVideo": {
+      "title": "Personalized Video",
+      "description": "Santa says each child's name"
+    },
+    "fastDelivery": {
+      "title": "Fast Delivery",
+      "description": "Receive within 24 hours"
+    },
+    "magicGuaranteed": {
+      "title": "Magic Guaranteed",
+      "description": "100% satisfaction or your money back"
+    }
+  }
+}

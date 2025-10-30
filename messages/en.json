@@ -1,0 +1,369 @@
+{
+  "countryDetection": {
+    "title": "We detected your country!",
+    "subtitle": "Confirm for a better experience",
+    "detectedMessage": "We detected that you are browsing from {{country}}",
+    "confirmButton": "Yes, that's correct!",
+    "changeButton": "Change country/language",
+    "infoMessage": "You can change the language anytime in the top menu"
+  },
+  "hero": {
+    "title": "Spread childhood joy",
+    "subtitle": "Personalized Santa Claus video for your child.",
+    "createVideo": "Create video",
+    "watchVideo": "Watch video",
+    "rating": "4.7 out of 1409 comments",
+    "brandName": "Elfi"
+  },
+  "features": {
+    "customize": "Customize video in 5 minutes",
+    "rating": "Rating 4.7 out of 1405 comments",
+    "delivery": "Delivery from 2 hours",
+    "support": "We support GRAACC Hospital",
+    "guarantee": "You have 180 days for free return",
+    "surprise": "Christmas surprise for a dear child"
+  },
+  "product": {
+    "title": "Santa Video",
+    "description": "Gift your loved ones with a unique video, with name and photo. Create magical memories that bring together and unite. Santa will say the person's name, see the photos you added and even read the message you wrote.",
+    "price": "$49.99",
+    "videoTitle": "Personalized Video",
+    "clickToWatch": "Click to watch",
+    "features": {
+      "new2025": "Unprecedented video and call 2025",
+      "personalization": "Incomparable personalization",
+      "quality": "Cinematic quality",
+      "comment": "Add your own comment",
+      "quickOrder": "Quick order: less than 5 minutes",
+      "fastDelivery": "Delivery to your email in up to 2 hours"
+    }
+  },
+  "calendar": {
+    "title": "FREE Advent Calendar",
+    "description": "Have fun while waiting for Christmas to arrive with our Advent Calendar! It's free. Customize, add a photo, print and enjoy the countdown with your family!",
+    "freeLabel": "FREE",
+    "downloadButton": "Download Free Calendar 📅",
+    "features": {
+      "new2025": "New 2025 calendar",
+      "free": "Free download",
+      "customizable": "Customizable",
+      "printable": "Print yourself"
+    }
+  },
+  "testimonials": {
+    "title": "#CreatingSmiles",
+    "subtitle": "Join 450,000 Santa's helpers",
+    "description": "It's probably the best Christmas surprise, and below you can see their little big recipients. Create a Santa message now and bring some magic to this year's Christmas."
+  },
+  "expert": {
+    "quote": "Elfi's videos bring joy and create wonderful memories for the whole family. They make children feel seen and accepted as they are, while strengthening their self-confidence.",
+    "title": "Expert evaluation",
+    "subtitle": "Fun and development.",
+    "author": "Eva Brozyna",
+    "credentials": "Psychologist, certified Gestalt psychotherapist",
+    "badges": {
+      "psychologist": "Psychologist",
+      "psychotherapist": "Psychotherapist"
+    },
+    "benefits": {
+      "cognitive": {
+        "title": "Cognitive Development",
+        "description": "Stimulates imagination and creativity"
+      },
+      "family": {
+        "title": "Family Bonds",
+        "description": "Strengthens bonds between parents and children"
+      },
+      "selfEsteem": {
+        "title": "Self-esteem",
+        "description": "Increases confidence and self-concept"
+      }
+    }
+  },
+  "charity": {
+    "title": "Spreading kindness",
+    "description": "Send a video and help GRAACC Hospital provide treatment to children and adolescents with cancer.",
+    "amount": "Thanks to you, we raised and donated $123,000 to various institutions around the world.",
+    "socialSupport": "SOCIAL SUPPORT",
+    "hospitalName": "GRAACC Hospital",
+    "hospitalDesc": "Each video sold contributes to the treatment of children and adolescents with cancer. Together, we make a difference in the lives of those who need it most.",
+    "amountDesc": "Amount raised and donated to institutions around the world",
+    "makingDifference": "Making a Difference",
+    "helpTreatment": "Your purchase helps in the treatment of children with cancer",
+    "joinChain": "Be Part of This Chain of Good",
+    "chainDesc": "By creating a personalized video, you not only bring joy to your family, but also help other children smile.",
+    "createAndHelp": "Create Video and Help 💝",
+    "certifications": {
+      "certified": "Certified",
+      "partnership": "Partnership",
+      "transparency": "Transparency",
+      "impact": "Impact"
+    }
+  },
+  "footer": {
+    "heroText": "We create memories, not products. Feel the magic of Christmas in your home and form bonds that stand the test of time.",
+    "logoAlt": "Elfi Logo",
+    "newsletter": {
+      "title": "Subscribe to Elfi's Newsletter",
+      "placeholder": "Your email address...",
+      "button": "Add",
+      "privacyPolicy": "Elfi's Data Policy"
+    },
+    "products": {
+      "title": "Products",
+      "santaVideo": "Santa Video",
+      "free": "Free",
+      "adventCalendar": "Advent Calendar",
+      "reviews": "Reviews",
+      "priceList": "Price List"
+    },
+    "copyright": "Made with joy by Santa and his elves",
+    "brandName": "Santa's Messages",
+    "support": "Support",
+    "prices": "Prices",
+    "helpCenter": "Help Center",
+    "contact": "Contact",
+    "returns": "Returns",
+    "faq": "FAQ"
+  },
+  "socialProof": {
+    "title": "More than 40,000 satisfied families",
+    "subtitle": "See what our customers say about us",
+    "reviewsText": "out of {totalReviews} reviews on"
+  },
+  "header": {
+    "brandName": "Santa's Messages",
+    "santaVideo": "Santa Video",
+    "priceList": "Price List",
+    "accountLogin": "Account (Login)",
+    "languages": {
+      "portuguese": "Português",
+      "english": "English",
+      "spanish": "Español"
+    }
+  },
+  "video": {
+    "title": "Santa Video",
+    "subtitle": "Gift your loved ones with a unique video, with name and photo. Create magical memories that bring people closer together. Santa will say the person's name, see the photos you added, and even read the message you wrote.",
+    "badge": "New 2025",
+    "muteButton": "Turn on sound",
+    "unmuteButton": "Turn off sound",
+    "videoNotSupported": "Your browser does not support the video element.",
+    "createVideo": "Create video",
+    "features": {
+      "newVideo": {
+        "title": "New video for 2025",
+        "description": "More realistic and with cinematic quality"
+      },
+      "personalization": "Add name and photo",
+      "quality": "Cinematic quality",
+      "comment": "Add your own comment",
+      "fastOrder": "Quick order in 2 minutes",
+      "delivery": {
+        "title": "Delivery in up to 2 hours",
+        "description": "Receive via WhatsApp or email"
+      }
+    }
+  },
+  "productCarousel": {
+    "title": "Best Sellers",
+    "productTitle": "Personalized Santa Video",
+    "price": "$12.99",
+    "originalPrice": "$18.99",
+    "discount": "-29%",
+    "description": "Personalized video with child's name and special message",
+    "features": [
+      "Personalized name",
+      "Unique message",
+      "HD quality",
+      "Delivery within 24h"
+    ],
+    "createVideo": "Create video"
+   },
+   "calendar": {
+    "badge": "FREE",
+    "title": "Advent Calendar",
+    "description": "Have fun while waiting for Christmas with our Advent Calendar! It's free. Customize, add a photo, print and enjoy the countdown with your family!",
+    "features": [
+      "New 2025 calendar",
+      "Free download",
+      "Customizable",
+      "Print it yourself"
+    ],
+    "ctaButton": "More"
+  },
+  "reviewCards": {
+    "title": "More than 40,000 satisfied families",
+    "subtitle": "See what our customers say about us",
+    "reviewsText": "out of {count} reviews",
+    "platformText": "on {platform}",
+    "platforms": {
+      "trustpilot": "Trustpilot",
+      "elfi": "Elfi Santa",
+      "facebook": "Facebook"
+    }
+  },
+  "expertSection": {
+    "badge": "Expert Evaluation",
+    "title": "Recommended by Psychologists",
+    "subtitle": "Our videos are developed based on psychological principles that promote healthy development of children's self-esteem.",
+    "expertName": "Eva Brozyna",
+    "expertTitle": "Psychologist",
+    "expertCredentials": "Certified Gestalt Psychotherapist",
+    "testimonial": {
+      "paragraph1": "In the videos, children are treated with genuine respect and importance. Santa Claus speaks to them respectfully and shows that he knows a lot about their achievements and attitudes that need improvement.",
+      "paragraph2": "This personalized attention makes children feel truly important and noticed. Recognizing and reflecting on their efforts is essential for them to value themselves, which later contributes to a healthy sense of self-esteem.",
+      "paragraph3": "Santa Claus praises indirectly, saying things like 'you can be proud of yourself,' which helps children develop internal motivation.",
+      "paragraph4": "I like the videos, not only for the joy they bring to children and the memories they create for families. They also contribute to the child's development by making them feel seen and accepted as they are, which can increase their confidence. I highly recommend them!"
+    },
+    "professionalRating": "Professional Rating",
+    "ctaTitle": "Invest in your child's healthy development",
+    "ctaSubtitle": "More than a gift, it's an emotional development tool approved by specialists.",
+    "ctaButton": "Create video now",
+    "ctaDisclaimer": "* Recommended by psychologists • Healthy development • Memories for a lifetime"
+  },
+  "charitySection": {
+    "institutionLabel": "Benefited Institution",
+    "title": "Spreading kindness",
+    "description": "Send a video and help GRAACC Hospital provide treatment to children and adolescents with cancer. Thanks to you, we have raised and donated R$ 123,000 to various institutions around the world.",
+    "ctaButton": "More ›"
+  },
+  "testimonials": {
+    "title": "#CreatingSmiles",
+    "subtitle": "Join 450,000 Santa's helpers",
+    "description": "It's probably the best Christmas surprise, and below you can see their little big recipients. Create a Santa message now and bring some magic to this year's Christmas.",
+    "items": [
+      {
+        "name": "Maria Silva",
+        "location": "São Paulo, Brazil",
+        "comment": "My daughter loved it! She couldn't believe Santa knew her name and favorite toy. It was magical!"
+      },
+      {
+        "name": "Carlos Rodriguez",
+        "location": "Madrid, Spain",
+        "comment": "The best Christmas gift I've ever given. The quality is incredible and the personalization is perfect."
+      },
+      {
+        "name": "Jennifer Smith",
+        "location": "New York, USA",
+        "comment": "Amazing! My kids watched the video over and over. Santa really seemed to know them personally."
+      }
+    ]
+  },
+  "faq": {
+    "items": [
+      {
+        "title": "Download for free",
+        "description": "Advent Calendar, Letters to Santa, Elf Wallpapers."
+      },
+      {
+        "title": "You have 180 days to request a refund of the amount paid",
+        "description": "Buy freely and return at any time. Without any justification."
+      },
+      {
+        "title": "Parent approved",
+        "description": "60,671 satisfied consumers."
+      },
+      {
+        "title": "Payment methods",
+        "description": "See all payment options."
+      }
+    ]
+  },
+  "howToOrder": {
+    "title": "How to order?",
+    "steps": [
+      {
+        "title": "Script",
+        "description": "Choose a video template"
+      },
+      {
+        "title": "Personalization",
+        "description": "Personalize your video in 5 minutes (name, photos, etc.)"
+      },
+      {
+        "title": "Surprise",
+        "description": "Delight the children and bring the unforgettable Christmas atmosphere to your home."
+      }
+    ]
+  },
+  "floatingCarousel": {
+    "cards": [
+      {
+        "title": "Delivery from",
+        "subtitle": "1 hour"
+      },
+      {
+        "title": "Rating 4.7",
+        "subtitle": "from 1409 reviews"
+      },
+      {
+        "title": "Personalization",
+        "subtitle": "For up to 3 children!"
+      },
+      {
+        "title": "Help children",
+        "subtitle": "We donate 30% of the value"
+      }
+    ]
+  },
+  "floatingCarousel2": {
+    "text": "Bring the magic of Christmas to your home",
+    "magicPhrase": "magic of Christmas"
+  },
+  "descontoCard": {
+    "title": "Discount -20%",
+    "description": "📕 20% discount on EVERYTHING!",
+    "code": "BOOK",
+    "validUntil": "28.10",
+    "buttonText": "Buy now",
+    "imageAlt": "Christmas Discount",
+    "codeLabel": "Code",
+    "validUntilDate": "28.10"
+  },
+  "redirectPages": {
+    "notFound": "Page not found",
+    "redirecting": "Redirecting...",
+    "redirectingToPersonalization": "Redirecting to personalization..."
+  },
+  "christmasSpirit": {
+    "title": "Bring the Christmas spirit to those you love.",
+    "subtitle": "Join over 30,000 satisfied customers."
+  },
+  "promoBanner": {
+    "message": "🍂 Spring discount now available - 20% on EVERYTHING! 🍂 valid until 23.10 Code: PUMPKINBR"
+  },
+  "socialCarousel": {
+    "title": "#GeneratingSmiles",
+    "joinCustomers": "Join 450,000 customers",
+    "description": {
+      "part1": "It's probably the best Christmas surprise, and below you can see their little big recipients. Create",
+      "link": "a message from Santa",
+      "part2": "now and bring some magic to this year's Christmas."
+    },
+    "followInstagram": "Follow Elfi on Instagram"
+  },
+  "thankYouLastLink": {
+    "processing": "Processing your order...",
+    "logoAlt": "Messages from Santa",
+    "title": "🎉 Order Confirmed!",
+    "thankYou": "Thank You",
+    "orderProcessed": "Your order has been successfully processed! 🎅",
+    "personalizedMessages": "The personalized messages for",
+    "child": "child",
+    "children": "children",
+    "beingPrepared": "are being prepared with great care.",
+    "orderDetails": "Order Details",
+    "orderNumber": "Order Number:",
+    "totalAmount": "Total Amount:",
+    "sessionId": "Session ID:",
+    "nextSteps": "📧 Next Steps",
+    "step1": "You will receive a confirmation email in a few minutes",
+    "step2": "Our team will start preparing the personalized messages",
+    "step3": "You will receive the messages by email within 24 hours",
+    "shareText": "Share the Christmas magic! 🎄",
+    "whatsappShare": "I just made personalized messages from Santa! 🎅 Check it out:",
+    "backHome": "🏠 Back to Home",
+    "footer": "© 2024 Messages from Santa - Spreading Christmas joy! 🎅"
+  }
+}

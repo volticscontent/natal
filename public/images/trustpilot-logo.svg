@@ -1,0 +1,12 @@
+<svg width="120" height="24" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 5 estrelas verdes -->
+  <g fill="#00B67A">
+    <path d="M6 2l1.854 3.756L12 6.368l-3 2.922 0.708 4.128L6 11.312l-3.708 2.106L3 10.29 0 7.368l4.146-0.612L6 2z"/>
+    <path d="M18 2l1.854 3.756L24 6.368l-3 2.922 0.708 4.128L18 11.312l-3.708 2.106L15 10.29 12 7.368l4.146-0.612L18 2z"/>
+    <path d="M30 2l1.854 3.756L36 6.368l-3 2.922 0.708 4.128L30 11.312l-3.708 2.106L27 10.29 24 7.368l4.146-0.612L30 2z"/>
+    <path d="M42 2l1.854 3.756L48 6.368l-3 2.922 0.708 4.128L42 11.312l-3.708 2.106L39 10.29 36 7.368l4.146-0.612L42 2z"/>
+    <path d="M54 2l1.854 3.756L60 6.368l-3 2.922 0.708 4.128L54 11.312l-3.708 2.106L51 10.29 48 7.368l4.146-0.612L54 2z"/>
+  </g>
+  <!-- Texto Trustpilot -->
+  <text x="65" y="12" font-family="Arial, sans-serif" font-size="8" fill="#00B67A" font-weight="bold" dominant-baseline="middle">Trustpilot</text>
+</svg>

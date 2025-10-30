@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* Definição da fonte Fertigo Pro */
+@font-face {
+  font-family: "Fertigo Pro";
+  src: url("https://db.onlinewebfonts.com/t/3bed3a67d2827afda9526cb21311b9f8.eot");
+  src: url("https://db.onlinewebfonts.com/t/3bed3a67d2827afda9526cb21311b9f8.eot?#iefix") format("embedded-opentype"),
+       url("https://db.onlinewebfonts.com/t/3bed3a67d2827afda9526cb21311b9f8.woff2") format("woff2"),
+       url("https://db.onlinewebfonts.com/t/3bed3a67d2827afda9526cb21311b9f8.woff") format("woff"),
+       url("https://db.onlinewebfonts.com/t/3bed3a67d2827afda9526cb21311b9f8.ttf") format("truetype"),
+       url("https://db.onlinewebfonts.com/t/3bed3a67d2827afda9526cb21311b9f8.svg#FertigoPro-Regular") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Classe para aplicar a fonte Fertigo Pro */
+.font-fertigo {
+  font-family: "Fertigo Pro", Times, "Times New Roman", serif !important;
+}
+
+/* Classe para text-shadow personalizado do título do hero */
+.text-shadow-hero {
+  text-shadow: 0 1px 10px #301335, 0 2px 20px #301335, 0 3px 30px #301335;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+}

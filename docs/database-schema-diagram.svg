@@ -1,0 +1,151 @@
+<svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .table-header { fill: #2563eb; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; }
+      .field-name { fill: #1f2937; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; }
+      .field-type { fill: #6b7280; font-family: Arial, sans-serif; font-size: 11px; }
+      .field-constraint { fill: #dc2626; font-family: Arial, sans-serif; font-size: 10px; font-style: italic; }
+      .table-border { fill: none; stroke: #e5e7eb; stroke-width: 2; }
+      .header-bg { fill: #dbeafe; }
+      .field-bg { fill: #f9fafb; }
+      .field-bg-alt { fill: #ffffff; }
+      .pk-icon { fill: #fbbf24; }
+      .json-icon { fill: #10b981; }
+    </style>
+  </defs>
+  
+  <!-- Table Container -->
+  <rect x="50" y="50" width="700" height="900" class="table-border" rx="8"/>
+  
+  <!-- Table Header -->
+  <rect x="50" y="50" width="700" height="40" class="header-bg" rx="8 8 0 0"/>
+  <text x="400" y="75" text-anchor="middle" class="table-header">TABELA: pedidos_videos</text>
+  
+  <!-- Fields -->
+  <!-- id -->
+  <rect x="50" y="90" width="700" height="35" class="field-bg"/>
+  <circle cx="70" cy="107" r="4" class="pk-icon"/>
+  <text x="85" y="107" class="field-name">id</text>
+  <text x="200" y="107" class="field-type">serial4</text>
+  <text x="300" y="107" class="field-constraint">PRIMARY KEY, AUTO INCREMENT</text>
+  
+  <!-- session_id -->
+  <rect x="50" y="125" width="700" height="35" class="field-bg-alt"/>
+  <text x="70" y="142" class="field-name">session_id</text>
+  <text x="200" y="142" class="field-type">varchar(100)</text>
+  <text x="300" y="142" class="field-constraint">DEFAULT</text>
+  
+  <!-- nome -->
+  <rect x="50" y="160" width="700" height="35" class="field-bg"/>
+  <text x="70" y="177" class="field-name">nome</text>
+  <text x="200" y="177" class="field-type">varchar(150)</text>
+  <text x="300" y="177" class="field-constraint">DEFAULT</text>
+  
+  <!-- email -->
+  <rect x="50" y="195" width="700" height="35" class="field-bg-alt"/>
+  <text x="70" y="212" class="field-name">email</text>
+  <text x="200" y="212" class="field-type">varchar(200)</text>
+  <text x="300" y="212" class="field-constraint">DEFAULT</text>
+  
+  <!-- telefone -->
+  <rect x="50" y="230" width="700" height="35" class="field-bg"/>
+  <text x="70" y="247" class="field-name">telefone</text>
+  <text x="200" y="247" class="field-type">varchar(20)</text>
+  <text x="300" y="247" class="field-constraint">DEFAULT</text>
+  
+  <!-- cpf -->
+  <rect x="50" y="265" width="700" height="35" class="field-bg-alt"/>
+  <text x="70" y="282" class="field-name">cpf</text>
+  <text x="200" y="282" class="field-type">varchar(15)</text>
+  <text x="300" y="282" class="field-constraint">DEFAULT</text>
+  
+  <!-- mensagem_personalizada -->
+  <rect x="50" y="300" width="700" height="35" class="field-bg"/>
+  <text x="70" y="317" class="field-name">mensagem_personalizada</text>
+  <text x="200" y="317" class="field-type">text</text>
+  <text x="300" y="317" class="field-constraint">DEFAULT</text>
+  
+  <!-- numero_whatsapp_site -->
+  <rect x="50" y="335" width="700" height="35" class="field-bg-alt"/>
+  <circle cx="70" cy="352" r="4" class="json-icon"/>
+  <text x="85" y="352" class="field-name">numero_whatsapp_site</text>
+  <text x="200" y="352" class="field-type">json</text>
+  <text x="300" y="352" class="field-constraint">JSON OBJECT</text>
+  
+  <!-- criancas -->
+  <rect x="50" y="370" width="700" height="35" class="field-bg"/>
+  <circle cx="70" cy="387" r="4" class="json-icon"/>
+  <text x="85" y="387" class="field-name">criancas</text>
+  <text x="200" y="387" class="field-type">jsonb</text>
+  <text x="300" y="387" class="field-constraint">JSONB ARRAY - Lista de crianças</text>
+  
+  <!-- fotos -->
+  <rect x="50" y="405" width="700" height="35" class="field-bg-alt"/>
+  <circle cx="70" cy="422" r="4" class="json-icon"/>
+  <text x="85" y="422" class="field-name">fotos</text>
+  <text x="200" y="422" class="field-type">jsonb</text>
+  <text x="300" y="422" class="field-constraint">JSONB ARRAY - URLs das fotos</text>
+  
+  <!-- prioridade -->
+  <rect x="50" y="440" width="700" height="35" class="field-bg"/>
+  <text x="70" y="457" class="field-name">prioridade</text>
+  <text x="200" y="457" class="field-type">varchar(20)</text>
+  <text x="300" y="457" class="field-constraint">DEFAULT: 'normal' | 'pendente' | 'character varying'</text>
+  
+  <!-- pagamento -->
+  <rect x="50" y="475" width="700" height="35" class="field-bg-alt"/>
+  <text x="70" y="492" class="field-name">pagamento</text>
+  <text x="200" y="492" class="field-type">varchar(50)</text>
+  <text x="300" y="492" class="field-constraint">DEFAULT</text>
+  
+  <!-- status_pedido -->
+  <rect x="50" y="510" width="700" height="35" class="field-bg"/>
+  <text x="70" y="527" class="field-name">status_pedido</text>
+  <text x="200" y="527" class="field-type">varchar(30)</text>
+  <text x="300" y="527" class="field-constraint">DEFAULT: 'has_feito' | 'character varying'</text>
+  
+  <!-- created_at -->
+  <rect x="50" y="545" width="700" height="35" class="field-bg-alt"/>
+  <text x="70" y="562" class="field-name">created_at</text>
+  <text x="200" y="562" class="field-type">timestamp</text>
+  <text x="300" y="562" class="field-constraint">DEFAULT: CURRENT_TIMESTAMP</text>
+  
+  <!-- updated_at -->
+  <rect x="50" y="580" width="700" height="35" class="field-bg"/>
+  <text x="70" y="597" class="field-name">updated_at</text>
+  <text x="200" y="597" class="field-type">timestamp</text>
+  <text x="300" y="597" class="field-constraint">DEFAULT: CURRENT_TIMESTAMP</text>
+  
+  <!-- valor_total -->
+  <rect x="50" y="615" width="700" height="35" class="field-bg-alt"/>
+  <text x="70" y="632" class="field-name">valor_total</text>
+  <text x="200" y="632" class="field-type">numeric(10,2)</text>
+  <text x="300" y="632" class="field-constraint">Valor monetário com 2 casas decimais</text>
+  
+  <!-- data_checkout -->
+  <rect x="50" y="650" width="700" height="35" class="field-bg"/>
+  <text x="70" y="667" class="field-name">data_checkout</text>
+  <text x="200" y="667" class="field-type">timestamp</text>
+  <text x="300" y="667" class="field-constraint">Data/hora do checkout</text>
+  
+  <!-- order_bump -->
+  <rect x="50" y="685" width="700" height="35" class="field-bg-alt"/>
+  <circle cx="70" cy="702" r="4" class="json-icon"/>
+  <text x="85" y="702" class="field-name">order_bump</text>
+  <text x="200" y="702" class="field-type">json</text>
+  <text x="300" y="702" class="field-constraint">JSON OBJECT - Order bumps selecionados</text>
+  
+  <!-- Legend -->
+  <text x="70" y="750" class="field-name">LEGENDA:</text>
+  <circle cx="70" cy="770" r="4" class="pk-icon"/>
+  <text x="85" y="774" class="field-type">Chave Primária</text>
+  <circle cx="200" cy="770" r="4" class="json-icon"/>
+  <text x="215" y="774" class="field-type">Campo JSON/JSONB</text>
+  
+  <!-- Notes -->
+  <text x="70" y="810" class="field-name">OBSERVAÇÕES:</text>
+  <text x="70" y="830" class="field-type">• Campos JSON armazenam estruturas complexas</text>
+  <text x="70" y="850" class="field-type">• JSONB oferece melhor performance para consultas</text>
+  <text x="70" y="870" class="field-type">• Timestamps são automaticamente gerenciados</text>
+  <text x="70" y="890" class="field-type">• Prioridade e status_pedido têm valores específicos</text>
+</svg>

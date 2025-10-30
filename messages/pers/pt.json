@@ -1,0 +1,155 @@
+{
+  "title": "Personalize seu Vídeo do Papai Noel",
+  "subtitle": "Crie um vídeo mágico e personalizado em apenas 3 passos simples!",
+  "checkout": {
+    "provider": "Checkout",
+    "currency": "Moeda",
+    "price": "Preço"
+  },
+  "progress": {
+    "step1": "Quantidade de Crianças",
+    "step2": "Produtos Extras",
+    "step3": "Dados das Crianças e Contato"
+  },
+  "form": {
+    "childName": "Nome da Criança",
+    "childNamePlaceholder": "Digite o nome da criança",
+    "childAge": "Idade",
+    "childAgePlaceholder": "Idade da criança",
+    "childBehavior": "Comportamento",
+    "childBehaviorPlaceholder": "Como a criança se comportou este ano?",
+    "addChild": "Adicionar Criança",
+    "removeChild": "Remover",
+    "nextStep": "Próximo Passo",
+    "previousStep": "Voltar",
+    "previous": "Voltar",
+    "maxChildren": "Máximo 3 crianças",
+    "skip": "Pular",
+    "finalize": "Finalizar Pedido",
+    "loading": "Carregando...",
+    "name": "Nome Completo",
+    "namePlaceholder": "Seu nome completo",
+    "email": "E-mail",
+    "emailPlaceholder": "seu@email.com",
+    "phone": "Telefone",
+    "phonePlaceholder": "(11) 99999-9999",
+    "street": "Endereço",
+    "streetPlaceholder": "Rua, número",
+    "number": "Número",
+    "numberPlaceholder": "123",
+    "complement": "Complemento",
+    "complementPlaceholder": "Apto, bloco, etc.",
+    "neighborhood": "Bairro",
+    "neighborhoodPlaceholder": "Seu bairro",
+    "city": "Cidade",
+    "cityPlaceholder": "Sua cidade",
+    "state": "Estado",
+    "statePlaceholder": "SP",
+    "zipCode": "CEP",
+    "zipCodePlaceholder": "00000-000"
+  },
+  "step1": {
+    "title": "Quantas crianças receberão o vídeo?",
+    "subtitle": "Selecione a quantidade de crianças que receberão o vídeo personalizado do Papai Noel",
+    "selectQuantity": "Selecione uma quantidade",
+    "options": {
+      "one": {
+        "title": "1 Criança",
+        "description": "Vídeo personalizado para uma criança especial"
+      },
+      "two": {
+        "title": "2 Crianças", 
+        "description": "Vídeo personalizado para duas crianças"
+      },
+      "three": {
+        "title": "3 Crianças",
+        "description": "Vídeo personalizado para três crianças"
+      }
+    }
+  },
+  "step3": {
+    "title": "Dados das Crianças e Contato",
+    "subtitle": "Preencha os dados das crianças e suas informações de contato",
+    "childTitle": "Criança",
+    "namePlaceholder": "Digite o nome da criança",
+    "behaviorGood": "Comportou-se bem",
+    "behaviorNaughty": "Foi travesso(a)",
+    "years": "anos",
+    "childPhoto": "Foto da Criança",
+    "personalMessage": "Mensagem Personalizada",
+    "messagePlaceholder": "Digite uma mensagem especial para o Papai Noel incluir no vídeo...",
+    "contactInfo": "Informações de Contato",
+    "contact": {
+      "name": "Nome Completo",
+      "namePlaceholder": "Seu nome completo",
+      "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
+      "phone": "Telefone",
+      "phonePlaceholder": "(11) 99999-9999"
+    },
+    "addressInfo": {
+      "street": "Endereço",
+      "streetPlaceholder": "Rua, número",
+      "city": "Cidade",
+      "cityPlaceholder": "Sua cidade",
+      "state": "Estado",
+      "statePlaceholder": "SP",
+      "zipCode": "CEP",
+      "zipCodePlaceholder": "00000-000"
+    },
+    "validation": {
+      "nameRequired": "Nome da criança {index} é obrigatório",
+      "ageRequired": "Idade é obrigatória",
+      "ageInvalid": "Idade da criança {index} deve ser entre 1 e 12 anos",
+      "behaviorRequired": "Comportamento é obrigatório",
+      "minOneChild": "Adicione pelo menos uma criança",
+      "messageRequired": "Mensagem personalizada é obrigatória",
+      "contactNameRequired": "Nome completo é obrigatório",
+      "contactEmailRequired": "E-mail é obrigatório",
+      "contactEmailInvalid": "E-mail inválido",
+      "contactPhoneRequired": "Telefone é obrigatório",
+      "navigationError": "Erro ao navegar para próxima etapa"
+    }
+  },
+  "step2": {
+    "title": "Produtos Extras",
+    "subtitle": "Torne a experiência ainda mais especial com nossos produtos adicionais",
+    "orderBumps": {
+      "title": "Produtos Extras",
+      "description": "Torne a experiência ainda mais especial com nossos produtos adicionais"
+    },
+    "noProducts": "Nenhum produto extra disponível no momento",
+    "total": "Total",
+    "selected": "selecionado(s)",
+    "orderSummary": "Resumo do Pedido",
+    "baseVideo": "Vídeo Personalizado",
+    "comboDiscount": "Desconto Combo",
+    "savings": "Economia"
+  },
+
+  "error": {
+    "loadingProducts": "Erro ao carregar produtos. Tente novamente.",
+    "generic": "Ocorreu um erro inesperado"
+  },
+  "tip": {
+    "title": "💡 Dica",
+    "content": "Quanto mais detalhes você fornecer, mais personalizado será o vídeo do Papai Noel!"
+  },
+  "navigation": {
+    "continue": "Continuar"
+  },
+  "features": {
+    "personalizedVideo": {
+      "title": "Vídeo Personalizado",
+      "description": "Papai Noel fala o nome de cada criança"
+    },
+    "fastDelivery": {
+      "title": "Entrega Rápida",
+      "description": "Receba em até 24 horas"
+    },
+    "magicGuaranteed": {
+      "title": "Magia Garantida",
+      "description": "100% de satisfação ou seu dinheiro de volta"
+    }
+  }
+}
