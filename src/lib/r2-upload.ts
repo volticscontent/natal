@@ -58,11 +58,23 @@ function validateFile(file: File, config: UploadConfig): { valid: boolean; error
  * Gera nome único para o arquivo
  */
 function generateFileName(originalName: string, sessionId: string): string {
-  const extension = originalName.split('.').pop();
+  console.log(`[R2-UPLOAD] Gerando nome para arquivo: ${originalName}`);
+  console.log(`[R2-UPLOAD] Session ID: ${sessionId}`);
+  
+  // Sanitizar o nome original
+  const sanitizedName = originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
+  console.log(`[R2-UPLOAD] Nome sanitizado: ${sanitizedName}`);
+  
+  const extension = sanitizedName.split('.').pop() || 'jpg';
+  console.log(`[R2-UPLOAD] Extensão extraída: ${extension}`);
+  
   const timestamp = Date.now();
   const uniqueId = uuidv4().substring(0, 8);
   
-  return `${sessionId}_${timestamp}_${uniqueId}.${extension}`;
+  const finalName = `${sessionId}_${timestamp}_${uniqueId}.${extension}`;
+  console.log(`[R2-UPLOAD] Nome final gerado: ${finalName}`);
+  
+  return finalName;
 }
 
 /**

@@ -251,8 +251,26 @@ export default function Step3DadosCriancas({
         const child = photosToUpload[i];
         if (child.foto) {
           try {
+            console.log(`[UPLOAD-DEBUG] Processando foto ${i + 1}:`);
+            console.log(`[UPLOAD-DEBUG] - Tamanho da string base64: ${child.foto.length}`);
+            console.log(`[UPLOAD-DEBUG] - Prefixo da foto: ${child.foto.substring(0, 50)}...`);
+            
+            // Verificar se é base64 válido
+            if (!child.foto.includes('data:image/')) {
+              console.error(`[UPLOAD-DEBUG] Foto ${i + 1} não tem prefixo data:image válido`);
+              throw new Error(`Foto ${i + 1} tem formato inválido`);
+            }
+            
             // Converter base64 para blob de forma mais robusta
             const base64Data = child.foto.split(',')[1]; // Remove o prefixo data:image/...;base64,
+            
+            if (!base64Data) {
+              console.error(`[UPLOAD-DEBUG] Foto ${i + 1} não tem dados base64 válidos`);
+              throw new Error(`Foto ${i + 1} não contém dados válidos`);
+            }
+            
+            console.log(`[UPLOAD-DEBUG] - Tamanho dos dados base64: ${base64Data.length}`);
+            
             const byteCharacters = atob(base64Data);
             const byteNumbers = new Array(byteCharacters.length);
             
@@ -263,12 +281,22 @@ export default function Step3DadosCriancas({
             const byteArray = new Uint8Array(byteNumbers);
             const blob = new Blob([byteArray], { type: 'image/jpeg' });
             
-            // Criar File object
-            const file = new File([blob], `child_${i + 1}_photo.jpg`, { type: 'image/jpeg' });
+            console.log(`[UPLOAD-DEBUG] - Tamanho do blob: ${blob.size} bytes`);
+            
+            // Criar File object com nome mais específico
+            const fileName = `child_${i + 1}_photo_${Date.now()}.jpg`;
+            const file = new File([blob], fileName, { type: 'image/jpeg' });
+            
+            console.log(`[UPLOAD-DEBUG] - Nome do arquivo: ${fileName}`);
+            console.log(`[UPLOAD-DEBUG] - Tamanho do arquivo: ${file.size} bytes`);
+            console.log(`[UPLOAD-DEBUG] - Tipo do arquivo: ${file.type}`);
+            
             formData.append(`file${i}`, file);
+            console.log(`[UPLOAD-DEBUG] Foto ${i + 1} adicionada ao FormData com sucesso`);
           } catch (conversionError) {
-            console.error(`Erro ao converter foto da criança ${i + 1}:`, conversionError);
-            throw new Error(`Erro ao processar foto da criança ${i + 1}`);
+            console.error(`[UPLOAD-DEBUG] Erro ao converter foto da criança ${i + 1}:`, conversionError);
+            console.error(`[UPLOAD-DEBUG] Stack trace:`, conversionError.stack);
+            throw new Error(`Erro ao processar foto da criança ${i + 1}: ${conversionError.message}`);
           }
         }
       }

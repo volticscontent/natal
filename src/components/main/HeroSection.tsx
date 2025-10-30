@@ -39,7 +39,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       </div>
       
       {/* Content */}
-      <div className="relative z-20 max-w-[750px] mx-auto px-4 sm:px-6 lg:px-8 text-center mt-90 md:mt-40 lg:mt-44">
+      <div className="relative z-20 max-w-[750px] mx-auto px-4 sm:px-6 lg:px-8 text-center mt-78 md:mt-40 lg:mt-44">
         <div className="rounded-3xl px-6 md:p-4 lg:p-12">{/* Padding responsivo para melhor visualização mobile */}
           <div className="text-center space-y-4 md:space-y-8">{/* Espaçamento responsivo entre elementos */}
             <h1 className="text-4xl md:text-7xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight font-fertigo text-shadow-hero">{/* Tipografia responsiva otimizada para mobile */}

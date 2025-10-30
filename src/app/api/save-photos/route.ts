@@ -62,8 +62,39 @@ export async function POST(request: NextRequest): Promise<NextResponse<SavePhoto
 
     // Extrai arquivos do FormData
     const files: File[] = [];
+    console.log('[SAVE-PHOTOS] Processando FormData entries...');
+    
     for (const [key, value] of formData.entries()) {
+      console.log(`[SAVE-PHOTOS] Entry: ${key} = ${typeof value} (${value instanceof File ? 'File' : 'String'})`);
+      
       if (key.startsWith('file') && value instanceof File) {
+        console.log(`[SAVE-PHOTOS] Arquivo encontrado: ${key}`);
+        console.log(`[SAVE-PHOTOS] - Nome: ${value.name}`);
+        console.log(`[SAVE-PHOTOS] - Tamanho: ${value.size} bytes`);
+        console.log(`[SAVE-PHOTOS] - Tipo: ${value.type}`);
+        console.log(`[SAVE-PHOTOS] - Última modificação: ${value.lastModified}`);
+        
+        // Validar nome do arquivo
+        if (!value.name || value.name.trim() === '') {
+          console.error(`[SAVE-PHOTOS] Arquivo ${key} tem nome inválido`);
+          return NextResponse.json({
+            success: false,
+            message: `Arquivo ${key} tem nome inválido`,
+            error: 'INVALID_FILENAME'
+          }, { status: 400 });
+        }
+        
+        // Validar extensão
+        const extension = value.name.split('.').pop()?.toLowerCase();
+        if (!extension || !['jpg', 'jpeg', 'png', 'webp'].includes(extension)) {
+          console.error(`[SAVE-PHOTOS] Arquivo ${key} tem extensão inválida: ${extension}`);
+          return NextResponse.json({
+            success: false,
+            message: `Arquivo ${key} tem formato não suportado: ${extension}`,
+            error: 'INVALID_FILE_FORMAT'
+          }, { status: 400 });
+        }
+        
         files.push(value);
       }
     }
