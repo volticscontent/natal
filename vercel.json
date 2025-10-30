@@ -8,11 +8,7 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "build": {
-    "env": {
-      "NEXT_PUBLIC_APP_URL_PROD": "@vercel_url"
-    }
-  },
+
   "headers": [
     {
       "source": "/api/(.*)",
