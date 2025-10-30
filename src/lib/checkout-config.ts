@@ -27,7 +27,7 @@ export const CHECKOUT_CONFIG: CheckoutConfig = {
     region: "Brasil", 
     locale: "pt",
     currency: "BRL",
-    baseUrl: process.env.NEXT_PUBLIC_LASTLINK_BASE_URL || 'https://lastlink.com.br',
+    baseUrl: process.env.NEXT_PUBLIC_LASTLINK_BASE_URL || 'https://lastlink.com',
     description: "Checkout exclusivo para o mercado brasileiro com URLs específicas do LastLink"
   },
   cartpanda: {

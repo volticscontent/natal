@@ -6,7 +6,7 @@ import { calculateUserSelectionPricing } from '../../../../../lib/pricing-calcul
 
 // 🔗 URLs e configurações LastLink
 const LASTLINK_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_LASTLINK_BASE_URL || 'https://lastlink.com.br',
+  baseUrl: process.env.NEXT_PUBLIC_LASTLINK_BASE_URL || 'https://lastlink.com',
   productId: process.env.NEXT_PUBLIC_LASTLINK_PRODUCT_ID || 'recadinhos-papai-noel',
   apiKey: process.env.NEXT_PUBLIC_LASTLINK_API_KEY || '',
   // Configurações específicas
