@@ -11,6 +11,12 @@ const intlMiddleware = createIntlMiddleware({
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Excluir explicitamente vídeos do processamento de locale
+  if (pathname.startsWith('/videos/') || 
+      pathname.match(/\.(webm|mp4)$/)) {
+    return NextResponse.next();
+  }
+
   // Otimização: processar apenas rotas que realmente precisam
   if (pathname.startsWith('/api/')) {
     const response = NextResponse.next();
