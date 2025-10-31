@@ -36,7 +36,7 @@ export default function Header() {
             </div>
           </button>
           {/* Logo - Center */}
-          <Link href={`/${currentLocale}`} className="flex items-center space-x-2 absolute left-1/2 transform -translate-x-1/2 md:relative md:left-auto md:transform-none">
+          <Link href={`/${currentLocale}`} className="flex rounded-full items-center space-x-2 absolute left-1/2 transform -translate-x-1/2 md:relative md:left-auto md:transform-none">
             <div className="w-[50px] h-[70px] rounded-full flex items-center justify-center shadow-lg">
               <Image 
                 src="/images/logo.webp" 

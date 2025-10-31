@@ -57,6 +57,19 @@ const nextConfig: NextConfig = {
   
   // Configurações de webpack para otimização
   webpack: (config, { dev }) => {
+    // Configuração para arquivos de vídeo
+    config.module.rules.push({
+      test: /\.(webm|mp4|avi|mov)$/,
+      use: {
+        loader: 'file-loader',
+        options: {
+          publicPath: '/_next/static/videos/',
+          outputPath: 'static/videos/',
+          name: '[name].[hash].[ext]',
+        },
+      },
+    });
+
     // Otimizações para produção
     if (!dev) {
       config.optimization = {
@@ -103,6 +116,58 @@ const nextConfig: NextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      // Headers específicos para arquivos de vídeo
+      {
+        source: '/videos/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Content-Type',
+            value: 'video/webm',
+          },
+          {
+            key: 'Accept-Ranges',
+            value: 'bytes',
+          },
+        ],
+      },
+      {
+        source: '/(.*)\\.webm',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'video/webm',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Accept-Ranges',
+            value: 'bytes',
+          },
+        ],
+      },
+      {
+        source: '/(.*)\\.mp4',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'video/mp4',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Accept-Ranges',
+            value: 'bytes',
           },
         ],
       },

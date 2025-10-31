@@ -47,16 +47,67 @@
           "value": "max-age=31536000; includeSubDomains"
         }
       ]
+    },
+    {
+      "source": "/videos/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "video/webm"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Accept-Ranges",
+          "value": "bytes"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.webm",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "video/webm"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Accept-Ranges",
+          "value": "bytes"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.mp4",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "video/mp4"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Accept-Ranges",
+          "value": "bytes"
+        }
+      ]
     }
   ],
   "rewrites": [
     {
-      "source": "/api/save-photos",
-      "destination": "/api/save-photos"
-    },
-    {
-      "source": "/api/get-photos",
-      "destination": "/api/get-photos"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
-  ]
+  ],
+  "outputDirectory": ".next",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs"
 }

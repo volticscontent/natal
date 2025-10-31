@@ -44,7 +44,50 @@ export const useN8NIntegration = () => {
   
   const { utmParams, sessionId } = useUtmTracking();
 
+  /**
+   * Ativa modo fallback quando N8N não estiver disponível
+   */
+  const activateFallbackMode = useCallback((
+    persData: PersData,
+    contactData: ContactData
+  ): N8NSubmissionResult => {
+    console.log('🔄 Ativando modo fallback - dados salvos localmente');
+    
+    // Salvar dados localmente para recuperação posterior
+    const fallbackData = {
+      persData,
+      contactData,
+      sessionId,
+      utmParams,
+      timestamp: new Date().toISOString(),
+      status: 'pending_n8n_sync'
+    };
+    
+    // Salvar no localStorage para tentar enviar posteriormente
+    const existingFallbackData = localStorage.getItem('n8n_fallback_queue');
+    const fallbackQueue = existingFallbackData ? JSON.parse(existingFallbackData) : [];
+    fallbackQueue.push(fallbackData);
+    localStorage.setItem('n8n_fallback_queue', JSON.stringify(fallbackQueue));
+    
+    const result: N8NSubmissionResult = {
+      success: true,
+      sessionId,
+      response: {
+        success: true,
+        message: 'Dados salvos em modo offline. Serão sincronizados quando o servidor estiver disponível.',
+        session_id: sessionId
+      }
+    };
 
+    setState(prev => ({
+      ...prev,
+      isSubmitting: false,
+      lastResult: result,
+      fallbackMode: true,
+    }));
+
+    return result;
+  }, [sessionId, utmParams]);
 
   /**
    * Envia dados para o N8N webhook
@@ -143,50 +186,7 @@ export const useN8NIntegration = () => {
     }
   }, [sessionId, utmParams, activateFallbackMode]);
 
-  /**
-   * Ativa modo fallback quando N8N não estiver disponível
-   */
-  const activateFallbackMode = useCallback((
-    persData: PersData,
-    contactData: ContactData
-  ): N8NSubmissionResult => {
-    console.log('🔄 Ativando modo fallback - dados salvos localmente');
-    
-    // Salvar dados localmente para recuperação posterior
-    const fallbackData = {
-      persData,
-      contactData,
-      sessionId,
-      utmParams,
-      timestamp: new Date().toISOString(),
-      status: 'pending_n8n_sync'
-    };
-    
-    // Salvar no localStorage para tentar enviar posteriormente
-    const existingFallbackData = localStorage.getItem('n8n_fallback_queue');
-    const fallbackQueue = existingFallbackData ? JSON.parse(existingFallbackData) : [];
-    fallbackQueue.push(fallbackData);
-    localStorage.setItem('n8n_fallback_queue', JSON.stringify(fallbackQueue));
-    
-    const result: N8NSubmissionResult = {
-      success: true,
-      sessionId,
-      response: {
-        success: true,
-        message: 'Dados salvos em modo offline. Serão sincronizados quando o servidor estiver disponível.',
-        session_id: sessionId
-      }
-    };
 
-    setState(prev => ({
-      ...prev,
-      isSubmitting: false,
-      lastResult: result,
-      fallbackMode: true,
-    }));
-
-    return result;
-  }, [sessionId, utmParams]);
 
   /**
    * Tenta reenviar dados salvos no localStorage quando a conexão for restaurada

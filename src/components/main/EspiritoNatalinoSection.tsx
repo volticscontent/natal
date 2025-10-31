@@ -159,6 +159,13 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
                           style={{ display: 'block', visibility: 'visible' }}
                           onError={(e) => {
                             console.error('Erro ao carregar vídeo:', video.src, e);
+                            // Tentar carregar versão MP4 se WebM falhar
+                            const videoElement = e.target as HTMLVideoElement;
+                            if (video.src.includes('.webm')) {
+                              const mp4Src = video.src.replace('.webm', '.mp4');
+                              console.log('Tentando carregar versão MP4:', mp4Src);
+                              videoElement.src = mp4Src;
+                            }
                           }}
                           onLoadStart={() => {
                             console.log('Iniciando carregamento do vídeo:', video.src);
