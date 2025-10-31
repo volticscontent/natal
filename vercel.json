@@ -109,5 +109,21 @@
   "outputDirectory": ".next",
   "buildCommand": "npm run build",
   "installCommand": "npm install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/videos/(.*)",
+      "dest": "/videos/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "Content-Type": "video/webm"
+      }
+    }
+  ],
+  "trailingSlash": false
 }

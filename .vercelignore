@@ -1,0 +1,11 @@
+# Não ignorar arquivos de vídeo
+!public/videos/**/*.webm
+!public/videos/**/*.mp4
+
+# Ignorar arquivos desnecessários
+node_modules
+.env.local
+.env
+*.log
+.DS_Store
+check-videos.js

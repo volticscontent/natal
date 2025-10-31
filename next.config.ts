@@ -57,19 +57,6 @@ const nextConfig: NextConfig = {
   
   // Configurações de webpack para otimização
   webpack: (config, { dev }) => {
-    // Configuração para arquivos de vídeo
-    config.module.rules.push({
-      test: /\.(webm|mp4|avi|mov)$/,
-      use: {
-        loader: 'file-loader',
-        options: {
-          publicPath: '/_next/static/videos/',
-          outputPath: 'static/videos/',
-          name: '[name].[hash].[ext]',
-        },
-      },
-    });
-
     // Otimizações para produção
     if (!dev) {
       config.optimization = {
