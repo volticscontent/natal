@@ -141,7 +141,7 @@ export const useN8NIntegration = () => {
 
       return errorResult;
     }
-  }, [sessionId, utmParams]);
+  }, [sessionId, utmParams, activateFallbackMode]);
 
   /**
    * Ativa modo fallback quando N8N não estiver disponível
