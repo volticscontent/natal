@@ -30,8 +30,8 @@ export default function middleware(request: NextRequest) {
 export const config = {
   // Matcher para aplicar o middleware
   matcher: [
-    // Aplicar a todas as rotas exceto arquivos estáticos
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Aplicar a todas as rotas exceto arquivos estáticos e vídeos
+    '/((?!_next/static|_next/image|favicon.ico|videos/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4)$).*)',
     // Aplicar especificamente às APIs
     '/api/:path*'
   ]
