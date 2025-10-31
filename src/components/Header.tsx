@@ -37,14 +37,14 @@ export default function Header() {
           </button>
           {/* Logo - Center */}
           <Link href={`/${currentLocale}`} className="flex items-center space-x-2 absolute left-1/2 transform -translate-x-1/2 md:relative md:left-auto md:transform-none">
-            <div className="w-[50px] h-[70px] flex items-center justify-center shadow-lg">
+            <div className="w-[50px] h-[70px] rounded-full flex items-center justify-center shadow-lg">
               <Image 
                 src="/images/logo.webp" 
                 alt="Logo" 
                 width={50} 
                 height={70}
                 style={{ width: 'auto', height: 'auto' }}
-                className="object-contain"
+                className="object-contain rounded-full"
                 priority={true}
               />
             </div>

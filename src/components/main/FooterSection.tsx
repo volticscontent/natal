@@ -29,7 +29,7 @@ const FooterSection: React.FC = () => {
             />
           </div>
 
-          {/* Elfi Logo - Fixed dimensions and aspect ratio */}
+          {/* Videos Logo - Fixed dimensions and aspect ratio */}
           <div className="mb-8 h-[70px] flex items-start">
             <div className="relative w-16 h-16">
               <Image

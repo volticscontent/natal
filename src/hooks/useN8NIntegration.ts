@@ -15,6 +15,8 @@ interface SubmitOrderResponse {
 interface SubmitOrderErrorResponse {
   error: string;
   details?: string | string[];
+  fallback_mode?: boolean;
+  retry_after?: number;
 }
 
 export interface N8NSubmissionResult {
@@ -41,6 +43,8 @@ export const useN8NIntegration = () => {
   });
   
   const { utmParams, sessionId } = useUtmTracking();
+
+
 
   /**
    * Envia dados para o N8N webhook
@@ -83,6 +87,12 @@ export const useN8NIntegration = () => {
       console.log('📥 Dados da resposta:', result);
 
       if (!response.ok) {
+        // Verificar se é um erro de serviço indisponível (503)
+        if (response.status === 503 && result.fallback_mode) {
+          console.log('🔄 Serviço indisponível detectado, ativando modo fallback automaticamente...');
+          return activateFallbackMode(persData, contactData);
+        }
+        
         // Usar details se disponível, senão usar error, senão mensagem padrão
         const errorMessage = result.details || result.error || 'Erro ao enviar dados';
         throw new Error(errorMessage);
@@ -104,6 +114,18 @@ export const useN8NIntegration = () => {
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      
+      // Verificar se é um erro de conexão/rede
+      const isNetworkError = errorMessage.toLowerCase().includes('fetch') ||
+                           errorMessage.toLowerCase().includes('network') ||
+                           errorMessage.toLowerCase().includes('conexão') ||
+                           errorMessage.toLowerCase().includes('timeout') ||
+                           errorMessage.toLowerCase().includes('failed to fetch');
+      
+      if (isNetworkError) {
+        console.log('🔄 Erro de rede detectado, ativando modo fallback automaticamente...');
+        return activateFallbackMode(persData, contactData);
+      }
       
       const errorResult: N8NSubmissionResult = {
         success: false,
@@ -165,6 +187,52 @@ export const useN8NIntegration = () => {
 
     return result;
   }, [sessionId, utmParams]);
+
+  /**
+   * Tenta reenviar dados salvos no localStorage quando a conexão for restaurada
+   */
+  const retryFallbackQueue = useCallback(async (): Promise<void> => {
+    const fallbackData = localStorage.getItem('n8n_fallback_queue');
+    if (!fallbackData) return;
+
+    try {
+      const queue = JSON.parse(fallbackData);
+      if (!Array.isArray(queue) || queue.length === 0) return;
+
+      console.log(`🔄 Tentando reenviar ${queue.length} submissões pendentes...`);
+      
+      const successfulSubmissions: number[] = [];
+      
+      for (let i = 0; i < queue.length; i++) {
+        const item = queue[i];
+        try {
+          const result = await submitToN8N(item.persData, item.contactData);
+          if (result.success) {
+            successfulSubmissions.push(i);
+            console.log(`✅ Submissão ${i + 1} reenviada com sucesso`);
+          }
+        } catch (error) {
+          console.log(`❌ Falha ao reenviar submissão ${i + 1}:`, error);
+          // Parar tentativas se ainda há problemas de conexão
+          break;
+        }
+      }
+
+      // Remover submissões bem-sucedidas da fila
+      if (successfulSubmissions.length > 0) {
+        const remainingQueue = queue.filter((_, index) => !successfulSubmissions.includes(index));
+        if (remainingQueue.length === 0) {
+          localStorage.removeItem('n8n_fallback_queue');
+          console.log('🎉 Todas as submissões pendentes foram reenviadas com sucesso!');
+        } else {
+          localStorage.setItem('n8n_fallback_queue', JSON.stringify(remainingQueue));
+          console.log(`📝 ${remainingQueue.length} submissões ainda pendentes`);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao processar fila de fallback:', error);
+    }
+  }, [submitToN8N]);
 
   /**
    * Valida dados antes do envio
@@ -316,9 +384,8 @@ export const useN8NIntegration = () => {
     
     // Funções
     submitToN8N,
-    validateData,
     validateAndSubmit,
-    activateFallbackMode,
+    retryFallbackQueue,
     clearError,
     reset,
     

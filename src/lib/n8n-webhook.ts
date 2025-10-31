@@ -207,10 +207,7 @@ async function executeWebhookRequest(
           'User-Agent': 'Recadinhos-Papai-Noel/1.0',
           'X-Webhook-Source': 'recadinhos-papai-noel',
           'X-Session-ID': payload.informacoes_utms.session_id,
-          'Connection': 'keep-alive',
-          'Keep-Alive': 'timeout=30, max=100',
           'Accept': 'application/json',
-          'Accept-Encoding': 'gzip, deflate, br',
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
@@ -261,6 +258,14 @@ async function executeWebhookRequest(
       
     } catch (error) {
       lastError = error instanceof Error ? error : new Error('Erro desconhecido');
+      
+      // DEBUG: Log do erro original para investigação
+      console.error(`🔍 ERRO ORIGINAL (tentativa ${attempt}):`, {
+        message: lastError.message,
+        name: lastError.name,
+        stack: lastError.stack,
+        cause: lastError.cause
+      });
       
       // Melhorar mensagens de erro baseadas no tipo de erro
       let errorMessage = lastError.message;

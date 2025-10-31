@@ -73,11 +73,32 @@ export const redirectToCheckout = async (
 
 // 🇧🇷 Redirecionamento para LastLink (Brasil)
 const redirectToLastLink = async (checkoutData: CheckoutData): Promise<void> => {
-  // Importar dinamicamente o módulo LastLink
-  const { processLastLinkCheckout } = await import('../checkout/lastlink');
-  
   try {
-    await processLastLinkCheckout(checkoutData);
+    // 1. Buscar dados do produto baseado no número de crianças
+    const childrenCount = checkoutData.pers_data.children.length;
+    const response = await fetch('/api/checkout/products');
+    const data: { mainProducts: Array<{ id: string; childrenCount: number; checkoutUrls: { lastlink: Record<string, string> } }> } = await response.json();
+    
+    if (!data.mainProducts) {
+      throw new Error('Produtos não encontrados');
+    }
+    
+    // 2. Encontrar produto baseado no número de crianças
+    let product: { checkoutUrls: { lastlink: Record<string, string> } } | undefined = data.mainProducts.find(p => p.childrenCount === childrenCount);
+    
+    // Fallback para produto de 3+ crianças se não encontrar exato
+    if (!product && childrenCount >= 3) {
+      product = data.mainProducts.find(p => p.childrenCount === 3);
+    }
+    
+    if (!product || !product.checkoutUrls?.lastlink) {
+      throw new Error(`Produto não encontrado para ${childrenCount} criança(s)`);
+    }
+    
+    // 3. Importar dinamicamente o módulo LastLink e processar checkout
+    const { processLastLinkCheckout } = await import('../checkout/lastlink');
+    processLastLinkCheckout(checkoutData, product);
+    
   } catch (error) {
     console.error('Erro no checkout LastLink:', error);
     throw new Error('Falha no processamento do checkout brasileiro');

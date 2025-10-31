@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 interface ReviewCardProps {
   rating: string;
   totalReviews: string;
-  platform: 'trustpilot' | 'elfi' | 'facebook';
+  platform: 'trustpilot' | 'elfivideos' | 'facebook';
   logo?: string;
 }
 
@@ -16,7 +16,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ rating, totalReviews, platform,
     switch (platform) {
       case 'trustpilot':
         return '/images/trustpilot-logo.svg';
-      case 'elfi':
+      case 'elfivideos':
         return '/images/logo.webp';
       case 'facebook':
         return '/images/facebook-logo.svg';
@@ -82,8 +82,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ rating, totalReviews, platform,
         <Image
           src={getPlatformLogo()}
           alt={getPlatformName()}
-          width={platform === 'facebook' ? 80 : platform === 'elfi' ? 40 : 100}
-          height={platform === 'elfi' ? 56 : 24}
+          width={platform === 'facebook' ? 80 : platform === 'elfivideos' ? 40 : 100}
+          height={platform === 'elfivideos' ? 56 : 24}
           style={{ width: 'auto', height: 'auto' }}
           className="object-contain"
         />
@@ -104,7 +104,7 @@ const ReviewCards: React.FC = () => {
     {
       rating: '4.9',
       totalReviews: '60.671',
-      platform: 'elfi' as const,
+      platform: 'elfivideos' as const,
     },
     {
       rating: '4.4',

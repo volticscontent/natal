@@ -58,6 +58,24 @@ export async function POST(request: NextRequest) {
     } else {
       console.error('Erro ao enviar para N8N:', result.error);
       
+      // Verificar se é um erro de conexão
+      const isConnectionError = result.error?.includes('conexão') || 
+                               result.error?.includes('network') || 
+                               result.error?.includes('fetch failed') ||
+                               result.error?.includes('timeout');
+      
+      if (isConnectionError) {
+        return NextResponse.json(
+          { 
+            error: 'Serviço temporariamente indisponível',
+            details: 'Nosso sistema está passando por manutenção. Tente novamente em alguns minutos.',
+            fallback_mode: true,
+            retry_after: 300 // 5 minutos
+          },
+          { status: 503 }
+        );
+      }
+      
       return NextResponse.json(
         { 
           error: 'Falha ao processar pedido',

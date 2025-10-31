@@ -185,7 +185,7 @@
     "productTitle": "Video Personalizado de Papá Noel",
     "price": "$12.99",
     "originalPrice": "$18.99",
-    "discount": "-29%",
+    "discount": "-20%",
     "description": "Video personalizado con el nombre del niño y mensaje especial",
     "features": [
       "Nombre personalizado",
@@ -330,14 +330,14 @@
     "magicPhrase": "magia de la Navidad"
   },
   "descontoCard": {
-    "title": "Descuento -20%",
-    "description": "📕 ¡20% de descuento en TODO!",
-    "code": "LIBRO",
-    "validUntil": "28.10",
+    "title": "Descuento Prenatal -20%",
+    "description": "🤱 ¡20% de descuento para futuras mamás!",
+    "code": "PRENATAL20",
+    "validUntil": "31.12",
     "buttonText": "Comprar ahora",
-    "imageAlt": "Descuento de Navidad",
+    "imageAlt": "Descuento Prenatal",
     "codeLabel": "Código",
-    "validUntilDate": "28.10"
+    "validUntilDate": "31.12"
   },
   "redirectPages": {
     "notFound": "Página no encontrada",
@@ -349,7 +349,7 @@
     "subtitle": "Únete a más de 30.000 clientes satisfechos."
   },
   "promoBanner": {
-    "message": "🍂 Descuento de primavera ya disponible - ¡20% en TODO! 🍂 válido hasta 23.10 Código: PUMPKINBR"
+    "message": "🤱 Descuento Prenatal ya disponible - ¡20% para futuras mamás! 🤱 válido hasta 31.12 Código: PRENATAL20"
   },
   "socialCarousel": {
     "title": "#GenerandoSonrisas",

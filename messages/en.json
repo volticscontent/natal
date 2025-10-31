@@ -170,7 +170,7 @@
     "productTitle": "Personalized Santa Video",
     "price": "$12.99",
     "originalPrice": "$18.99",
-    "discount": "-29%",
+    "discount": "-20%",
     "description": "Personalized video with child's name and special message",
     "features": [
       "Personalized name",
@@ -312,14 +312,14 @@
     "magicPhrase": "magic of Christmas"
   },
   "descontoCard": {
-    "title": "Discount -20%",
-    "description": "📕 20% discount on EVERYTHING!",
-    "code": "BOOK",
-    "validUntil": "28.10",
+    "title": "Prenatal Discount -20%",
+    "description": "🤱 20% discount for expecting mothers!",
+    "code": "PRENATAL20",
+    "validUntil": "31.12",
     "buttonText": "Buy now",
-    "imageAlt": "Christmas Discount",
+    "imageAlt": "Prenatal Discount",
     "codeLabel": "Code",
-    "validUntilDate": "28.10"
+    "validUntilDate": "31.12"
   },
   "redirectPages": {
     "notFound": "Page not found",
@@ -331,7 +331,7 @@
     "subtitle": "Join over 30,000 satisfied customers."
   },
   "promoBanner": {
-    "message": "🍂 Spring discount now available - 20% on EVERYTHING! 🍂 valid until 23.10 Code: PUMPKINBR"
+    "message": "🤱 Prenatal discount now available - 20% for expecting mothers! 🤱 valid until 31.12 Code: PRENATAL20"
   },
   "socialCarousel": {
     "title": "#GeneratingSmiles",

@@ -170,7 +170,7 @@
     "productTitle": "Vídeo Personalizado do Papai Noel",
     "price": "R$ 49,99",
     "originalPrice": "R$ 69,99",
-    "discount": "-29%",
+    "discount": "-20%",
     "description": "Vídeo personalizado com o nome da criança e mensagem especial",
     "features": [
       "Nome personalizado",
@@ -315,14 +315,14 @@
     "magicPhrase": "magia do Natal"
   },
   "descontoCard": {
-    "title": "Desconto -20%",
-    "description": "📕 20% de desconto em TUDO!",
-    "code": "LIVRO",
-    "validUntil": "28.10",
+    "title": "Desconto Pré-Natal -20%",
+    "description": "🎅 20% de desconto para quem comprar hoje!",
+    "code": "PRENATAL20",
+    "validUntil": "31.12",
     "buttonText": "Compre agora",
-    "imageAlt": "Desconto de Natal",
+    "imageAlt": "Desconto Pré-Natal",
     "codeLabel": "Código",
-    "validUntilDate": "28.10"
+    "validUntilDate": "31.12"
   },
   "redirectPages": {
     "notFound": "Página não encontrada",
@@ -334,7 +334,7 @@
     "subtitle": "Junte-se à mais de 30.000 clientes satisfeitos."
   },
   "promoBanner": {
-    "message": "🍂 Desconto de primavera já disponível - 20% em TODO! 🍂 válido até 23.10 Código: PUMPKINBR"
+    "message": "🎅 Desconto Pré-Natal já disponível - 20% no video personalizado! 🎅 válido até 31.11.25"
   },
   "socialCarousel": {
     "title": "#GerandoSorrisos",

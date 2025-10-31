@@ -54,7 +54,10 @@ interface LastLinkPayload {
 }
 
 // 🚀 Processar checkout LastLink
-export const processLastLinkCheckout = async (checkoutData: CheckoutData): Promise<void> => {
+export const processLastLinkCheckout = (
+  checkoutData: CheckoutData, 
+  productData: { checkoutUrls: { lastlink: Record<string, string> } }
+): void => {
   try {
     // 1. Preparar payload
     const payload = prepareLastLinkPayload(checkoutData);
@@ -62,8 +65,8 @@ export const processLastLinkCheckout = async (checkoutData: CheckoutData): Promi
     // 2. Validar dados específicos do Brasil
     validateBrazilianData(payload);
     
-    // 3. Construir URL de checkout (agora é async)
-    const checkoutUrl = await buildLastLinkCheckoutUrl(payload);
+    // 3. Construir URL de checkout (agora é síncrono e rápido)
+    const checkoutUrl = buildLastLinkCheckoutUrl(payload, productData);
     
     // 4. Redirecionar
     window.location.href = checkoutUrl;
@@ -142,29 +145,13 @@ const validateBrazilianData = (payload: LastLinkPayload): void => {
 };
 
 // 🔗 Construir URL de checkout LastLink
-const buildLastLinkCheckoutUrl = async (payload: LastLinkPayload): Promise<string> => {
+const buildLastLinkCheckoutUrl = (payload: LastLinkPayload, productData: { checkoutUrls: { lastlink: Record<string, string> } }): string => {
   try {
-    // Determinar número de crianças
-    const childrenCount = payload.personalization.children.length;
-    
-    // Buscar dados do produto
-    const response = await fetch('/api/checkout/products');
-    const data: { mainProducts: Array<{ id: string; childrenCount: number; checkoutUrls: { lastlink: Record<string, string> } }> } = await response.json();
-    
-    if (!data.mainProducts) {
-      throw new Error('Produtos não encontrados');
-    }
-    
-    // Encontrar produto baseado no número de crianças
-    let product: { checkoutUrls: { lastlink: Record<string, string> } } | undefined = data.mainProducts.find(p => p.childrenCount === childrenCount);
-    
-    // Fallback para produto de 3+ crianças se não encontrar exato
-    if (!product && childrenCount >= 3) {
-      product = data.mainProducts.find(p => p.childrenCount === 3);
-    }
+    // Usar dados do produto passados como parâmetro (sem fetch)
+    const product = productData;
     
     if (!product || !product.checkoutUrls?.lastlink) {
-      throw new Error(`Produto não encontrado para ${childrenCount} criança(s)`);
+      throw new Error('Dados do produto LastLink não encontrados');
     }
     
     // Determinar qual URL usar baseado nos order bumps
@@ -309,7 +296,7 @@ export const debugLastLink = (checkoutData: CheckoutData): void => {
   try {
     const payload = prepareLastLinkPayload(checkoutData);
     console.log('Payload:', payload);
-    console.log('Checkout URL:', buildLastLinkCheckoutUrl(payload));
+    // Note: buildLastLinkCheckoutUrl agora requer productData como segundo parâmetro
     
     // Debug do novo sistema de preços
     const pricingData = getCurrentPricing('pt') || calculateUserSelectionPricing(

@@ -15,6 +15,7 @@ import ProgressBar from '../shared/ProgressBar';
 import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
 import StepsLayout from '../layout/StepsLayout';
+import CheckoutRedirectPopup from '../../../CheckoutRedirectPopup';
 
 // Cache para validação de CPF
 const cpfValidationCache = new Map<string, boolean>();
@@ -206,6 +207,7 @@ export default function Step3DadosCriancas({
   const [errors, setErrors] = useState<string[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const [cpfValidationTimeout, setCpfValidationTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [showRedirectPopup, setShowRedirectPopup] = useState(false);
 
   // Handler otimizado para mudança de CPF com debounce
   const handleCpfChange = useCallback((value: string) => {
@@ -705,6 +707,9 @@ export default function Step3DadosCriancas({
       if (isValid) {
         console.log('Dados válidos, processando fotos e enviando para N8N...', persData);
         
+        // Mostrar popup de redirecionamento
+        setShowRedirectPopup(true);
+        
         try {
           // Fazer upload das fotos primeiro (se houver)
           const hasPhotos = children.some(child => child.foto && child.foto.startsWith('data:'));
@@ -1191,6 +1196,15 @@ export default function Step3DadosCriancas({
           animation: slide-in-right 0.6s ease-out;
         }
       `}</style>
+
+      {/* Popup de redirecionamento para checkout */}
+      <CheckoutRedirectPopup 
+        isVisible={showRedirectPopup}
+        onTimeout={() => {
+          console.log('Timeout do popup de redirecionamento');
+          setShowRedirectPopup(false);
+        }}
+      />
     </StepsLayout>
   );
 }

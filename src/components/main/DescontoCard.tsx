@@ -49,15 +49,12 @@ const DescontoCard: React.FC<DescontoCardProps> = ({
             </h2>
             
             {/* Description */}
-            <p className="text-lg font-thin mb-2">
+            <p className="text-lg font-medium mb-2 font-sans">
               {description || t('description')}
             </p>
             
             {/* Code and Date */}
             <div className="space-y-2 mb-10">
-              <div className="inline-flex items-center justify-center bg-red-600 bg-opacity-20 backdrop-blur-sm rounded-lg px-4 py-2 text-sm font-bold">
-                {t('codeLabel')}: <strong className="ml-1 text-yellow-300 font-fertigo">{code || t('code')}</strong>
-              </div>
               <div className="text-sm font-medium font-fertigo">
                 {t('validUntil')} {validUntil || t('validUntilDate')}
               </div>
