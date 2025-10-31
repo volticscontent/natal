@@ -138,30 +138,69 @@ export function GA4CustomDimensions({ userId, userType = 'new', locale = 'pt' }:
 
   }, [sessionId, utmParams, userId, userType]);
 
-  // Configurar tracking de tempo na página
+  // Configurar tracking de tempo na página com otimizações
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const startTime = Date.now();
     let maxScrollDepth = 0;
     let clickCount = 0;
+    let scrollTimeout: NodeJS.Timeout | null = null;
+    let lastScrollTime = 0;
+    let clickQueue: Array<{ timestamp: number }> = [];
+    let clickTimeout: NodeJS.Timeout | null = null;
 
-    // Tracking de scroll depth
+    // Tracking de scroll depth otimizado
     const handleScroll = () => {
-      const scrollPercent = Math.round(
-        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-      );
-      maxScrollDepth = Math.max(maxScrollDepth, scrollPercent);
+      const now = Date.now();
+      if (now - lastScrollTime < 200) return; // Throttle scroll events
+      lastScrollTime = now;
+
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(() => {
+            const scrollPercent = Math.round(
+              (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+            );
+            maxScrollDepth = Math.max(maxScrollDepth, scrollPercent);
+          }, { timeout: 1000 });
+        } else {
+          setTimeout(() => {
+            const scrollPercent = Math.round(
+              (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+            );
+            maxScrollDepth = Math.max(maxScrollDepth, scrollPercent);
+          }, 0);
+        }
+      }, 300);
     };
 
-    // Tracking de cliques
+    // Tracking de cliques otimizado com queue
+    const processClickQueue = () => {
+      if (clickQueue.length === 0) return;
+      
+      clickCount += clickQueue.length;
+      clickQueue = [];
+    };
+
     const handleClick = () => {
-      clickCount++;
+      clickQueue.push({ timestamp: Date.now() });
+      
+      if (clickTimeout) clearTimeout(clickTimeout);
+      if (clickQueue.length >= 5) {
+        processClickQueue();
+      } else {
+        clickTimeout = setTimeout(processClickQueue, 1000);
+      }
     };
 
     // Enviar métricas quando o usuário sair da página
     const handleBeforeUnload = () => {
       if (!window.gtag) return;
+
+      // Processar cliques pendentes
+      if (clickQueue.length > 0) processClickQueue();
 
       const sessionDuration = Math.round((Date.now() - startTime) / 1000);
       
@@ -180,15 +219,17 @@ export function GA4CustomDimensions({ userId, userType = 'new', locale = 'pt' }:
       });
     };
 
-    // Event listeners
+    // Event listeners com passive para melhor performance
     window.addEventListener('scroll', handleScroll, { passive: true });
-    document.addEventListener('click', handleClick, true);
+    document.addEventListener('click', handleClick, { passive: true });
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      document.removeEventListener('click', handleClick, true);
+      document.removeEventListener('click', handleClick);
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (clickTimeout) clearTimeout(clickTimeout);
     };
   }, [sessionId]);
 

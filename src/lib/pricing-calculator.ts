@@ -11,7 +11,6 @@ import { getCheckoutProvider } from './checkout-config';
 export interface PricingResult {
   basePrice: number;
   orderBumpsTotal: number;
-  photosTotal: number;
   comboDiscount: number;
   subtotal: number;
   total: number;
@@ -37,7 +36,6 @@ export interface OrderBumpSelection {
 export interface PricingInput {
   childrenCount: number;
   orderBumps: string[];
-  photosCount: number;
   locale: string;
   isCombo?: boolean;
 }
@@ -135,25 +133,28 @@ export const calculatePricing = (input: PricingInput): PricingResult => {
     originalPrice: videoPrice.originalPrice
   });
 
-  // Verificar se é combo
-  if (input.isCombo || input.orderBumps.includes('combo-addons')) {
-    // Combo: preço fixo com desconto
+  // Verificar se é combo de adicionais
+  const hasCombo = input.isCombo || input.orderBumps.includes('combo-addons');
+  
+  if (hasCombo) {
+    // Combo: preço fixo com desconto já embutido
     orderBumpsTotal = pricing.combo.price;
-    comboDiscount = pricing.combo.savings;
+    comboDiscount = 0; // Desconto já está embutido no preço
+    
+    // Valor original do combo baseado no provider
+    const comboOriginalPrice = provider === 'lastlink' ? 38.90 : 12.97;
     
     breakdown.push({
       id: 'combo-addons',
       title: 'Combo Completo (4K + Entrega + Foto)',
       price: pricing.combo.price,
-      originalPrice: pricing.orderBumps['4k-quality'].price + 
-                    pricing.orderBumps['fast-delivery'].price + 
-                    pricing.orderBumps['child-photo'].price,
+      originalPrice: comboOriginalPrice,
       isCombo: true
     });
   } else {
-    // Order bumps individuais
+    // Order bumps individuais (apenas se NÃO tiver combo)
     input.orderBumps.forEach(bumpId => {
-      if (bumpId === 'combo-addons') return; // Já tratado acima
+      if (bumpId === 'combo-addons') return; // Não deveria acontecer, mas por segurança
       
       const bump = pricing.orderBumps[bumpId as keyof typeof pricing.orderBumps];
       if (bump) {
@@ -167,25 +168,17 @@ export const calculatePricing = (input: PricingInput): PricingResult => {
     });
   }
 
-  // Calcular fotos adicionais
-  const photosTotal = input.photosCount * pricing.photoPrice;
-  if (input.photosCount > 0) {
-    breakdown.push({
-      id: 'additional-photos',
-      title: 'Fotos Adicionais',
-      price: photosTotal,
-      quantity: input.photosCount
-    });
-  }
+  // Não há mais cobrança de fotos adicionais individuais
+  // As fotos são incluídas apenas via order bump 'child-photo' ou combo
 
   // Calcular totais
-  const subtotal = basePrice + orderBumpsTotal + photosTotal;
-  const total = subtotal - comboDiscount;
+  const subtotal = basePrice + orderBumpsTotal;
+  // Se é combo, o desconto já está embutido no preço, então não subtraímos novamente
+  const total = hasCombo ? subtotal : subtotal - comboDiscount;
 
   const result: PricingResult = {
     basePrice,
     orderBumpsTotal,
-    photosTotal,
     comboDiscount,
     subtotal,
     total,
@@ -288,13 +281,11 @@ export const validatePricingSync = async (): Promise<boolean> => {
 export const calculateUserSelectionPricing = (
   childrenCount: number,
   selectedBumps: string[],
-  photosCount: number,
   locale: string
 ): PricingResult => {
   return calculatePricing({
     childrenCount,
     orderBumps: selectedBumps,
-    photosCount,
     locale,
     isCombo: selectedBumps.includes('combo-addons')
   });
@@ -305,7 +296,6 @@ export const getPricingSummary = (pricingResult: PricingResult) => {
   return {
     basePrice: formatPrice(pricingResult.basePrice, pricingResult.currency),
     orderBumps: formatPrice(pricingResult.orderBumpsTotal, pricingResult.currency),
-    photos: formatPrice(pricingResult.photosTotal, pricingResult.currency),
     discount: pricingResult.comboDiscount > 0 ? 
       formatPrice(pricingResult.comboDiscount, pricingResult.currency) : null,
     total: formatPrice(pricingResult.total, pricingResult.currency),

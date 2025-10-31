@@ -75,11 +75,23 @@ const SocialCarousel: React.FC = () => {
   const socialPosts = instagramData.posts;
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % socialPosts.length);
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(() => {
+        setCurrentIndex((prev) => (prev + 1) % socialPosts.length);
+      }, { timeout: 100 });
+    } else {
+      setCurrentIndex((prev) => (prev + 1) % socialPosts.length);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + socialPosts.length) % socialPosts.length);
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(() => {
+        setCurrentIndex((prev) => (prev - 1 + socialPosts.length) % socialPosts.length);
+      }, { timeout: 100 });
+    } else {
+      setCurrentIndex((prev) => (prev - 1 + socialPosts.length) % socialPosts.length);
+    }
   };
 
   return (
@@ -122,8 +134,9 @@ const SocialCarousel: React.FC = () => {
             <button 
               onClick={prevSlide}
               className="absolute left-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+              aria-label="Post anterior do carrossel"
             >
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -153,8 +166,9 @@ const SocialCarousel: React.FC = () => {
             <button 
               onClick={nextSlide}
               className="absolute right-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+              aria-label="Próximo post do carrossel"
             >
-              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -165,10 +179,20 @@ const SocialCarousel: React.FC = () => {
             {socialPosts.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => {
+                  if (window.requestIdleCallback) {
+                    window.requestIdleCallback(() => {
+                      setCurrentIndex(index);
+                    }, { timeout: 100 });
+                  } else {
+                    setCurrentIndex(index);
+                  }
+                }}
                 className={`w-3 h-3 rounded-full transition-colors ${
                   index === currentIndex ? 'bg-gray-900' : 'bg-gray-300'
                 }`}
+                aria-label={`Ir para o post ${index + 1} de ${socialPosts.length}`}
+                aria-current={index === currentIndex ? 'true' : 'false'}
               />
             ))}
           </div>

@@ -3,6 +3,7 @@
 import { CheckoutData } from '../../types';
 import { clearAllData, getCurrentPricing } from '../../utils/dataStorage';
 import { calculateUserSelectionPricing } from '../../../../../lib/pricing-calculator';
+import { unformatCPF, unformatPhone } from '../../utils/validation';
 
 // 🔗 URLs e configurações LastLink
 const LASTLINK_CONFIG = {
@@ -23,6 +24,7 @@ interface LastLinkPayload {
     name: string;
     email: string;
     phone: string;
+    cpf?: string;
   };
   personalization: {
     children: Array<{
@@ -89,7 +91,6 @@ const prepareLastLinkPayload = (checkoutData: CheckoutData): LastLinkPayload => 
     pricingData = calculateUserSelectionPricing(
       pers_data.children?.length || 1,
       pers_data.order_bumps || [],
-      pers_data.fotos?.length || 0,
       'pt'
     );
   }
@@ -97,13 +98,18 @@ const prepareLastLinkPayload = (checkoutData: CheckoutData): LastLinkPayload => 
   // Recuperar parâmetros UTM
   const utmParams = getUTMParams();
   
+  // Obter dados do cliente com formatação limpa
+  const customerPhone = session_data.user_data.telefone || pers_data.contato?.telefone || '';
+  const customerCpf = session_data.user_data.cpf || pers_data.contato?.cpf || '';
+
   return {
     session_id: session_data.session_id,
     product_id: LASTLINK_CONFIG.productId,
     customer: {
       name: session_data.user_data.nome!,
       email: session_data.user_data.email!,
-      phone: session_data.user_data.telefone!
+      phone: unformatPhone(customerPhone),
+      cpf: unformatCPF(customerCpf)
     },
     personalization: {
       children: pers_data.children.map(crianca => ({
@@ -117,7 +123,7 @@ const prepareLastLinkPayload = (checkoutData: CheckoutData): LastLinkPayload => 
     },
     pricing: {
       base_price: pricingData.basePrice,
-      additional_costs: pricingData.orderBumpsTotal + pricingData.photosTotal,
+      additional_costs: pricingData.orderBumpsTotal,
       total: pricingData.total,
       currency: pricingData.currency,
       breakdown: pricingData.breakdown
@@ -197,17 +203,46 @@ const buildLastLinkCheckoutUrl = async (payload: LastLinkPayload): Promise<strin
     const baseUrl = `https://lastlink.com/p/${urlKey}/checkout-payment/`;
     const url = new URL(baseUrl);
     
-    // Adicionar dados do cliente como parâmetros
+    // Adicionar dados do cliente como parâmetros para autopopulação
     if (payload.customer.name) {
-      url.searchParams.set('customer_name', payload.customer.name);
+      url.searchParams.set('name', payload.customer.name);
     }
     if (payload.customer.email) {
-      url.searchParams.set('customer_email', payload.customer.email);
+      url.searchParams.set('email', payload.customer.email);
     }
     if (payload.customer.phone) {
-      url.searchParams.set('customer_phone', payload.customer.phone);
+      url.searchParams.set('phone', payload.customer.phone);
     }
+    if (payload.customer.cpf) {
+      url.searchParams.set('cpf', payload.customer.cpf);
+    }
+
+    console.log('LastLink - Dados formatados:', {
+      phone_clean: payload.customer.phone,
+      cpf_clean: payload.customer.cpf
+    });
+    console.log('LastLink URL final:', url.toString());
     
+    // Adicionar parâmetros específicos dos order bumps
+    if (hasCombo) {
+      // Combo inclui entrega rápida, 4K e fotos
+      url.searchParams.set('fast_delivery', 'true');
+      url.searchParams.set('quality_4k', 'true');
+      url.searchParams.set('child_photos', 'true');
+      url.searchParams.set('combo_package', 'true');
+    } else {
+      // Order bumps individuais
+      if (hasFastDelivery) {
+        url.searchParams.set('fast_delivery', 'true');
+      }
+      if (has4K) {
+        url.searchParams.set('quality_4k', 'true');
+      }
+      if (hasPhoto) {
+        url.searchParams.set('child_photos', 'true');
+      }
+    }
+
     // Adicionar UTM params
     if (payload.utm_params) {
       Object.entries(payload.utm_params).forEach(([key, value]) => {
@@ -217,8 +252,14 @@ const buildLastLinkCheckoutUrl = async (payload: LastLinkPayload): Promise<strin
       });
     }
     
-    console.log('🔗 URL do LastLink construída:', url.toString());
-    return url.toString();
+    const finalUrl = url.toString();
+    console.log('🔗 URL do LastLink construída:', finalUrl);
+    console.log('🔍 Parâmetros de autopopulação:', {
+      name: url.searchParams.get('name'),
+      email: url.searchParams.get('email'),
+      phone: url.searchParams.get('phone')
+    });
+    return finalUrl;
     
   } catch (error) {
     console.error('Erro ao construir URL do LastLink:', error);
@@ -274,7 +315,6 @@ export const debugLastLink = (checkoutData: CheckoutData): void => {
     const pricingData = getCurrentPricing('pt') || calculateUserSelectionPricing(
       checkoutData.pers_data.children?.length || 1,
       checkoutData.pers_data.order_bumps || [],
-      checkoutData.pers_data.fotos?.length || 0,
       'pt'
     );
     

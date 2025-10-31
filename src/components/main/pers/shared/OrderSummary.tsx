@@ -120,7 +120,7 @@ export default function OrderSummary({
             <div className="border-t pt-2 mt-2">
               <div className="flex justify-between font-bold text-lg">
                 <span className="text-gray-800">{t('step2.total')}</span>
-                <span className="text-green-600">{formatPrice(total, locale)}</span>
+                <span className="text-green-700">{formatPrice(total, locale)}</span>
               </div>
             </div>
           )}
@@ -165,15 +165,22 @@ export default function OrderSummary({
               {item.title}
               {item.quantity && item.quantity > 1 && ` (${item.quantity}x)`}
             </span>
-            <span className="text-gray-800 font-medium">
-              {formatPrice(item.price, pricingData.currency)}
-            </span>
+            <div className="text-right">
+              {item.originalPrice && item.originalPrice > item.price && (
+                <span className="text-gray-500 line-through text-sm block">
+                  {formatPrice(item.originalPrice, pricingData.currency)}
+                </span>
+              )}
+              <span className="text-gray-800 font-medium">
+                {formatPrice(item.price, pricingData.currency)}
+              </span>
+            </div>
           </div>
         ))}
 
         {/* Desconto do combo (se aplicável) */}
         {pricingData.comboDiscount > 0 && (
-          <div className="flex justify-between text-green-600">
+          <div className="flex justify-between text-green-700">
             <span>{t('step2.comboDiscount')}</span>
             <span className="font-medium">
               -{formatPrice(pricingData.comboDiscount, pricingData.currency)}
@@ -185,14 +192,14 @@ export default function OrderSummary({
           <div className="border-t pt-2 mt-2">
             <div className="flex justify-between font-bold text-lg">
               <span className="text-gray-800">{t('step2.total')}</span>
-              <span className="text-green-600">
+              <span className="text-green-700">
                 {formatPrice(pricingData.total, pricingData.currency)}
               </span>
             </div>
             
             {/* Mostrar economia se houver */}
             {pricingData.comboDiscount > 0 && (
-              <div className="text-sm text-green-600 mt-1">
+              <div className="text-sm text-green-700 mt-1">
                 {t('step2.savings')}: {formatPrice(pricingData.comboDiscount, pricingData.currency)}
               </div>
             )}

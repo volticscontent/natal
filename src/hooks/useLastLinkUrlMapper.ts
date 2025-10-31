@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { unformatCPF, unformatPhone } from '../components/main/pers/utils/validation';
 import { Product } from './useProducts';
 
 export interface OrderBumps {
@@ -87,13 +88,13 @@ export const useLastLinkUrlMapper = () => {
         urlKey = lastlink.base;
       }
 
-      // Preparar parâmetros do cliente para autopopulação
+      // Preparar parâmetros do cliente para autopopulação (formato único: sem formatação)
       const customerParams: Record<string, string> = {};
       if (customerData) {
-        if (customerData.nome) customerParams.customer_name = customerData.nome;
-        if (customerData.email) customerParams.customer_email = customerData.email;
-        if (customerData.telefone) customerParams.customer_phone = customerData.telefone;
-        if (customerData.cpf) customerParams.customer_cpf = customerData.cpf;
+        if (customerData.nome) customerParams.name = customerData.nome;
+        if (customerData.email) customerParams.email = customerData.email;
+        if (customerData.telefone) customerParams.phone = unformatPhone(customerData.telefone);
+        if (customerData.cpf) customerParams.cpf = unformatCPF(customerData.cpf);
       }
 
       return {
@@ -143,6 +144,33 @@ export const useLastLinkUrlMapper = () => {
             url.searchParams.set(key, value);
           }
         });
+      }
+
+      // Adicionar parâmetros específicos dos order bumps baseado no mapping
+      if (mapping.selectedBumps) {
+        const hasCombo = mapping.selectedBumps.includes('combo-addons');
+        const hasFastDelivery = mapping.selectedBumps.includes('fast-delivery');
+        const has4K = mapping.selectedBumps.includes('4k-quality');
+        const hasPhoto = mapping.selectedBumps.includes('child-photo');
+
+        if (hasCombo) {
+          // Combo inclui entrega rápida, 4K e fotos
+          url.searchParams.set('fast_delivery', 'true');
+          url.searchParams.set('quality_4k', 'true');
+          url.searchParams.set('child_photos', 'true');
+          url.searchParams.set('combo_package', 'true');
+        } else {
+          // Order bumps individuais
+          if (hasFastDelivery) {
+            url.searchParams.set('fast_delivery', 'true');
+          }
+          if (has4K) {
+            url.searchParams.set('quality_4k', 'true');
+          }
+          if (hasPhoto) {
+            url.searchParams.set('child_photos', 'true');
+          }
+        }
       }
 
       // Adicionar parâmetros UTM salvos

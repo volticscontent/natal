@@ -23,14 +23,14 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
   title,
   subtitle,
   videos = [
-    { src: "/videos/provas-sociais/VID-20251027-WA0001.mp4", instagramHandle: "@carla_santos", name: "Carla Santos" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0002.mp4", instagramHandle: "@ana_oliveira", name: "Ana Oliveira" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0003.mp4", instagramHandle: "@juliana_costa", name: "Juliana Costa" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0004.mp4", instagramHandle: "@patricia_lima", name: "Patrícia Lima" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0005.mp4", instagramHandle: "@fernanda_silva", name: "Fernanda Silva" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0006.mp4", instagramHandle: "@mariana_rocha", name: "Mariana Rocha" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0007.mp4", instagramHandle: "@camila_alves", name: "Camila Alves" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0008.mp4", instagramHandle: "@bruna_martins", name: "Bruna Martins" }
+    { src: "/videos/provas-sociais/VID-20251027-WA0001.webm", instagramHandle: "@carla_santos", name: "Carla Santos" },
+    { src: "/videos/provas-sociais/VID-20251027-WA0002.webm", instagramHandle: "@ana_oliveira", name: "Ana Oliveira" },
+    { src: "/videos/provas-sociais/VID-20251027-WA0003.webm", instagramHandle: "@juliana_costa", name: "Juliana Costa" },
+    { src: "/videos/provas-sociais/VID-20251027-WA0004.webm", instagramHandle: "@patricia_lima", name: "Patrícia Lima" },
+    { src: "/videos/provas-sociais/VID-20251027-WA0005.webm", instagramHandle: "@fernanda_silva", name: "Fernanda Silva" },
+    { src: "/videos/provas-sociais/VID-20251027-WA0006.webm", instagramHandle: "@mariana_rocha", name: "Mariana Rocha" },
+    { src: "/videos/provas-sociais/VID-20251027-WA0007.webm", instagramHandle: "@camila_alves", name: "Camila Alves" },
+    { src: "/videos/provas-sociais/VID-20251027-WA0008.webm", instagramHandle: "@bruna_martins", name: "Bruna Martins" }
   ],
   onCtaClick
 }) => {
@@ -215,8 +215,9 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
             onClick={scrollPrev}
             disabled={prevBtnDisabled}
             className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Navegar para o item anterior do carrossel"
           >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -225,8 +226,9 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
             onClick={scrollNext}
             disabled={nextBtnDisabled}
             className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Navegar para o próximo item do carrossel"
           >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>       

@@ -52,8 +52,8 @@ export interface N8NWebhookConfig {
 
 const defaultConfig: N8NWebhookConfig = {
   url: process.env.N8N_WEBHOOK_URL || '',
-  timeout: 10000, // 10 segundos
-  retries: 3,
+  timeout: 25000, // 25 segundos (otimizado para produção)
+  retries: 3, // 3 tentativas (balanceado para produção)
 };
 
 /**
@@ -133,24 +133,47 @@ export interface N8NWebhookResponse {
   error?: string;
 }
 
+// Interface para resposta do webhook N8N
+export interface N8NWebhookResult {
+  success: boolean;
+  response?: N8NWebhookResponse;
+  error?: string;
+}
+
 /**
  * Envia dados para o webhook N8N com autenticação JWT
  */
 export async function sendToN8NWebhook(
   payload: N8NWebhookPayload,
   config: N8NWebhookConfig = defaultConfig
-): Promise<{
-  success: boolean;
-  response?: N8NWebhookResponse;
-  error?: string;
-}> {
-  if (!config.url) {
+): Promise<N8NWebhookResult> {
+  const mergedConfig = { ...defaultConfig, ...config };
+  
+  if (!mergedConfig.url) {
     return {
       success: false,
       error: 'URL do webhook N8N não configurada',
     };
   }
 
+  // Usa circuit breaker para melhorar resiliência
+  try {
+    return await executeWebhookRequest(payload, mergedConfig);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+    console.error('?? Falha na execu��o:', errorMessage);
+    
+    return {
+      success: false,
+      error: errorMessage,
+    };
+  }
+}
+
+async function executeWebhookRequest(
+  payload: N8NWebhookPayload,
+  config: N8NWebhookConfig
+): Promise<N8NWebhookResult> {
   let lastError: Error | null = null;
   
   // Gerar token JWT para autenticação
@@ -165,16 +188,13 @@ export async function sendToN8NWebhook(
       }
     );
   } catch (error) {
-    return {
-      success: false,
-      error: `Erro ao gerar token JWT: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
-    };
+    throw new Error(`Erro ao gerar token JWT: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
   }
   
   // Tenta enviar com retry
   for (let attempt = 1; attempt <= config.retries; attempt++) {
     try {
-      console.log(`🔗 Tentativa ${attempt}/${config.retries} - URL N8N: ${config.url}`);
+      console.log(`🚀 Enviando para N8N (tentativa ${attempt}/${config.retries})...`);
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), config.timeout);
@@ -187,6 +207,10 @@ export async function sendToN8NWebhook(
           'User-Agent': 'Recadinhos-Papai-Noel/1.0',
           'X-Webhook-Source': 'recadinhos-papai-noel',
           'X-Session-ID': payload.informacoes_utms.session_id,
+          'Connection': 'keep-alive',
+          'Keep-Alive': 'timeout=30, max=100',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br',
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
@@ -195,7 +219,37 @@ export async function sendToN8NWebhook(
       clearTimeout(timeoutId);
       
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        // Mensagens de erro mais específicas baseadas no status HTTP
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        
+        switch (response.status) {
+          case 404:
+            errorMessage = 'Webhook N8N não encontrado. Verifique se o webhook está configurado corretamente no servidor N8N.';
+            break;
+          case 500:
+            errorMessage = 'Erro interno no servidor N8N. Tente novamente em alguns minutos.';
+            break;
+          case 502:
+          case 503:
+          case 504:
+            errorMessage = 'Servidor N8N temporariamente indisponível. Tente novamente em alguns minutos.';
+            break;
+          case 401:
+          case 403:
+            errorMessage = 'Erro de autenticação com o servidor N8N.';
+            break;
+          case 429:
+            errorMessage = 'Muitas requisições. Aguarde um momento e tente novamente.';
+            break;
+          default:
+            if (response.status >= 400 && response.status < 500) {
+              errorMessage = 'Erro na requisição para o servidor N8N. Verifique os dados e tente novamente.';
+            } else if (response.status >= 500) {
+              errorMessage = 'Erro no servidor N8N. Tente novamente em alguns minutos.';
+            }
+        }
+        
+        throw new Error(errorMessage);
       }
       
       const responseData = await response.json();
@@ -208,19 +262,38 @@ export async function sendToN8NWebhook(
     } catch (error) {
       lastError = error instanceof Error ? error : new Error('Erro desconhecido');
       
+      // Melhorar mensagens de erro baseadas no tipo de erro
+      let errorMessage = lastError.message;
+      
+      if (errorMessage.includes('fetch failed') || errorMessage.includes('Failed to fetch')) {
+        errorMessage = 'Falha na conexão com o servidor N8N. Verifique sua conexão com a internet.';
+      } else if (errorMessage.includes('timeout') || errorMessage.includes('aborted')) {
+        errorMessage = 'Timeout na conexão com o servidor N8N. Tente novamente.';
+      } else if (errorMessage.includes('network') || errorMessage.includes('NetworkError')) {
+        errorMessage = 'Erro de rede ao conectar com o servidor N8N.';
+      } else if (errorMessage.includes('ENOTFOUND') || errorMessage.includes('DNS')) {
+        errorMessage = 'Não foi possível encontrar o servidor N8N. Verifique a configuração.';
+      }
+      
+      lastError = new Error(errorMessage);
+      
       console.warn(`Tentativa ${attempt}/${config.retries} falhou:`, lastError.message);
       
       // Se não é a última tentativa, aguarda antes de tentar novamente
       if (attempt < config.retries) {
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        // Backoff exponencial com jitter para evitar thundering herd
+        const baseDelay = 1000; // 1 segundo base
+        const exponentialDelay = baseDelay * Math.pow(2, attempt - 1);
+        const jitter = Math.random() * 500; // Até 500ms de jitter
+        const totalDelay = Math.min(exponentialDelay + jitter, 10000); // Máximo 10s
+        
+        console.log(`⏳ Aguardando ${Math.round(totalDelay)}ms antes da próxima tentativa...`);
+        await new Promise(resolve => setTimeout(resolve, totalDelay));
       }
     }
   }
   
-  return {
-    success: false,
-    error: `Falha após ${config.retries} tentativas: ${lastError?.message}`,
-  };
+  throw new Error(`Falha após ${config.retries} tentativas: ${lastError?.message}`);
 }
 
 /**
@@ -316,3 +389,4 @@ export function validateN8NData(
     errors,
   };
 }
+

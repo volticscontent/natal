@@ -24,13 +24,13 @@ const SocialProofSection: React.FC<SocialProofSectionProps> = ({
       totalReviews: "1407",
       logo: "/images/trustpilot.webp",
       bgColor: "bg-green-50",
-      ratingColor: "text-green-600"
+      ratingColor: "text-green-700"
     },
     {
       platform: "Elfi Santa",
       rating: "4,9", 
       totalReviews: "60671",
-      logo: "/images/logo_65x91.webp",
+      logo: "/images/logo.webp",
       bgColor: "bg-red-50",
       ratingColor: "text-red-600"
     },
@@ -69,9 +69,10 @@ const SocialProofSection: React.FC<SocialProofSectionProps> = ({
                   <Image
                     src={review.logo}
                     alt={`${review.platform} logo`}
-                    width={review.platform === "Elfi Santa" ? 24 : review.platform === "Trustpilot" ? (isMobile ? 60 : 80) : 60}
-                    height={24}
-                    className="object-contain max-w-full"
+                    width={review.platform === 'Trustpilot' ? 120 : 80}
+                    height={40}
+                    style={{ width: 'auto', height: 'auto' }}
+                    className="object-contain"
                   />
                 </div>
               </div>

@@ -28,6 +28,7 @@ export interface N8NSubmissionState {
   isSubmitting: boolean;
   lastResult?: N8NSubmissionResult;
   error?: string;
+  fallbackMode?: boolean;
 }
 
 /**
@@ -121,6 +122,51 @@ export const useN8NIntegration = () => {
   }, [sessionId, utmParams]);
 
   /**
+   * Ativa modo fallback quando N8N não estiver disponível
+   */
+  const activateFallbackMode = useCallback((
+    persData: PersData,
+    contactData: ContactData
+  ): N8NSubmissionResult => {
+    console.log('🔄 Ativando modo fallback - dados salvos localmente');
+    
+    // Salvar dados localmente para recuperação posterior
+    const fallbackData = {
+      persData,
+      contactData,
+      sessionId,
+      utmParams,
+      timestamp: new Date().toISOString(),
+      status: 'pending_n8n_sync'
+    };
+    
+    // Salvar no localStorage para tentar enviar posteriormente
+    const existingFallbackData = localStorage.getItem('n8n_fallback_queue');
+    const fallbackQueue = existingFallbackData ? JSON.parse(existingFallbackData) : [];
+    fallbackQueue.push(fallbackData);
+    localStorage.setItem('n8n_fallback_queue', JSON.stringify(fallbackQueue));
+    
+    const result: N8NSubmissionResult = {
+      success: true,
+      sessionId,
+      response: {
+        success: true,
+        message: 'Dados salvos em modo offline. Serão sincronizados quando o servidor estiver disponível.',
+        session_id: sessionId
+      }
+    };
+
+    setState(prev => ({
+      ...prev,
+      isSubmitting: false,
+      lastResult: result,
+      fallbackMode: true,
+    }));
+
+    return result;
+  }, [sessionId, utmParams]);
+
+  /**
    * Valida dados antes do envio
    */
   const validateData = useCallback((
@@ -210,9 +256,37 @@ export const useN8NIntegration = () => {
     }
 
     console.log('✅ Validação passou, enviando para N8N...');
-    // Se validação passou, enviar dados
-    return submitToN8N(persData, contactData);
-  }, [submitToN8N, validateData]);
+    
+    try {
+      // Tentar enviar dados para N8N
+      const result = await submitToN8N(persData, contactData);
+      
+      // Se falhou devido a problemas de conectividade, ativar modo fallback
+      if (!result.success && result.error) {
+        const errorMsg = result.error.toLowerCase();
+        const isConnectivityIssue = 
+          errorMsg.includes('webhook n8n não encontrado') ||
+          errorMsg.includes('falha na conexão') ||
+          errorMsg.includes('servidor n8n temporariamente indisponível') ||
+          errorMsg.includes('timeout') ||
+          errorMsg.includes('fetch failed') ||
+          errorMsg.includes('network');
+        
+        if (isConnectivityIssue) {
+          console.log('🔄 Problema de conectividade detectado, ativando modo fallback...');
+          return activateFallbackMode(persData, contactData);
+        }
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('❌ Erro inesperado ao enviar para N8N:', error);
+      
+      // Em caso de erro inesperado, também ativar modo fallback
+      console.log('🔄 Erro inesperado, ativando modo fallback...');
+      return activateFallbackMode(persData, contactData);
+    }
+  }, [submitToN8N, validateData, activateFallbackMode]);
 
   /**
    * Limpa o estado de erro
@@ -238,11 +312,13 @@ export const useN8NIntegration = () => {
     isSubmitting: state.isSubmitting,
     lastResult: state.lastResult,
     error: state.error,
+    fallbackMode: state.fallbackMode,
     
     // Funções
     submitToN8N,
     validateData,
     validateAndSubmit,
+    activateFallbackMode,
     clearError,
     reset,
     

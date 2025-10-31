@@ -26,25 +26,61 @@ const FloatingCarousel: React.FC<FloatingCarouselProps> = ({
   const defaultCards: FloatingCard[] = [
     {
       id: '1',
-      icon: <Image src="/images/image_8.png" alt="Entrega rápida" width={50} height={45} className="object-contain" />,
+      icon: <Image 
+        src="/images/image_8.png" 
+        alt="Entrega rápida" 
+        width={50} 
+        height={45} 
+        style={{ width: 'auto', height: 'auto' }}
+        className="object-contain" 
+        loading="lazy"
+        quality={75}
+      />,
       title: t('cards.0.title'),
       subtitle: t('cards.0.subtitle')
     },
     {
       id: '2',
-      icon: <Image src="/images/image_6.png" alt="Avaliações" width={60} height={40} className="object-contain" />,
+      icon: <Image 
+        src="/images/image_6.png" 
+        alt="Avaliações" 
+        width={60} 
+        height={40} 
+        style={{ width: 'auto', height: 'auto' }}
+        className="object-contain" 
+        loading="lazy"
+        quality={75}
+      />,
       title: t('cards.1.title'),
       subtitle: t('cards.1.subtitle')
     },
     {
       id: '3',
-      icon: <Image src="/images/image_15.png" alt="Personalização" width={35} height={40} className="object-contain" />,
+      icon: <Image 
+        src="/images/image_15.png" 
+        alt="Personalização" 
+        width={35} 
+        height={40} 
+        style={{ width: 'auto', height: 'auto' }}
+        className="object-contain" 
+        loading="lazy"
+        quality={75}
+      />,
       title: t('cards.2.title'),
       subtitle: t('cards.2.subtitle')
     },
     {
       id: '4',
-      icon: <Image src="/images/image_19.png" alt="Surpresa de Natal" width={35} height={35} className="object-contain" />,
+      icon: <Image 
+        src="/images/image_19.png" 
+        alt="Surpresa de Natal" 
+        width={35} 
+        height={35} 
+        style={{ width: 'auto', height: 'auto' }}
+        className="object-contain" 
+        loading="lazy"
+        quality={75}
+      />,
       title: t('cards.3.title'),
       subtitle: t('cards.3.subtitle')
     },
@@ -52,8 +88,8 @@ const FloatingCarousel: React.FC<FloatingCarouselProps> = ({
   
   const validCards = Array.isArray(cards) ? cards : defaultCards;
 
-  // Criar array expandido para animação CSS contínua
-  const expandedCards = Array(20).fill(validCards).flat();
+  // Reduzir array expandido para melhor performance
+  const expandedCards = Array(8).fill(validCards).flat();
 
   return (
     <section className="pt-2 pb-10 md:py-4 bg-white overflow-hidden">
@@ -89,7 +125,7 @@ const FloatingCarousel: React.FC<FloatingCarouselProps> = ({
         {/* Mobile Version - CSS Animation */}
         {isMobile ? (
           <div className="flex justify-center">
-            <div className="w-full max-w overflow-hidden">
+            <div className="w-full max-w-full overflow-hidden">
               <div className="flex scroll-left" style={{ width: 'calc(200% + 40px)' }}>
                 {expandedCards.map((card, index) => (
                   <div key={`${card.id}-${index}`} className="flex-shrink-0 mx-2" style={{ width: 'calc(50vw - 16px)' }}>

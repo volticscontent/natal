@@ -666,6 +666,20 @@ export const formatPhone = (phone: string): string => {
   return phone;
 };
 
+/**
+ * Remove formatação do CPF para envio (formato único: apenas números)
+ */
+export const unformatCPF = (cpf: string): string => {
+  return cleanNumbers(cpf);
+};
+
+/**
+ * Remove formatação do telefone para envio (formato único: apenas números)
+ */
+export const unformatPhone = (phone: string): string => {
+  return cleanNumbers(phone);
+};
+
 const validationUtils = {
   validateCPF,
   validatePhone,
@@ -680,6 +694,8 @@ const validationUtils = {
   cleanNumbers,
   formatCPF,
   formatPhone,
+  unformatCPF,
+  unformatPhone,
 };
 
 export default validationUtils;

@@ -22,6 +22,7 @@
     "removeChild": "Eliminar",
     "nextStep": "Siguiente Paso",
     "previousStep": "Volver",
+    "previous": "Anterior",
     "maxChildren": "Máximo 3 niños",
     "skip": "Saltar",
     "finalize": "Finalizar Pedido"
@@ -57,6 +58,14 @@
     "personalMessage": "Mensaje Personalizado",
     "messagePlaceholder": "Escribe un mensaje especial para que Papá Noel incluya en el video...",
     "contactInfo": "Información de Contacto",
+    "contact": {
+      "name": "Nombre Completo",
+      "namePlaceholder": "Tu nombre completo",
+      "email": "E-mail",
+      "emailPlaceholder": "tu@email.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "(11) 99999-9999"
+    },
     "photoUpload": {
       "title": "Incluir fotos de los niños en el video",
       "description": "Agrega fotos de los niños para hacer el video aún más personalizado"
@@ -87,44 +96,6 @@
     "selected": "seleccionado(s)",
     "orderSummary": "Resumen del Pedido",
     "baseVideo": "Video Personalizado"
-  },
-  "step3": {
-    "title": "Información de Contacto",
-    "subtitle": "Completa tu pedido con tu información de contacto y entrega",
-    "contact": {
-      "name": "Nombre Completo",
-      "namePlaceholder": "Tu nombre completo",
-      "email": "Correo Electrónico",
-      "emailPlaceholder": "tu@email.com",
-      "phone": "Teléfono",
-      "phonePlaceholder": "(11) 99999-9999"
-    },
-    "address": {
-      "street": "Dirección",
-      "streetPlaceholder": "Calle, número",
-      "city": "Ciudad",
-      "cityPlaceholder": "Tu ciudad",
-      "state": "Estado",
-      "statePlaceholder": "SP",
-      "zipCode": "Código Postal",
-      "zipCodePlaceholder": "00000-000"
-    },
-    "validation": {
-      "nameRequired": "El nombre es obligatorio",
-      "emailRequired": "El correo electrónico es obligatorio",
-      "emailInvalid": "Correo electrónico inválido",
-      "phoneRequired": "El teléfono es obligatorio",
-      "streetRequired": "La dirección es obligatoria",
-      "cityRequired": "La ciudad es obligatoria",
-      "stateRequired": "El estado es obligatorio",
-      "zipCodeRequired": "El código postal es obligatorio"
-    },
-    "summary": {
-      "title": "Resumen del Pedido",
-      "children": "Niños",
-      "extras": "Productos Extras",
-      "total": "Total"
-    }
   },
   "tip": {
     "title": "💡 Consejo",

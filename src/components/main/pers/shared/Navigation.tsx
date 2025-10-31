@@ -100,7 +100,7 @@ export default function Navigation({
           ) : (
             <>
               {getNextLabel()}
-              <span className="text-white/80 text-sm ml-2">
+              <span className="text-white text-sm ml-2">
                 {currentStep}/{totalSteps}
               </span>
               {!isLastStep && <span>→</span>}

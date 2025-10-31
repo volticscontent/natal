@@ -113,7 +113,7 @@ const AvaliacaoEspecialistaSection: React.FC<AvaliacaoEspecialistaSectionProps> 
             {t('ctaButton')}
           </button>
           
-          <p className="text-white/80 mt-4 text-sm">
+          <p className="text-white mt-4 text-sm">
             {t('ctaDisclaimer')}
           </p>
         </div>

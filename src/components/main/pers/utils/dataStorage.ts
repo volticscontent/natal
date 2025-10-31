@@ -298,12 +298,10 @@ export const recalculateAndSavePricing = (locale: string = 'pt'): PricingResult 
   // Usar quantidade_criancas como fonte principal de dados
   const childrenCount = persData.quantidade_criancas || 1;
   const selectedBumps = persData.order_bumps || [];
-  const photosCount = persData.fotos?.length || 0;
 
   console.log('Calculation inputs:', {
     childrenCount,
     selectedBumps,
-    photosCount,
     locale,
     persData
   });
@@ -311,7 +309,6 @@ export const recalculateAndSavePricing = (locale: string = 'pt'): PricingResult 
   const pricingResult = calculateUserSelectionPricing(
     childrenCount,
     selectedBumps,
-    photosCount,
     locale
   );
 

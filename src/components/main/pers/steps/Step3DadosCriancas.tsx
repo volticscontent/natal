@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PersData, Crianca, ContactData, STORAGE_KEYS } from '../types';
@@ -16,16 +16,49 @@ import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
 import StepsLayout from '../layout/StepsLayout';
 
-// Função para validar CPF
+// Cache para validação de CPF
+const cpfValidationCache = new Map<string, boolean>();
+
+// Função para detectar dispositivos móveis
+const isMobileDevice = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+// Função para detectar iOS/Safari
+const isIOSDevice = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+};
+
+// Função para detectar Safari
+const isSafari = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+};
+
+// Função otimizada para validar CPF com cache
 const isValidCPF = (cpf: string): boolean => {
+  // Verificar cache primeiro
+  if (cpfValidationCache.has(cpf)) {
+    return cpfValidationCache.get(cpf)!;
+  }
+
   // Remove caracteres não numéricos
   const cleanCPF = cpf.replace(/\D/g, '');
   
   // Verifica se tem 11 dígitos
-  if (cleanCPF.length !== 11) return false;
+  if (cleanCPF.length !== 11) {
+    cpfValidationCache.set(cpf, false);
+    return false;
+  }
   
   // Verifica se todos os dígitos são iguais
-  if (/^(\d)\1{10}$/.test(cleanCPF)) return false;
+  if (/^(\d)\1{10}$/.test(cleanCPF)) {
+    cpfValidationCache.set(cpf, false);
+    return false;
+  }
   
   // Validação do primeiro dígito verificador
   let sum = 0;
@@ -34,7 +67,10 @@ const isValidCPF = (cpf: string): boolean => {
   }
   let remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) remainder = 0;
-  if (remainder !== parseInt(cleanCPF.charAt(9))) return false;
+  if (remainder !== parseInt(cleanCPF.charAt(9))) {
+    cpfValidationCache.set(cpf, false);
+    return false;
+  }
   
   // Validação do segundo dígito verificador
   sum = 0;
@@ -43,19 +79,98 @@ const isValidCPF = (cpf: string): boolean => {
   }
   remainder = (sum * 10) % 11;
   if (remainder === 10 || remainder === 11) remainder = 0;
-  if (remainder !== parseInt(cleanCPF.charAt(10))) return false;
+  if (remainder !== parseInt(cleanCPF.charAt(10))) {
+    cpfValidationCache.set(cpf, false);
+    return false;
+  }
   
+  // Limitar tamanho do cache
+  if (cpfValidationCache.size > 100) {
+    const firstKey = cpfValidationCache.keys().next().value;
+    if (firstKey !== undefined) {
+      cpfValidationCache.delete(firstKey);
+    }
+  }
+  
+  cpfValidationCache.set(cpf, true);
   return true;
 };
 
-// Função para formatar CPF
+// Cache para formatação de CPF
+const cpfFormatCache = new Map<string, string>();
+
+// Função otimizada para formatar CPF com cache
 const formatCPF = (value: string): string => {
+  // Verificar cache primeiro
+  if (cpfFormatCache.has(value)) {
+    return cpfFormatCache.get(value)!;
+  }
+
+  // Remove tudo que não é dígito
   const cleanValue = value.replace(/\D/g, '');
-  return cleanValue
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-    .replace(/(-\d{2})\d+?$/, '$1');
+  
+  let formatted: string;
+  
+  // Aplica a máscara
+  if (cleanValue.length <= 3) {
+    formatted = cleanValue;
+  } else if (cleanValue.length <= 6) {
+    formatted = `${cleanValue.slice(0, 3)}.${cleanValue.slice(3)}`;
+  } else if (cleanValue.length <= 9) {
+    formatted = `${cleanValue.slice(0, 3)}.${cleanValue.slice(3, 6)}.${cleanValue.slice(6)}`;
+  } else {
+    formatted = `${cleanValue.slice(0, 3)}.${cleanValue.slice(3, 6)}.${cleanValue.slice(6, 9)}-${cleanValue.slice(9, 11)}`;
+  }
+  
+  // Limitar tamanho do cache
+  if (cpfFormatCache.size > 50) {
+    const firstKey = cpfFormatCache.keys().next().value;
+    if (firstKey !== undefined) {
+      cpfFormatCache.delete(firstKey);
+    }
+  }
+  
+  cpfFormatCache.set(value, formatted);
+  return formatted;
+};
+
+// Cache para formatação de telefone
+const phoneFormatCache = new Map<string, string>();
+
+// Função otimizada para formatar telefone com cache
+const formatPhone = (value: string): string => {
+  // Verificar cache primeiro
+  if (phoneFormatCache.has(value)) {
+    return phoneFormatCache.get(value)!;
+  }
+
+  // Remove tudo que não é dígito
+  const cleanValue = value.replace(/\D/g, '');
+  
+  let formatted: string;
+  
+  // Aplica a máscara baseada no tamanho
+  if (cleanValue.length <= 2) {
+    formatted = cleanValue;
+  } else if (cleanValue.length <= 6) {
+    formatted = `(${cleanValue.slice(0, 2)}) ${cleanValue.slice(2)}`;
+  } else if (cleanValue.length <= 10) {
+    formatted = `(${cleanValue.slice(0, 2)}) ${cleanValue.slice(2, 6)}-${cleanValue.slice(6)}`;
+  } else {
+    // Para celular com 11 dígitos
+    formatted = `(${cleanValue.slice(0, 2)}) ${cleanValue.slice(2, 7)}-${cleanValue.slice(7, 11)}`;
+  }
+  
+  // Limitar tamanho do cache
+  if (phoneFormatCache.size > 50) {
+    const firstKey = phoneFormatCache.keys().next().value;
+    if (firstKey !== undefined) {
+      phoneFormatCache.delete(firstKey);
+    }
+  }
+  
+  phoneFormatCache.set(value, formatted);
+  return formatted;
 };
 
 interface Step3DadosCriancasProps {
@@ -90,6 +205,44 @@ export default function Step3DadosCriancas({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [cpfValidationTimeout, setCpfValidationTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  // Handler otimizado para mudança de CPF com debounce
+  const handleCpfChange = useCallback((value: string) => {
+    const formattedCPF = formatCPF(value);
+    setContactData(prev => ({ ...prev, cpf: formattedCPF }));
+    
+    // Limpar timeout anterior
+    if (cpfValidationTimeout) {
+      clearTimeout(cpfValidationTimeout);
+    }
+    
+    // Debounce da validação para evitar validações desnecessárias
+    const newTimeout = setTimeout(() => {
+      if (formattedCPF.length >= 14) {
+        isValidCPF(formattedCPF); // Pré-validar e cachear
+      }
+    }, 300);
+    
+    setCpfValidationTimeout(newTimeout);
+  }, [cpfValidationTimeout]);
+
+  // Handler para formatação de telefone
+  const handlePhoneChange = useCallback((value: string) => {
+    const formattedPhone = formatPhone(value);
+    setContactData(prev => ({ ...prev, telefone: formattedPhone }));
+  }, []);
+
+  // Cleanup do timeout
+  useEffect(() => {
+    return () => {
+      if (cpfValidationTimeout) {
+        clearTimeout(cpfValidationTimeout);
+      }
+    };
+  }, [cpfValidationTimeout]);
+
+
 
   // Track page view
   useEffect(() => {
@@ -208,17 +361,174 @@ export default function Step3DadosCriancas({
 
   const handlePhotoUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+    if (!file) return;
+
+    // Validações específicas para dispositivos móveis
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = [
+      'image/jpeg', 
+      'image/jpg', 
+      'image/png', 
+      'image/webp',
+      'image/heic',  // Formato padrão do iPhone
+      'image/heif'   // Formato alternativo do iPhone
+    ];
+
+    // Validar tamanho do arquivo
+    if (file.size > maxSize) {
+      setErrors([`Foto da criança ${index + 1} é muito grande. Máximo 10MB.`]);
+      return;
+    }
+
+    // Validar tipo do arquivo
+    if (!allowedTypes.includes(file.type)) {
+      setErrors([`Formato da foto da criança ${index + 1} não suportado. Use JPG, PNG, WEBP, HEIC ou HEIF.`]);
+      return;
+    }
+
+    // Limpar erros anteriores
+    setErrors([]);
+
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      try {
         const base64 = e.target?.result as string;
-        updateChild(index, 'foto', base64);
-      };
+        if (base64) {
+          updateChild(index, 'foto', base64);
+          console.log(`✅ Foto da criança ${index + 1} carregada com sucesso`);
+        }
+      } catch (error) {
+        console.error(`Erro ao processar foto da criança ${index + 1}:`, error);
+        setErrors([`Erro ao processar foto da criança ${index + 1}. Tente novamente.`]);
+      }
+    };
+
+    reader.onerror = (error) => {
+      console.error(`Erro ao ler arquivo da criança ${index + 1}:`, error);
+      setErrors([`Erro ao ler foto da criança ${index + 1}. Tente selecionar novamente.`]);
+    };
+
+    reader.onabort = () => {
+      console.warn(`Upload da foto da criança ${index + 1} foi cancelado`);
+      setErrors([`Upload da foto da criança ${index + 1} foi cancelado.`]);
+    };
+
+    try {
       reader.readAsDataURL(file);
+    } catch (error) {
+      console.error(`Erro ao iniciar leitura da foto da criança ${index + 1}:`, error);
+      setErrors([`Erro ao processar foto da criança ${index + 1}. Tente novamente.`]);
     }
   };
 
-  // Função para fazer upload das fotos para R2
+  // Função melhorada para converter base64 para File com compatibilidade Safari/iOS
+  const convertBase64ToFile = async (base64: string, index: number): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      try {
+        // Validar formato base64
+        if (!base64 || !base64.includes('data:image/')) {
+          reject(new Error(`Foto ${index + 1} tem formato inválido`));
+          return;
+        }
+        
+        const processConversion = () => {
+          try {
+            // Extrair dados base64 e tipo MIME
+            const [header, base64Data] = base64.split(',');
+            if (!base64Data) {
+              throw new Error(`Foto ${index + 1} não contém dados válidos`);
+            }
+            
+            // Extrair tipo MIME do header
+            const mimeMatch = header.match(/data:([^;]+)/);
+            const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+            
+            // Detectar dispositivo para escolher melhor método
+            const isIOS = isIOSDevice();
+            const isMobile = isMobileDevice();
+            const safari = isSafari();
+
+            console.log(`🔍 Dispositivo detectado - iOS: ${isIOS}, Mobile: ${isMobile}, Safari: ${safari}`);
+
+            // Para iOS/Safari, usar sempre atob que é mais confiável
+            if (isIOS || safari) {
+              try {
+                const binaryString = atob(base64Data);
+                
+                // Processar em chunks para evitar problemas de memória em dispositivos móveis
+                const chunkSize = isMobile ? 8192 : 16384;
+                const chunks: BlobPart[] = [];
+                
+                for (let i = 0; i < binaryString.length; i += chunkSize) {
+                  const chunk = binaryString.slice(i, i + chunkSize);
+                  const chunkArray = new Uint8Array(chunk.length);
+                  
+                  for (let j = 0; j < chunk.length; j++) {
+                    chunkArray[j] = chunk.charCodeAt(j);
+                  }
+                  
+                  chunks.push(chunkArray);
+                }
+                
+                const blob = new Blob(chunks, { type: mimeType });
+                const fileName = `child_${index + 1}_photo_${Date.now()}.jpg`;
+                const file = new File([blob], fileName, { type: 'image/jpeg' });
+                
+                resolve(file);
+              } catch (atobError) {
+                console.error('Erro no atob para iOS/Safari:', atobError);
+                reject(new Error(`Erro ao processar foto ${index + 1} no dispositivo iOS`));
+              }
+            } else {
+              // Para outros navegadores, tentar atob primeiro, depois fetch
+              try {
+                const binaryString = atob(base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                
+                for (let i = 0; i < binaryString.length; i++) {
+                  bytes[i] = binaryString.charCodeAt(i);
+                }
+                
+                // Criar blob e file
+                const blob = new Blob([bytes], { type: mimeType });
+                const fileName = `child_${index + 1}_photo_${Date.now()}.jpg`;
+                const file = new File([blob], fileName, { type: 'image/jpeg' });
+                
+                resolve(file);
+              } catch (atobError) {
+                // Fallback para fetch se atob falhar
+                fetch(base64)
+                  .then(res => res.blob())
+                  .then(blob => {
+                    const fileName = `child_${index + 1}_photo_${Date.now()}.jpg`;
+                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                    resolve(file);
+                  })
+                  .catch(fetchError => {
+                    console.error(`Erro na conversão da foto ${index + 1}:`, { atobError, fetchError });
+                    reject(new Error(`Erro ao processar foto ${index + 1}. Tente novamente.`));
+                  });
+              }
+            }
+          } catch (error) {
+            reject(error);
+          }
+        };
+
+        // Usar requestIdleCallback se disponível, senão setTimeout
+        if (typeof requestIdleCallback !== 'undefined') {
+          requestIdleCallback(processConversion, { timeout: 5000 });
+        } else {
+          setTimeout(processConversion, 0);
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  // Função para fazer upload das fotos para R2 (otimizada)
   const uploadPhotosToR2 = async (sessionId: string, persData: PersData, contactData: ContactData): Promise<string[]> => {
     const photosToUpload = children.filter(child => child.foto && child.foto.startsWith('data:'));
     
@@ -246,60 +556,19 @@ export default function Step3DadosCriancas({
       // Adicionar order bumps
       formData.append('order_bumps_site', JSON.stringify(persData.order_bumps));
 
-      // Converter base64 para File objects
-      for (let i = 0; i < photosToUpload.length; i++) {
-        const child = photosToUpload[i];
-        if (child.foto) {
-          try {
-            console.log(`[UPLOAD-DEBUG] Processando foto ${i + 1}:`);
-            console.log(`[UPLOAD-DEBUG] - Tamanho da string base64: ${child.foto.length}`);
-            console.log(`[UPLOAD-DEBUG] - Prefixo da foto: ${child.foto.substring(0, 50)}...`);
-            
-            // Verificar se é base64 válido
-            if (!child.foto.includes('data:image/')) {
-              console.error(`[UPLOAD-DEBUG] Foto ${i + 1} não tem prefixo data:image válido`);
-              throw new Error(`Foto ${i + 1} tem formato inválido`);
-            }
-            
-            // Converter base64 para blob de forma mais robusta
-            const base64Data = child.foto.split(',')[1]; // Remove o prefixo data:image/...;base64,
-            
-            if (!base64Data) {
-              console.error(`[UPLOAD-DEBUG] Foto ${i + 1} não tem dados base64 válidos`);
-              throw new Error(`Foto ${i + 1} não contém dados válidos`);
-            }
-            
-            console.log(`[UPLOAD-DEBUG] - Tamanho dos dados base64: ${base64Data.length}`);
-            
-            const byteCharacters = atob(base64Data);
-            const byteNumbers = new Array(byteCharacters.length);
-            
-            for (let j = 0; j < byteCharacters.length; j++) {
-              byteNumbers[j] = byteCharacters.charCodeAt(j);
-            }
-            
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'image/jpeg' });
-            
-            console.log(`[UPLOAD-DEBUG] - Tamanho do blob: ${blob.size} bytes`);
-            
-            // Criar File object com nome mais específico
-            const fileName = `child_${i + 1}_photo_${Date.now()}.jpg`;
-            const file = new File([blob], fileName, { type: 'image/jpeg' });
-            
-            console.log(`[UPLOAD-DEBUG] - Nome do arquivo: ${fileName}`);
-            console.log(`[UPLOAD-DEBUG] - Tamanho do arquivo: ${file.size} bytes`);
-            console.log(`[UPLOAD-DEBUG] - Tipo do arquivo: ${file.type}`);
-            
-            formData.append(`file${i}`, file);
-            console.log(`[UPLOAD-DEBUG] Foto ${i + 1} adicionada ao FormData com sucesso`);
-          } catch (conversionError) {
-            console.error(`[UPLOAD-DEBUG] Erro ao converter foto da criança ${i + 1}:`, conversionError);
-            console.error(`[UPLOAD-DEBUG] Stack trace:`, conversionError.stack);
-            throw new Error(`Erro ao processar foto da criança ${i + 1}: ${conversionError.message}`);
-          }
+      // Converter base64 para File objects de forma assíncrona e paralela
+      const conversionPromises = photosToUpload.map((child, i) => 
+        child.foto ? convertBase64ToFile(child.foto, i) : Promise.resolve(null)
+      );
+
+      const files = await Promise.all(conversionPromises);
+      
+      // Adicionar arquivos ao FormData
+      files.forEach((file, i) => {
+        if (file) {
+          formData.append(`file${i}`, file);
         }
-      }
+      });
 
       const uploadResponse = await fetch('/api/save-photos', {
         method: 'POST',
@@ -467,22 +736,81 @@ export default function Step3DadosCriancas({
           const n8nResult = await validateAndSubmit(persData, contactData);
           
           if (n8nResult.success) {
-            console.log('Dados enviados para N8N com sucesso, redirecionando para checkout...');
+            // Verificar se foi usado modo fallback
+            const response = n8nResult.response as { message?: string };
+            if (response?.message?.includes('modo offline')) {
+              console.log('Dados salvos em modo fallback, redirecionando para checkout...');
+              // Mostrar mensagem informativa mas continuar para checkout
+              console.info('ℹ️ Seus dados foram salvos e serão processados assim que o servidor estiver disponível.');
+            } else {
+              console.log('Dados enviados para N8N com sucesso, redirecionando para checkout...');
+            }
             await generateAndRedirect(persData);
           } else {
             console.error('Falha ao enviar dados para N8N:', n8nResult.error);
-            setErrors([n8nResult.error || 'Erro ao processar pedido. Tente novamente.']);
+            
+            // Mensagens de erro mais amigáveis baseadas no tipo de erro
+            let errorMessage = 'Erro ao processar pedido. Tente novamente.';
+            const errorMsg = (n8nResult.error || '').toLowerCase();
+            
+            if (errorMsg.includes('webhook n8n não encontrado') || errorMsg.includes('404')) {
+              errorMessage = '⚠️ Nosso sistema está temporariamente indisponível. Seus dados foram salvos e serão processados assim que possível. Você pode continuar com o pedido.';
+            } else if (errorMsg.includes('falha na conexão') || errorMsg.includes('network') || errorMsg.includes('fetch failed')) {
+              errorMessage = '🌐 Problema de conexão detectado. Verifique sua internet ou tente novamente em alguns minutos.';
+            } else if (errorMsg.includes('timeout')) {
+              errorMessage = '⏱️ A operação demorou mais que o esperado. Tente novamente.';
+            } else if (errorMsg.includes('falha após') && errorMsg.includes('tentativas')) {
+              errorMessage = '🔄 Não foi possível conectar ao servidor após várias tentativas. Verifique sua conexão e tente novamente.';
+            }
+            
+            setErrors([errorMessage]);
           }
         } catch (photoError) {
           console.error('Erro ao fazer upload das fotos:', photoError);
-          setErrors(['Erro ao fazer upload das fotos. Tente novamente.']);
+          
+          // Mensagens de erro mais específicas baseadas no tipo de erro
+          let errorMessage = 'Erro ao fazer upload das fotos. Tente novamente.';
+          
+          if (photoError instanceof Error) {
+            const errorMsg = photoError.message.toLowerCase();
+            
+            if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
+              errorMessage = 'Problema de conexão. Verifique sua internet e tente novamente.';
+            } else if (errorMsg.includes('formato') || errorMsg.includes('invalid')) {
+              errorMessage = 'Formato de foto inválido. Use apenas JPG, PNG ou WEBP.';
+            } else if (errorMsg.includes('size') || errorMsg.includes('tamanho')) {
+              errorMessage = 'Foto muito grande. Tente com uma foto menor.';
+            } else if (errorMsg.includes('timeout')) {
+              errorMessage = 'Upload demorou muito. Tente com fotos menores.';
+            } else if (errorMsg.includes('processar')) {
+              errorMessage = 'Erro ao processar as fotos. Tente selecionar as fotos novamente.';
+            }
+          }
+          
+          setErrors([errorMessage]);
         }
       } else {
-        setErrors(['Erro ao processar checkout']);
+        setErrors(['Por favor, preencha todos os campos obrigatórios.']);
       }
     } catch (error) {
       console.error('Erro ao processar dados:', error);
-      setErrors(['Erro ao processar dados']);
+      
+      // Mensagem de erro mais específica
+      let errorMessage = 'Erro ao processar dados. Tente novamente.';
+      
+      if (error instanceof Error) {
+        const errorMsg = error.message.toLowerCase();
+        
+        if (errorMsg.includes('network') || errorMsg.includes('connection')) {
+          errorMessage = 'Problema de conexão. Verifique sua internet e tente novamente.';
+        } else if (errorMsg.includes('timeout')) {
+          errorMessage = 'Operação demorou muito. Tente novamente.';
+        } else if (errorMsg.includes('validation') || errorMsg.includes('invalid')) {
+          errorMessage = 'Dados inválidos. Verifique as informações e tente novamente.';
+        }
+      }
+      
+      setErrors([errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -509,10 +837,10 @@ export default function Step3DadosCriancas({
         <div className="text-center animate-fade-in">
           <div className="inline-block p-2 backdrop-blur-sm rounded-2xl mb-6">
             <h1 className="text-4xl font-bold font-fertigo font-fertigo text-gray-800 mb-3 bg-black bg-clip-text text-transparent">
-              {(t && t('step3.title')) || 'Dados das Crianças'}
+              {t('step3.title')}
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed">
-              {(t && t('step3.subtitle')) || 'Preencha os dados das crianças para personalizar os recadinhos'}
+              {t('step3.subtitle')}
             </p>
           </div>
         </div>
@@ -533,7 +861,7 @@ export default function Step3DadosCriancas({
                     <span className="text-white font-bold font-fertigo text-lg">{index + 1}</span>
                   </div>
                   <h3 className="text-2xl font-bold font-fertigo text-black">
-                    {(t && t('step3.childTitle')) || 'Criança'} {index + 1}
+                    {t('step3.childTitle')} {index + 1}
                   </h3>
                 </div>
               </div>
@@ -541,14 +869,16 @@ export default function Step3DadosCriancas({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
                 {/* Nome da criança */}
                 <div className="space-y-2">
-                  <label className="block text-xl font-medium text-black">
+                  <label htmlFor={`child-name-${index}`} className="block text-xl font-medium text-black">
                     Nome da Criança *
                   </label>
                   <input
                     type="text"
+                    id={`child-name-${index}`}
+                    name={`child-name-${index}`}
                     value={child.nome}
                     onChange={(e) => updateChild(index, 'nome', e.target.value)}
-                    placeholder={(t && t('step3.namePlaceholder')) || 'Digite o nome da criança'}
+                    placeholder={t('step3.namePlaceholder')}
                     className="w-full px-4 py-3 border text-black border-gray-300 text-black rounded-xl transition-all duration-200"
                   />
                 </div>
@@ -562,7 +892,7 @@ export default function Step3DadosCriancas({
                     <div className="relative">
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif"
                         onChange={(e) => handlePhotoUpload(index, e)}
                         className="hidden"
                         id={`photo-${index}`}
@@ -580,7 +910,7 @@ export default function Step3DadosCriancas({
                               height={40}
                               className="rounded-lg object-cover"
                             />
-                            <span className="text-xl text-green-600">Foto carregada!</span>
+                            <span className="text-xl text-green-700">Foto carregada!</span>
                           </div>
                         ) : (
                           <div className="flex items-center space-x-2 text-gray-500">
@@ -620,7 +950,7 @@ export default function Step3DadosCriancas({
               <textarea
                 value={mensagem}
                 onChange={(e) => setMensagem(e.target.value)}
-                placeholder={(t && t('step3.messagePlaceholder')) || 'Digite sua mensagem personalizada aqui...'}
+                placeholder={t('step3.messagePlaceholder')}
                 rows={4}
                 className="w-full px-4 text-black py-3 border border-gray-300 text-black rounded-xl transition-all duration-200 resize-none"
               />
@@ -637,65 +967,71 @@ export default function Step3DadosCriancas({
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold font-fertigo text-gray-800">
-                  Informações de Contato
+                  {t('step3.contactInfo')}
                 </h3>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Nome */}
                 <div className="space-y-2">
-                  <label className="block text-xl font-medium text-gray-700">
-                    Nome *
+                  <label htmlFor="contact-name" className="block text-xl font-medium text-gray-700">
+                    {t('step3.contact.name')} *
                   </label>
                   <input
                     type="text"
+                    id="contact-name"
+                    name="contact-name"
                     value={contactData.nome}
                     onChange={(e) => setContactData(prev => ({ ...prev, nome: e.target.value }))}
-                    placeholder="Seu nome completo"
+                    placeholder={t('step3.contact.namePlaceholder')}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
                   />
                 </div>
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <label className="block text-xl font-medium text-gray-700">
-                    E-mail *
+                  <label htmlFor="contact-email" className="block text-xl font-medium text-gray-700">
+                    {t('step3.contact.email')} *
                   </label>
                   <input
                     type="email"
+                    id="contact-email"
+                    name="contact-email"
                     value={contactData.email}
                     onChange={(e) => setContactData(prev => ({ ...prev, email: e.target.value }))}
-                    placeholder="seu@email.com"
+                    placeholder={t('step3.contact.emailPlaceholder')}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
                   />
                 </div>
 
                 {/* Telefone */}
                 <div className="space-y-2">
-                  <label className="block text-xl font-medium text-gray-700">
-                    Telefone *
+                  <label htmlFor="contact-phone" className="block text-xl font-medium text-gray-700">
+                    {t('step3.contact.phone')} *
                   </label>
                   <input
                     type="tel"
+                    id="contact-phone"
+                    name="contact-phone"
                     value={contactData.telefone}
-                    onChange={(e) => setContactData(prev => ({ ...prev, telefone: e.target.value }))}
-                    placeholder="(11) 99999-9999"
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    placeholder={t('step3.contact.phonePlaceholder')}
+                    maxLength={15}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
                   />
                 </div>
 
                 {/* CPF */}
                 <div className="space-y-2">
-                  <label className="block text-xl font-medium text-gray-700">
+                  <label htmlFor="contact-cpf" className="block text-xl font-medium text-gray-700">
                     CPF *
                   </label>
                   <input
                     type="text"
+                    id="contact-cpf"
+                    name="contact-cpf"
                     value={contactData.cpf || ''}
-                    onChange={(e) => {
-                      const formattedCPF = formatCPF(e.target.value);
-                      setContactData(prev => ({ ...prev, cpf: formattedCPF }));
-                    }}
+                    onChange={(e) => handleCpfChange(e.target.value)}
                     placeholder="000.000.000-00"
                     maxLength={14}
                     className="w-full px-4 py-3 border  border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
@@ -708,16 +1044,51 @@ export default function Step3DadosCriancas({
 
         {/* Exibir erros */}
         {errors.length > 0 && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-shake">
+          <div className={`mb-6 p-4 rounded-xl animate-shake ${
+            errors.some(error => error.includes('⚠️') || error.includes('temporariamente indisponível')) 
+              ? 'bg-yellow-50 border border-yellow-200' 
+              : errors.some(error => error.includes('🌐') || error.includes('⏱️') || error.includes('🔄'))
+              ? 'bg-blue-50 border border-blue-200'
+              : 'bg-red-50 border border-red-200'
+          }`}>
             <div className="flex items-center space-x-2 mb-2">
-              <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              <h4 className="font-medium text-red-800">Corrija os seguintes erros:</h4>
+              {errors.some(error => error.includes('⚠️')) ? (
+                <svg className="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              ) : errors.some(error => error.includes('🌐') || error.includes('⏱️') || error.includes('🔄')) ? (
+                <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              )}
+              <h4 className={`font-medium ${
+                errors.some(error => error.includes('⚠️')) 
+                  ? 'text-yellow-800' 
+                  : errors.some(error => error.includes('🌐') || error.includes('⏱️') || error.includes('🔄'))
+                  ? 'text-blue-800'
+                  : 'text-red-800'
+              }`}>
+                {errors.some(error => error.includes('⚠️')) 
+                  ? 'Aviso importante:' 
+                  : errors.some(error => error.includes('🌐') || error.includes('⏱️') || error.includes('🔄'))
+                  ? 'Problema de conectividade:'
+                  : 'Corrija os seguintes erros:'
+                }
+              </h4>
             </div>
             <ul className="list-disc list-inside space-y-1">
               {errors && errors.length > 0 && errors.map((error, index) => (
-                <li key={index} className="text-xl text-red-700">{error}</li>
+                <li key={index} className={`text-xl ${
+                  error.includes('⚠️') 
+                    ? 'text-yellow-700' 
+                    : error.includes('🌐') || error.includes('⏱️') || error.includes('🔄')
+                    ? 'text-blue-700'
+                    : 'text-red-700'
+                }`}>{error}</li>
               ))}
             </ul>
           </div>

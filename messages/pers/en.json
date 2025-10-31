@@ -22,6 +22,7 @@
     "removeChild": "Remove",
     "nextStep": "Next Step",
     "previousStep": "Back",
+    "previous": "Previous",
     "maxChildren": "Maximum 3 children",
     "skip": "Skip",
     "finalize": "Finalize Order"
@@ -57,6 +58,14 @@
     "personalMessage": "Personal Message",
     "messagePlaceholder": "Type a special message for Santa to include in the video...",
     "contactInfo": "Contact Information",
+    "contact": {
+      "name": "Full Name",
+      "namePlaceholder": "Your full name",
+      "email": "E-mail",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone",
+      "phonePlaceholder": "(11) 99999-9999"
+    },
     "validation": {
       "nameRequired": "Child {index} name is required",
       "ageRequired": "Age is required",
@@ -84,44 +93,7 @@
     "orderSummary": "Order Summary",
     "baseVideo": "Personalized Video"
   },
-  "step3": {
-    "title": "Contact Information",
-    "subtitle": "Complete your order with your contact and delivery information",
-    "contact": {
-      "name": "Full Name",
-      "namePlaceholder": "Your full name",
-      "email": "Email",
-      "emailPlaceholder": "your@email.com",
-      "phone": "Phone",
-      "phonePlaceholder": "(11) 99999-9999"
-    },
-    "address": {
-      "street": "Address",
-      "streetPlaceholder": "Street, number",
-      "city": "City",
-      "cityPlaceholder": "Your city",
-      "state": "State",
-      "statePlaceholder": "SP",
-      "zipCode": "ZIP Code",
-      "zipCodePlaceholder": "00000-000"
-    },
-    "validation": {
-      "nameRequired": "Name is required",
-      "emailRequired": "Email is required",
-      "emailInvalid": "Invalid email",
-      "phoneRequired": "Phone is required",
-      "streetRequired": "Address is required",
-      "cityRequired": "City is required",
-      "stateRequired": "State is required",
-      "zipCodeRequired": "ZIP Code is required"
-    },
-    "summary": {
-      "title": "Order Summary",
-      "children": "Children",
-      "extras": "Extra Products",
-      "total": "Total"
-    }
-  },
+
   "tip": {
     "title": "💡 Tip",
     "content": "The more details you provide, the more personalized Santa's video will be!"

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadMultiplePhotos } from '@/lib/r2-upload';
 import { sendToN8NWebhook, N8NWebhookPayload, N8NWebhookResponse } from '@/lib/n8n-webhook';
+import { unformatCPF, unformatPhone } from '../../../components/main/pers/utils/validation';
 
 // Interface para o payload de salvamento de fotos
 interface SavePhotosPayload {
@@ -179,13 +180,13 @@ export async function POST(request: NextRequest): Promise<NextResponse<SavePhoto
     // Mapear order bumps para nomes legíveis
     const orderBumpsNomes = mapOrderBumpIdsToNames(orderBumps);
 
-    // 3. Monta payload do N8N para salvar no PostgreSQL
+    // 3. Monta payload do N8N para salvar no PostgreSQL (formato único: sem formatação)
     const n8nPayload: Partial<N8NWebhookPayload> = {
       informacoes_contato: {
         nome: savePayload.nome || '',
         email: savePayload.email || '',
-        telefone: savePayload.telefone || '',
-        cpf: savePayload.cpf || '',
+        telefone: unformatPhone(savePayload.telefone || ''),
+        cpf: unformatCPF(savePayload.cpf || ''),
       },
       informacoes_pers: {
         criancas: criancas,

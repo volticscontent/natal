@@ -17,7 +17,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ rating, totalReviews, platform,
       case 'trustpilot':
         return '/images/trustpilot-logo.svg';
       case 'elfi':
-        return '/images/logo_65x91.webp';
+        return '/images/logo.webp';
       case 'facebook':
         return '/images/facebook-logo.svg';
       default:
@@ -79,23 +79,14 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ rating, totalReviews, platform,
 
       {/* Platform Logo */}
       <div className="flex-shrink-0">
-        {platform === 'elfi' ? (
-          <Image
-            src={getPlatformLogo()}
-            alt={getPlatformName()}
-            width={40}
-            height={56}
-            className="object-contain"
-          />
-        ) : (
-          <Image
-            src={getPlatformLogo()}
-            alt={getPlatformName()}
-            width={platform === 'facebook' ? 80 : 100}
-            height={24}
-            className="object-contain"
-          />
-        )}
+        <Image
+          src={getPlatformLogo()}
+          alt={getPlatformName()}
+          width={platform === 'facebook' ? 80 : platform === 'elfi' ? 40 : 100}
+          height={platform === 'elfi' ? 56 : 24}
+          style={{ width: 'auto', height: 'auto' }}
+          className="object-contain"
+        />
       </div>
     </div>
   );

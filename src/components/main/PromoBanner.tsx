@@ -25,9 +25,17 @@ const PromoBanner: React.FC<PromoBannerProps> = ({
   useEffect(() => {
     if (!autoPlay || displayMessages.length <= 1) return;
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % displayMessages.length);
-    }, autoPlayInterval);
+    const updateMessage = () => {
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(() => {
+          setCurrentIndex((prev) => (prev + 1) % displayMessages.length);
+        }, { timeout: 100 });
+      } else {
+        setCurrentIndex((prev) => (prev + 1) % displayMessages.length);
+      }
+    };
+
+    const interval = setInterval(updateMessage, autoPlayInterval);
 
     return () => clearInterval(interval);
   }, [autoPlay, displayMessages.length, autoPlayInterval]);

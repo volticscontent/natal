@@ -1,27 +1,29 @@
 'use client';
 
-import { use } from 'react';
+import { use, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import { 
   HeroSection,
   FooterSection,
   PromoBanner,
-  FloatingCarousel,
-  FloatingCarousel2,
-  VideoSection,
-  ProductCarousel,
-  SocialProofSection,
-  AvaliacaoEspecialistaSection,
-  DescontoCard,
-  FAQSection,
-  SocialCarousel
+  ProductCarousel
 } from '@/components/main';
-import EspalhaBondadeSection from '@/components/main/EspalhaBondadeSection';
-import EspiritoNatalinoSection from '@/components/main/EspiritoNatalinoSection';
-import ComoPedirSection from '@/components/main/ComoPedirSection';
-import CalendarioSection from '@/components/main/CalendarioSection';
 import { useUtmTracking } from '@/hooks/useUtmTracking';
+
+// Lazy loading para componentes não críticos
+const FloatingCarousel2 = lazy(() => import('@/components/main').then(mod => ({ default: mod.FloatingCarousel2 })));
+const VideoSection = lazy(() => import('@/components/main').then(mod => ({ default: mod.VideoSection })));
+const SocialProofSection = lazy(() => import('@/components/main').then(mod => ({ default: mod.SocialProofSection })));
+const AvaliacaoEspecialistaSection = lazy(() => import('@/components/main').then(mod => ({ default: mod.AvaliacaoEspecialistaSection })));
+const DescontoCard = lazy(() => import('@/components/main').then(mod => ({ default: mod.DescontoCard })));
+const FAQSection = lazy(() => import('@/components/main').then(mod => ({ default: mod.FAQSection })));
+const SocialCarousel = lazy(() => import('@/components/main').then(mod => ({ default: mod.SocialCarousel })));
+const DynamicFloatingCarousel = lazy(() => import('@/components/dynamic/DynamicFloatingCarousel'));
+const EspalhaBondadeSection = lazy(() => import('@/components/main/EspalhaBondadeSection'));
+const EspiritoNatalinoSection = lazy(() => import('@/components/main/EspiritoNatalinoSection'));
+const ComoPedirSection = lazy(() => import('@/components/main/ComoPedirSection'));
+const CalendarioSection = lazy(() => import('@/components/main/CalendarioSection'));
 
 export default function HomePage({
   params
@@ -47,51 +49,68 @@ export default function HomePage({
 
   return (
     <div>
-      {/* SESSÃO 01 - Hero, Header e Banner de Promoção */}
+      {/* SESSÃO 01 - Banner de Promoção e Hero Section (crítico para LCP) */}
       <PromoBanner />
+      
+      {/* SESSÃO 02 - Hero Section (carregamento prioritário) */}
+      <main id="main-content">
+        <HeroSection onCtaClick={handleCtaClick} />
+      
+      {/* SESSÃO 03 - Header (após hero para melhor LCP) */}
       <Header />
-      
-      {/* SESSÃO 02 - Hero Section */}
-      <HeroSection onCtaClick={handleCtaClick} />
-      
-      {/* SESSÃO 03 - Carrossel Flutuante */}
-      <FloatingCarousel />
 
-      {/* SESSÃO 04 - Carrossel de Produtos (OS MAIS VENDIDOS) */}
+      <Suspense fallback={<div style={{ height: '200px' }} />}>
+        <DynamicFloatingCarousel />
+      </Suspense>
+      
+      {/* SESSÃO 05 - Carrossel de Produtos (OS MAIS VENDIDOS) */}
       <ProductCarousel onProductClick={handleCtaClick} />
 
-      {/* SESSÃO 05 - Leve o Espírito Natalino */}
-      <EspiritoNatalinoSection onCtaClick={handleCtaClick} />
-      
-      {/* SESSÃO 06 - Como Pedir? */}
-      <ComoPedirSection onCtaClick={handleCtaClick} />
-      
-      {/* SESSÃO 07 - Floating Carousel 2 */}
-      <FloatingCarousel2 />
-      
-      {/* SESSÃO 08 - Video Section */}
-      <VideoSection onCtaClick={handleCtaClick} />
-      
-      {/* SESSÃO 09 - Calendário do Advento */}
-      <CalendarioSection onCtaClick={handleCtaClick} />
-      
-      {/* SESSÃO 10 - Card de Desconto */}
-      <DescontoCard onCtaClick={handleCtaClick} />
 
-      {/* SESSÃO 10.5 - FAQ / Dúvidas Frequentes */}
-      <FAQSection />
-
-      {/* SESSÃO 10.6 - Carrossel Social #GerandoSorrisos */}
-      <SocialCarousel />
-
-      {/* SESSÃO 11 - Prova Social */}
-      <SocialProofSection />
+      <Suspense fallback={<div style={{ height: '400px' }} />}>
+        <EspiritoNatalinoSection onCtaClick={handleCtaClick} />
+      </Suspense>
       
-      {/* SESSÃO 12 - Avaliação de Especialistas */}
-      <AvaliacaoEspecialistaSection onCtaClick={handleCtaClick} />
+      <Suspense fallback={<div style={{ height: '300px' }} />}>
+        <ComoPedirSection onCtaClick={handleCtaClick} />
+      </Suspense>
+      
+      <Suspense fallback={<div style={{ height: '200px' }} />}>
+        <FloatingCarousel2 />
+      </Suspense>
+      
+      <Suspense fallback={<div style={{ height: '400px' }} />}>
+        <VideoSection onCtaClick={handleCtaClick} />
+      </Suspense>
+      
+      <Suspense fallback={<div style={{ height: '500px' }} />}>
+        <CalendarioSection onCtaClick={handleCtaClick} />
+      </Suspense>
+      
+      <Suspense fallback={<div style={{ height: '300px' }} />}>
+        <DescontoCard onCtaClick={handleCtaClick} />
+      </Suspense>
 
-      {/* SESSÃO 13 - Espalhando Bondade */}
-      <EspalhaBondadeSection onCtaClick={handleCtaClick} />
+      <Suspense fallback={<div style={{ height: '400px' }} />}>
+        <FAQSection />
+      </Suspense>
+
+      <Suspense fallback={<div style={{ height: '300px' }} />}>
+        <SocialCarousel />
+      </Suspense>
+
+      <Suspense fallback={<div style={{ height: '400px' }} />}>
+        <SocialProofSection />
+      </Suspense>
+      
+      <Suspense fallback={<div style={{ height: '300px' }} />}>
+        <AvaliacaoEspecialistaSection onCtaClick={handleCtaClick} />
+      </Suspense>
+
+      <Suspense fallback={<div style={{ height: '400px' }} />}>
+        <EspalhaBondadeSection onCtaClick={handleCtaClick} />
+      </Suspense>
+      </main>
             
       {/* SESSÃO 14 - Final */}      
       <FooterSection />

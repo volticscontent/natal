@@ -35,6 +35,8 @@ export {
   cleanNumbers,
   formatCPF,
   formatPhone,
+  unformatCPF,
+  unformatPhone,
   
   // Validações específicas
   validateCPF,

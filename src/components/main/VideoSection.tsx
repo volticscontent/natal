@@ -30,46 +30,73 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     }
   };
 
+  // Auto-play setup otimizado
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
+      let retryCount = 0;
+      const maxRetries = 3;
+      
       // Configurar o vídeo para autoplay
       video.muted = true; // Garantir que está mutado
       video.playsInline = true;
       video.loop = true;
       
-      // Múltiplas tentativas de autoplay
       const attemptPlay = async () => {
+        if (retryCount >= maxRetries) return;
+        
         try {
           // Aguardar o vídeo estar pronto
           if (video.readyState >= 2) {
             await video.play();
-            console.log('Video started playing');
+            console.log('Video autoplay successful');
           }
         } catch (error) {
+          retryCount++;
           console.log('Autoplay attempt failed:', error);
-          // Tentar novamente após um pequeno delay
-          setTimeout(attemptPlay, 100);
+          
+          // Usar requestIdleCallback para não bloquear UI
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(() => {
+              if (retryCount < maxRetries) {
+                setTimeout(attemptPlay, 200);
+              }
+            }, { timeout: 1000 });
+          } else {
+            setTimeout(attemptPlay, 200);
+          }
         }
       };
 
       // Tentar reproduzir quando os metadados estiverem carregados
       const onLoadedMetadata = () => {
-        attemptPlay();
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(attemptPlay, { timeout: 500 });
+        } else {
+          setTimeout(attemptPlay, 0);
+        }
       };
 
       // Tentar reproduzir quando dados suficientes estiverem carregados
       const onCanPlay = () => {
-        attemptPlay();
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(attemptPlay, { timeout: 500 });
+        } else {
+          setTimeout(attemptPlay, 0);
+        }
       };
 
-      // Adicionar event listeners
-      video.addEventListener('loadedmetadata', onLoadedMetadata);
-      video.addEventListener('canplay', onCanPlay);
+      // Adicionar event listeners com passive
+      video.addEventListener('loadedmetadata', onLoadedMetadata, { passive: true });
+      video.addEventListener('canplay', onCanPlay, { passive: true });
       
       // Tentar reproduzir imediatamente se já estiver carregado
       if (video.readyState >= 2) {
-        attemptPlay();
+        if (window.requestIdleCallback) {
+          window.requestIdleCallback(attemptPlay, { timeout: 500 });
+        } else {
+          setTimeout(attemptPlay, 0);
+        }
       }
       
       return () => {

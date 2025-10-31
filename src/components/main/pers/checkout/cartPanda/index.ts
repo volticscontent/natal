@@ -2,6 +2,7 @@
 
 import { CheckoutData } from '../../types';
 import { clearAllData } from '../../utils/dataStorage';
+import { unformatPhone } from '../../utils/validation';
 
 // 🔗 URLs e configurações CartPanda
 const CARTPANDA_CONFIG = {
@@ -91,13 +92,16 @@ const prepareCartPandaPayload = (checkoutData: CheckoutData): CartPandaPayload =
   // Detectar país baseado no locale ou UTM
   const country = detectCountryFromLocale(locale) || detectCountryFromUTM(utmParams);
   
+  // Obter dados do cliente com formatação limpa
+  const customerPhone = session_data.user_data.telefone || pers_data.contato?.telefone || '';
+
   return {
     session_id: session_data.session_id,
     product_id: CARTPANDA_CONFIG.productId,
     customer: {
       name: session_data.user_data.nome!,
       email: session_data.user_data.email!,
-      phone: session_data.user_data.telefone!,
+      phone: unformatPhone(customerPhone),
       country
     },
     personalization: {

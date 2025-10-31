@@ -56,6 +56,18 @@ interface FacebookPixelData {
   ln?: string; // last name
 }
 
+interface ClickData {
+  element_selector: string;
+  element_text: string;
+  element_tag: string;
+  click_x: number;
+  click_y: number;
+  page_x: number;
+  page_y: number;
+  timestamp: number;
+  session_id: string;
+}
+
 export function useAdvancedTracking() {
   const { sessionId, utmParams, getAnalyticsParams } = useUtmTracking();
   const scrollDepthRef = useRef<Set<number>>(new Set());
@@ -69,28 +81,102 @@ export function useAdvancedTracking() {
     }
   }, []);
 
-  // Tracking de mapa de calor - Scroll Depth
+  // Tracking de scroll depth com throttling
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    let scrollTimeout: NodeJS.Timeout | null = null;
+    
     const handleScroll = () => {
-      const scrollPercent = Math.round(
-        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-      );
-
-      // Marcar marcos de scroll (25%, 50%, 75%, 90%, 100%)
-      const milestones = [25, 50, 75, 90, 100];
-      milestones.forEach(milestone => {
-        if (scrollPercent >= milestone && !scrollDepthRef.current.has(milestone)) {
+      // Throttle scroll events para evitar sobrecarga
+      if (scrollTimeout) return;
+      
+      scrollTimeout = setTimeout(() => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        
+        const scrollPercentage = Math.round((scrollTop + windowHeight) / documentHeight * 100);
+        
+        // Armazenar apenas marcos importantes (25%, 50%, 75%, 100%)
+        const milestones = [25, 50, 75, 100];
+        const milestone = milestones.find(m => scrollPercentage >= m && !scrollDepthRef.current.has(m));
+        
+        if (milestone) {
           scrollDepthRef.current.add(milestone);
           
-          // Enviar evento para GA4
+          // Usar requestIdleCallback para tracking não-crítico
+          const sendTracking = () => {
+            // Enviar para GA4
+            if (window.gtag) {
+              window.gtag('event', 'scroll', {
+                event_category: 'engagement',
+                event_label: `${milestone}%`,
+                value: milestone,
+                custom_parameter_1: sessionId,
+                ...getAnalyticsParams()
+              });
+            }
+
+            // Enviar para DataLayer
+            if (window.dataLayer) {
+              window.dataLayer.push({
+                event: 'scroll_depth',
+                scroll_depth: milestone,
+                session_id: sessionId,
+                ...utmParams
+              });
+            }
+          };
+
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(sendTracking, { timeout: 1000 });
+          } else {
+            setTimeout(sendTracking, 0);
+          }
+        }
+        
+        scrollTimeout = null;
+      }, 100); // Throttle de 100ms
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
+  }, [sessionId, utmParams, getAnalyticsParams]);
+
+  // Tracking de mapa de calor - Click Tracking com debouncing
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let clickQueue: Array<{
+      selector: string;
+      clickData: ClickData;
+    }> = [];
+    let processTimeout: NodeJS.Timeout | null = null;
+
+    const processClickQueue = () => {
+      if (clickQueue.length === 0) return;
+
+      const clicksToProcess = [...clickQueue];
+      clickQueue = [];
+
+      // Processar em idle callback para não bloquear UI
+      const processClicks = () => {
+        clicksToProcess.forEach(({ selector, clickData }) => {
+          // Incrementar contador de cliques
+          const currentCount = clickMapRef.current.get(selector) || 0;
+          clickMapRef.current.set(selector, currentCount + 1);
+
+          // Enviar para GA4
           if (window.gtag) {
-            window.gtag('event', 'scroll', {
+            window.gtag('event', 'click', {
               event_category: 'engagement',
-              event_label: `${milestone}%`,
-              value: milestone,
+              event_label: selector,
               custom_parameter_1: sessionId,
+              custom_parameter_2: clickData.element_tag,
               ...getAnalyticsParams()
             });
           }
@@ -98,37 +184,29 @@ export function useAdvancedTracking() {
           // Enviar para DataLayer
           if (window.dataLayer) {
             window.dataLayer.push({
-              event: 'scroll_depth',
-              scroll_depth: milestone,
-              page_location: window.location.href,
-              session_id: sessionId,
+              event: 'element_click',
+              ...clickData,
               ...utmParams
             });
           }
-        }
-      });
+        });
+      };
+
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(processClicks, { timeout: 2000 });
+      } else {
+        setTimeout(processClicks, 0);
+      }
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [sessionId, utmParams, getAnalyticsParams]);
-
-  // Tracking de mapa de calor - Click Tracking
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
 
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const selector = getElementSelector(target);
       
-      // Incrementar contador de cliques
-      const currentCount = clickMapRef.current.get(selector) || 0;
-      clickMapRef.current.set(selector, currentCount + 1);
-
-      // Capturar dados do clique
+      // Capturar dados do clique (operação rápida)
       const clickData = {
         element_selector: selector,
-        element_text: target.textContent?.slice(0, 100) || '',
+        element_text: target.textContent?.slice(0, 50) || '', // Reduzido de 100 para 50
         element_tag: target.tagName.toLowerCase(),
         click_x: event.clientX,
         click_y: event.clientY,
@@ -138,29 +216,26 @@ export function useAdvancedTracking() {
         session_id: sessionId
       };
 
-      // Enviar para GA4
-      if (window.gtag) {
-        window.gtag('event', 'click', {
-          event_category: 'engagement',
-          event_label: selector,
-          custom_parameter_1: sessionId,
-          custom_parameter_2: target.tagName.toLowerCase(),
-          ...getAnalyticsParams()
-        });
-      }
+      // Adicionar à fila para processamento em batch
+      clickQueue.push({ selector, clickData });
 
-      // Enviar para DataLayer
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          event: 'element_click',
-          ...clickData,
-          ...utmParams
-        });
+      // Debounce: processar após 200ms de inatividade ou quando fila atingir 5 itens
+      if (processTimeout) clearTimeout(processTimeout);
+      
+      if (clickQueue.length >= 5) {
+        processClickQueue();
+      } else {
+        processTimeout = setTimeout(processClickQueue, 200);
       }
     };
 
     document.addEventListener('click', handleClick, true);
-    return () => document.removeEventListener('click', handleClick, true);
+    return () => {
+      document.removeEventListener('click', handleClick, true);
+      if (processTimeout) clearTimeout(processTimeout);
+      // Processar cliques pendentes na limpeza
+      if (clickQueue.length > 0) processClickQueue();
+    };
   }, [sessionId, utmParams, getAnalyticsParams]);
 
   // Função para obter seletor único do elemento
@@ -393,7 +468,9 @@ export function useAdvancedTracking() {
       scroll_depths: Array.from(scrollDepthRef.current),
       click_map: Object.fromEntries(clickMapRef.current),
       utm_params: utmParams,
-      page_url: typeof window !== 'undefined' ? window.location.href : ''
+      page_url: typeof window !== 'undefined' ? window.location.href : '',
+      timestamp: sessionStartRef.current,
+      page_load_time: Date.now() - sessionStartRef.current
     };
   }, [sessionId, utmParams]);
 

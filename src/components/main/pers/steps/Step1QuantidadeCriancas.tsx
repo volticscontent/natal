@@ -167,8 +167,8 @@ export default function Step1QuantidadeCriancas({
       stepName: 'quantidade_criancas_to_order_bumps'
     });
     
-    // Usar setTimeout para tornar a operação não-bloqueante
-    setTimeout(() => {
+    // Usar requestIdleCallback para operações pesadas
+    const processData = () => {
       try {
         // Carregar dados existentes ou criar novos
         const existingData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
@@ -207,7 +207,13 @@ export default function Step1QuantidadeCriancas({
       } finally {
         setIsLoading(false);
       }
-    }, 100);
+    };
+
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(processData, { timeout: 1000 });
+    } else {
+      setTimeout(processData, 100);
+    }
   };
 
   return (
@@ -245,7 +251,7 @@ export default function Step1QuantidadeCriancas({
                       relative cursor-pointer rounded-3xl p-8 transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-2
                       ${selectedQuantity === option.value
                         ? 'bg-gradient-to-br from-red-500 via-red-600 to-red-700 text-white shadow-2xl shadow-red-500/25 ring-4 ring-red-200 ring-opacity-50'
-                        : 'bg-white hover:bg-gradient-to-br hover:from-red-50 hover:to-red-100 shadow-xl hover:shadow-2xl border border-gray-100 hover:border-red-200'
+                        : 'bg-white shadow-xl hover:shadow-2xl border border-gray-100 hover:border-red-200'
                       }
                       backdrop-blur-sm
                     `}
@@ -273,7 +279,7 @@ export default function Step1QuantidadeCriancas({
                           p-4 rounded-2xl transition-all duration-300
                           ${selectedQuantity === option.value
                             ? 'bg-white backdrop-blur-sm'
-                            : 'bg-red-50 hover:bg-red-100'
+                            : 'bg-red-50'
                           }
                         `}>
                           {option.icon}
@@ -285,7 +291,7 @@ export default function Step1QuantidadeCriancas({
                         text-2xl font-bold font-fertigo mb-3 transition-all duration-300
                         ${selectedQuantity === option.value
                           ? 'text-white drop-shadow-sm'
-                          : 'text-gray-800 hover:text-red-700'
+                          : 'text-gray-800'
                         }
                       `}>
                         {option.title}
@@ -296,7 +302,7 @@ export default function Step1QuantidadeCriancas({
                         text-sm leading-relaxed transition-all duration-300 font-medium mb-4
                         ${selectedQuantity === option.value
                           ? 'text-white/95 drop-shadow-sm'
-                          : 'text-gray-600 hover:text-gray-700'
+                          : 'text-gray-600'
                         }
                       `}>
                         {option.description}
@@ -308,7 +314,7 @@ export default function Step1QuantidadeCriancas({
                           text-3xl font-bold transition-all duration-300
                           ${selectedQuantity === option.value
                             ? 'text-white drop-shadow-sm'
-                            : 'text-green-600'
+                            : 'text-green-700'
                           }
                         `}>
                           {formatPrice(pricing.price, pricing.currency)}
@@ -348,7 +354,7 @@ export default function Step1QuantidadeCriancas({
                       absolute inset-0 rounded-3xl transition-opacity duration-500 overflow-hidden
                       ${selectedQuantity === option.value
                         ? 'opacity-0'
-                        : 'opacity-0 hover:opacity-100'
+                        : 'opacity-0'
                       }
                     `}>
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-100%] hover:translate-x-[200%] transition-transform duration-1000"></div>

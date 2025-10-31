@@ -16,19 +16,7 @@ interface GetPhotosResponse {
   error?: string;
 }
 
-// Interface para dados do pedido (baseado no schema PostgreSQL)
-interface PedidoData {
-  id: number;
-  session_id: string;
-  nome: string;
-  email: string;
-  telefone: string;
-  cpf: string;
-  fotos: string[] | null; // JSONB array de URLs
-  created_at: string;
-  updated_at: string;
-  // ... outros campos do schema
-}
+
 
 /**
  * GET /api/get-photos?session_id=xxx
@@ -213,7 +201,7 @@ function generateMockPhotos(session_id: string): string[] {
 export async function POST(request: NextRequest): Promise<NextResponse<GetPhotosResponse>> {
   try {
     const body = await request.json();
-    const { session_id, include_metadata = false } = body;
+    const { session_id } = body;
 
     if (!session_id) {
       return NextResponse.json({

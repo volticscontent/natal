@@ -136,7 +136,7 @@ export async function uploadPhotoToR2(
 }
 
 /**
- * Faz upload de múltiplas fotos (máximo 3)
+ * Faz upload de múltiplas fotos (máximo 3) com throttling
  */
 export async function uploadMultiplePhotos(
   files: File[],
@@ -155,22 +155,34 @@ export async function uploadMultiplePhotos(
   const urls: string[] = [];
   const errors: string[] = [];
 
-  // Upload paralelo de todas as fotos
-  const uploadPromises = limitedFiles.map(file => 
-    uploadPhotoToR2(file, sessionId, config)
-  );
-
-  const uploadResults = await Promise.all(uploadPromises);
-
-  uploadResults.forEach((result, index) => {
-    results.push(result);
+  // Upload sequencial com throttling para evitar sobrecarga
+  for (let i = 0; i < limitedFiles.length; i++) {
+    const file = limitedFiles[i];
     
-    if (result.success && result.url) {
-      urls.push(result.url);
-    } else if (result.error) {
-      errors.push(`Foto ${index + 1}: ${result.error}`);
+    try {
+      const result = await uploadPhotoToR2(file, sessionId, config);
+      results.push(result);
+      
+      if (result.success && result.url) {
+        urls.push(result.url);
+      } else if (result.error) {
+        errors.push(`Foto ${i + 1}: ${result.error}`);
+      }
+      
+      // Throttling: aguarda 500ms entre uploads (exceto no último)
+      if (i < limitedFiles.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      errors.push(`Foto ${i + 1}: ${errorMessage}`);
+      results.push({
+        success: false,
+        error: errorMessage,
+      });
     }
-  });
+  }
 
   return {
     success: errors.length === 0,

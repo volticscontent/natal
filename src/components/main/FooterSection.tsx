@@ -16,51 +16,102 @@ const FooterSection: React.FC = () => {
   };
 
   return (
-    <footer className="bg-stone-100 text-black py-16">
+    <footer className="bg-stone-100 text-black py-16 min-h-[600px]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Content */}
         <div className="mb-12">
-          {/* Hero Text */}
-          <div className="mb-8">
+          {/* Hero Text - Fixed height to prevent shift */}
+          <div className="mb-8 min-h-[120px] md:min-h-[140px]">
             <h2 
               className="text-2xl md:text-3xl font-normal font-fertigo leading-relaxed mb-6"
               dangerouslySetInnerHTML={{ __html: t('heroText') }}
             />
           </div>
 
-          {/* Elfi Logo */}
-          <div className="mb-8">
-            <Image
-              src="/images/logo_65x91.webp"
-              alt={t('logoAlt')}
-              width={50}
-              height={50}
-            />
+          {/* Elfi Logo - Fixed dimensions and aspect ratio */}
+          <div className="mb-8 h-[70px] flex items-start">
+            <div className="relative w-16 h-16">
+              <Image
+                src="/images/logo.webp"
+                alt={t('logoAlt')}
+                fill
+                sizes="64px"
+                className="object-contain"
+              />
+            </div>
           </div>
 
-          {/* Newsletter Section */}
-          <div className="mb-8">
-            <h3 className="text-lg font-medium mb-4">
+          {/* Newsletter Section - Fixed height */}          <div className="mb-8 min-h-[140px]">
+            <label htmlFor="newsletter-email" className="text-lg font-medium mb-4 h-[28px] block">
               {t('newsletter.title')}
-            </h3>
-            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md">
+            </label>
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md h-[48px] sm:h-[48px]">
               <input
                 type="email"
+                id="newsletter-email"
+                name="newsletter-email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('newsletter.placeholder')}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-600 placeholder-gray-400"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-600 placeholder-gray-400 h-[48px]"
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors duration-200 font-medium"
+                className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors duration-200 font-medium h-[48px] whitespace-nowrap"
               >
                 {t('newsletter.button')}
               </button>
             </form>
-            <div className="mt-3">
+          </div>
+
+          {/* Products Section - Fixed height */}
+          <div className="min-h-[200px]">
+            <h3 className="text-lg font-medium mb-4 h-[28px]">
+              {t('products.title')}
+            </h3>
+            <div className="space-y-2">
+              <div className="h-[24px]">
+                <Link 
+                  href="/video-papai-noel" 
+                  className="text-gray-700 hover:text-red-600 transition-colors duration-200 inline-block"
+                >
+                  {t('products.santaVideo')}
+                </Link>
+              </div>
+              <div className="h-[24px]">
+                <Link 
+                  href="/gratis" 
+                  className="text-gray-700 hover:text-red-600 transition-colors duration-200 inline-block"
+                >
+                  {t('products.free')}
+                </Link>
+              </div>
+              <div className="h-[24px]">
+                <Link 
+                  href="/calendario-advento" 
+                  className="text-gray-700 hover:text-red-600 transition-colors duration-200 inline-block"
+                >
+                  {t('products.adventCalendar')}
+                </Link>
+              </div>
+              <div className="h-[24px]">
+                <Link 
+                  href="/avaliacoes" 
+                  className="text-gray-700 hover:text-red-600 transition-colors duration-200 inline-block"
+                >
+                  {t('products.reviews')}
+                </Link>
+              </div>
+              <div className="h-[24px]">
+                <Link 
+                  href="/lista-precos" 
+                  className="text-gray-700 hover:text-red-600 transition-colors duration-200 inline-block"
+                >
+                  {t('products.priceList')}
+                </Link>
+                <div className="mt-3 h-[20px]">
               <Link 
                 href="/politica-dados" 
                 className="text-sm text-gray-600 hover:text-gray-800 underline"
@@ -68,53 +119,6 @@ const FooterSection: React.FC = () => {
                 {t('newsletter.privacyPolicy')}
               </Link>
             </div>
-          </div>
-
-          {/* Products Section */}
-          <div>
-            <h3 className="text-lg font-medium mb-4">
-              {t('products.title')}
-            </h3>
-            <div className="space-y-2">
-              <div>
-                <Link 
-                  href="/video-papai-noel" 
-                  className="text-gray-700 hover:text-red-600 transition-colors duration-200"
-                >
-                  {t('products.santaVideo')}
-                </Link>
-              </div>
-              <div>
-                <Link 
-                  href="/gratis" 
-                  className="text-gray-700 hover:text-red-600 transition-colors duration-200"
-                >
-                  {t('products.free')}
-                </Link>
-              </div>
-              <div>
-                <Link 
-                  href="/calendario-advento" 
-                  className="text-gray-700 hover:text-red-600 transition-colors duration-200"
-                >
-                  {t('products.adventCalendar')}
-                </Link>
-              </div>
-              <div>
-                <Link 
-                  href="/avaliacoes" 
-                  className="text-gray-700 hover:text-red-600 transition-colors duration-200"
-                >
-                  {t('products.reviews')}
-                </Link>
-              </div>
-              <div>
-                <Link 
-                  href="/lista-precos" 
-                  className="text-gray-700 hover:text-red-600 transition-colors duration-200"
-                >
-                  {t('products.priceList')}
-                </Link>
               </div>
             </div>
           </div>

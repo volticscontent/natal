@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cleanupOrphanedPhotos, previewCleanup, executeCleanup, CleanupResult } from '@/lib/photo-cleanup';
+import { previewCleanup, executeCleanup, CleanupResult } from '@/lib/photo-cleanup';
 
 // Interface para requisição de cleanup
 interface CleanupRequest {

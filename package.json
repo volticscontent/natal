@@ -5,8 +5,13 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "build:analyze": "ANALYZE=true next build --turbopack",
     "start": "next start",
+    "start:prod": "NODE_ENV=production next start",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next out",
     "translate": "node scripts/advanced-translation-system.js translate",
     "translate:incremental": "node scripts/advanced-translation-system.js incremental",
     "translate:detect": "node scripts/advanced-translation-system.js detect",
@@ -20,6 +25,9 @@
     "@aws-sdk/client-s3": "^3.920.0",
     "@aws-sdk/s3-request-presigner": "^3.920.0",
     "@next/third-parties": "^16.0.0",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "@vercel/toolbar": "^0.1.32",
     "dotenv": "^17.2.3",
     "embla-carousel-react": "^8.6.0",
     "jose": "^6.1.0",
@@ -28,7 +36,9 @@
     "next-intl": "^4.3.12",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-gtm-module": "^2.0.11"
+    "react-gtm-module": "^2.0.11",
+    "redis": "^5.9.0",
+    "web-vitals": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

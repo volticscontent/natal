@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface VideoPopupProps {
   isOpen: boolean;
@@ -17,7 +16,6 @@ const VideoPopup: React.FC<VideoPopupProps> = ({
   title = "Vídeo de Demonstração"
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const isMobile = useIsMobile();
 
   // Fechar popup com ESC
   useEffect(() => {
