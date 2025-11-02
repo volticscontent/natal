@@ -37,11 +37,7 @@ const THRESHOLDS: WebVitalsThresholds = {
   score: { good: 75, poor: 50 }
 };
 
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+// Declarações globais estão centralizadas em src/types/global.d.ts
 
 interface CoreWebVitalsProps {
   enableRealTimeTracking?: boolean;

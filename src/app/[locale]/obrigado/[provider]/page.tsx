@@ -3,6 +3,7 @@
 import { use } from 'react';
 import { useTranslations } from 'next-intl';
 import { ThankYouLastLink, ThankYouCartPanda } from '@/components/main/pós_compra';
+import { useThankYouPageTitle } from '@/hooks/usePageTitle';
 
 interface ThankYouPageProps {
   params: Promise<{
@@ -14,6 +15,9 @@ interface ThankYouPageProps {
 export default function ThankYouPage({ params }: ThankYouPageProps) {
   const { locale, provider } = use(params);
   const t = useTranslations('redirectPages');
+  
+  // Título dinâmico da página
+  useThankYouPageTitle(locale, provider);
 
   // Renderizar o componente correto baseado no provider
   if (provider === 'lastlink') {

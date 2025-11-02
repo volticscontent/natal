@@ -3,11 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CheckoutRedirectLoading from '@/components/CheckoutRedirectLoading';
+import { useGA4Tracking } from '@/lib/ga4-events';
+import { useCheckoutPageTitle } from '@/hooks/usePageTitle';
 
 export default function CheckoutRedirectPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
+  const { trackCheckoutIniciado } = useGA4Tracking();
+  
+  // Título dinâmico da página
+  useCheckoutPageTitle('pt'); // Default para português, pode ser melhorado com locale dinâmico
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
@@ -34,6 +40,13 @@ export default function CheckoutRedirectPage() {
       try {
         // Decodifica a URL do checkout
         const decodedUrl = decodeURIComponent(checkoutUrl);
+        
+        // Track GA4 - Checkout Iniciado
+        trackCheckoutIniciado({
+          product_type: 'video_personalizado',
+          price: 49.99, // Preço base padrão
+          session_id: sessionId
+        });
         
         // Redireciona para o checkout
         window.location.href = decodedUrl;

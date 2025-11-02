@@ -30,12 +30,7 @@ const CUSTOM_METRICS = {
   page_load_time: 'custom_metric_4'
 };
 
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-    performance?: Performance;
-  }
-}
+// Declarações globais estão centralizadas em src/types/global.d.ts
 
 interface GA4CustomDimensionsProps {
   userId?: string;

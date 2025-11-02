@@ -255,8 +255,37 @@ export const validateData = (data: unknown): boolean => {
       return false;
     }
     
-    // Validar se os dados podem ser serializados
-    JSON.stringify(data);
+    // Validar se os dados podem ser serializados usando serialização segura
+    JSON.stringify(data, (key, value) => {
+      // Evitar referências circulares
+      if (value && typeof value === 'object') {
+        // Verificar se é um elemento HTML
+        if (value instanceof HTMLElement || value instanceof Element || value instanceof Node) {
+          return `[HTMLElement: ${value.tagName || 'Unknown'}]`;
+        }
+        
+        // Verificar se é um evento
+        if (value instanceof Event) {
+          return '[Event Object]';
+        }
+        
+        // Verificar se é window ou document
+        if (value === window) return '[Window Object]';
+        if (value === document) return '[Document Object]';
+        
+        // Verificar propriedades React Fiber
+        if (key && key.startsWith('__react')) {
+          return '[React Fiber]';
+        }
+        
+        // Verificar se é uma função
+        if (typeof value === 'function') {
+          return '[Function]';
+        }
+      }
+      
+      return value;
+    });
     return true;
   } catch (error) {
     console.error('Dados inválidos:', error);

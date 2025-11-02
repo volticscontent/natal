@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import AsyncTrackingScripts from '@/components/tracking/AsyncTrackingScripts';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import TrackingProvider from '@/components/tracking/TrackingProvider';
+// GoogleAnalytics removido - usando apenas GTM para evitar duplicação
 import { Inter } from "next/font/google";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
@@ -63,23 +63,25 @@ export default async function LocaleLayout({
         )}
 
         <NextIntlClientProvider messages={messages}>
-          {/* Skip links para navegação por teclado */}
-          <a href="#main-content" className="skip-link">
-            Pular para o conteúdo principal
-          </a>
-          <a href="#navigation" className="skip-link">
-            Pular para a navegação
-          </a>
-          
-          {children}
-          {/* Carregamento assíncrono de tracking apenas em produção */}
-          {process.env.NODE_ENV === 'production' && <AsyncTrackingScripts />}
+          <TrackingProvider 
+            enableCTATracking={true}
+            enableUTMTracking={true}
+            enablePersonalizationTracking={true}
+            debugMode={process.env.NEXT_PUBLIC_TRACKING_DEBUG === 'true'}
+          >
+            {/* Skip links para navegação por teclado */}
+            <a href="#main-content" className="skip-link">
+              Pular para o conteúdo principal
+            </a>
+            <a href="#navigation" className="skip-link">
+              Pular para a navegação
+            </a>
+            
+            {children}
+          </TrackingProvider>
         </NextIntlClientProvider>
         
-        {/* Google Analytics 4 */}
-        {process.env.NEXT_PUBLIC_GA4_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA4_ID} />
-        )}
+        {/* Google Analytics 4 - Removido para evitar duplicação com GTM */}
         
         {/* Vercel Analytics */}
         <SpeedInsights />

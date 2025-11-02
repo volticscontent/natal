@@ -11,6 +11,11 @@ const intlMiddleware = createIntlMiddleware({
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Redirecionamento da raiz para /pt
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/pt', request.url));
+  }
+
   // Excluir explicitamente vídeos do processamento de locale
   if (pathname.startsWith('/videos/') || 
       pathname.match(/\.(webm|mp4)$/)) {

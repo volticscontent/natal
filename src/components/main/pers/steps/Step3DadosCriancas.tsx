@@ -11,6 +11,7 @@ import { useProducts } from '../../../../hooks/useProducts';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
 import { useDataLayer } from '../../../../hooks/useDataLayer';
 import { useUtmTracking } from '../../../../hooks/useUtmTracking';
+import { useDebugTracking } from '../../../../lib/debug-tracking';
 import ProgressBar from '../shared/ProgressBar';
 import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
@@ -190,8 +191,9 @@ export default function Step3DadosCriancas({
   const { validateAndSubmit } = useN8NIntegration();
   const { getMainProductByChildren, getOrderBumps, getProductPrice } = useProducts();
   const isMobile = useIsMobile(1024);
-  const { trackPageView, trackFormInteraction, trackStepProgress, trackBeginCheckout } = useDataLayer();
+  const { trackPageView, trackFormInteraction, trackStepProgress, trackBeginCheckout, trackMainFunnelProgress } = useDataLayer();
   const { sessionId } = useUtmTracking();
+  const { trackFormFill, trackFinalLinkClick } = useDebugTracking();
   const [children, setChildren] = useState<Crianca[]>([{ nome: '' }]); // Inicializar com pelo menos uma criança
   const [mensagem, setMensagem] = useState('');
   const [contactData, setContactData] = useState<ContactData>({
@@ -596,6 +598,8 @@ export default function Step3DadosCriancas({
   };
 
   const handleNext = async () => {
+    if (isLoading) return;
+
     setIsLoading(true);
     setErrors([]);
 
@@ -634,6 +638,13 @@ export default function Step3DadosCriancas({
         setIsLoading(false);
         return;
       }
+
+      // 🎯 DEBUG TRACKING: Formulário preenchido com sucesso para Meta e TikTok
+      trackFormFill(3, 'Dados das Crianças', {
+        children_count: children.length,
+        has_message: !!mensagem.trim(),
+        contact_complete: !!(contactData.nome && contactData.email && contactData.telefone && contactData.cpf)
+      });
 
       // Carregar dados existentes
       const existingData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
@@ -750,6 +761,14 @@ export default function Step3DadosCriancas({
             } else {
               console.log('Dados enviados para N8N com sucesso, redirecionando para checkout...');
             }
+
+            // 🎯 DEBUG TRACKING: Clique no botão finalizar para Meta e TikTok
+            trackFinalLinkClick('Finalizar Pedido', window.location.href, {
+              step: 3,
+              children_count: persData.children.length,
+              has_order_bumps: persData.order_bumps.length > 0
+            });
+
             await generateAndRedirect(persData);
           } else {
             console.error('Falha ao enviar dados para N8N:', n8nResult.error);
@@ -988,6 +1007,12 @@ export default function Step3DadosCriancas({
                     name="contact-name"
                     value={contactData.nome}
                     onChange={(e) => setContactData(prev => ({ ...prev, nome: e.target.value }))}
+                    onFocus={() => trackFormInteraction({
+                      formName: 'contact_data',
+                      fieldName: 'name',
+                      stepNumber: 4,
+                      interactionType: 'start'
+                    })}
                     placeholder={t('step3.contact.namePlaceholder')}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
                   />
@@ -1004,6 +1029,12 @@ export default function Step3DadosCriancas({
                     name="contact-email"
                     value={contactData.email}
                     onChange={(e) => setContactData(prev => ({ ...prev, email: e.target.value }))}
+                    onFocus={() => trackFormInteraction({
+                      formName: 'contact_data',
+                      fieldName: 'email',
+                      stepNumber: 4,
+                      interactionType: 'start'
+                    })}
                     placeholder={t('step3.contact.emailPlaceholder')}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
                   />
@@ -1020,6 +1051,12 @@ export default function Step3DadosCriancas({
                     name="contact-phone"
                     value={contactData.telefone}
                     onChange={(e) => handlePhoneChange(e.target.value)}
+                    onFocus={() => trackFormInteraction({
+                      formName: 'contact_data',
+                      fieldName: 'phone',
+                      stepNumber: 4,
+                      interactionType: 'start'
+                    })}
                     placeholder={t('step3.contact.phonePlaceholder')}
                     maxLength={15}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
@@ -1037,6 +1074,12 @@ export default function Step3DadosCriancas({
                     name="contact-cpf"
                     value={contactData.cpf || ''}
                     onChange={(e) => handleCpfChange(e.target.value)}
+                    onFocus={() => trackFormInteraction({
+                      formName: 'contact_data',
+                      fieldName: 'cpf',
+                      stepNumber: 4,
+                      interactionType: 'start'
+                    })}
                     placeholder="000.000.000-00"
                     maxLength={14}
                     className="w-full px-4 py-3 border  border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"

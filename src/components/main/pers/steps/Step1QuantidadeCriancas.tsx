@@ -27,17 +27,20 @@ export default function Step1QuantidadeCriancas({
   const [isLoading, setIsLoading] = useState(false);
   const { getMainProductByChildren, getProductPrice } = useProducts(locale);
   const isMobile = useIsMobile();
-  const { trackPageView, trackStepProgress, trackFormInteraction } = useDataLayer();
+  const { trackPageView, trackStepProgress, trackFormInteraction, trackMainFunnelProgress, trackCustomEvent } = useDataLayer();
 
   // Tracking da visualização da página
   useEffect(() => {
+    // Track entrada na personalização
+    trackMainFunnelProgress('personalization');
+    
     trackPageView({
       pageTitle: 'Personalização - Quantidade de Crianças',
       pagePath: '/pers/1',
       stepNumber: 1,
       stepName: 'quantidade_criancas'
     });
-  }, [trackPageView]);
+  }, [trackPageView, trackMainFunnelProgress]);
 
   // Carregar dados salvos
   useEffect(() => {
@@ -108,12 +111,23 @@ export default function Step1QuantidadeCriancas({
   const handleQuantitySelect = (quantity: number) => {
     setSelectedQuantity(quantity);
     
+    // Track seleção de produto
+    trackMainFunnelProgress('product_selection');
+    
     // Tracking da seleção de quantidade
     trackFormInteraction({
       formName: 'quantidade_criancas',
       fieldName: 'quantidade_selecionada',
       interactionType: 'change',
       stepNumber: 1
+    });
+
+    // Evento customizado para capturar o valor da quantidade selecionada
+    trackCustomEvent('quantity_selected', {
+      step_number: 1,
+      quantity_value: quantity,
+      form_name: 'quantidade_criancas',
+      event_category: 'personalization'
     });
     
     // Salvar dados imediatamente e recalcular preços

@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useUtmTracking } from '@/hooks/useUtmTracking';
+import { useDataLayer } from '@/hooks/useDataLayer';
+import { useGA4Tracking } from '@/lib/ga4-events';
 
 interface OrderData {
   session_id?: string;
@@ -23,6 +25,8 @@ export default function ThankYouLastLink() {
   
   // Inicializar UTM tracking para coletar UTMs quando o cliente retorna
   const { sessionId, utmParams } = useUtmTracking();
+  const { trackMainFunnelProgress, trackFunnelConversion, trackCustomEvent } = useDataLayer();
+  const { trackCartaFinalizada } = useGA4Tracking();
 
   useEffect(() => {
     // Log para debug - mostra que os UTMs foram coletados na página de thank you
@@ -46,6 +50,35 @@ export default function ThankYouLastLink() {
       children_count: childrenCount ? parseInt(childrenCount) : undefined,
       total_amount: totalAmount || undefined,
     });
+
+    // Track conversão final do funil principal
+    if (orderId && totalAmount) {
+      trackMainFunnelProgress('purchase');
+      
+      trackFunnelConversion({
+        funnelId: 'main_conversion_funnel',
+        conversionValue: parseFloat(totalAmount),
+        stepsCompleted: 6,
+        conversionType: 'purchase'
+      });
+
+      trackCustomEvent('purchase_confirmed', {
+        transaction_id: orderId,
+        value: parseFloat(totalAmount),
+        currency: 'BRL',
+        provider: 'lastlink',
+        children_count: childrenCount ? parseInt(childrenCount) : 1,
+        customer_name: customerName || 'Unknown'
+      });
+
+      // Track GA4 - Carta Finalizada (conversão principal)
+      trackCartaFinalizada({
+        transaction_id: orderId,
+        value: parseFloat(totalAmount),
+        children_count: childrenCount ? parseInt(childrenCount) : 1,
+        session_id: sessionIdParam || sessionId
+      });
+    }
 
     // Simular loading para melhor UX
     setTimeout(() => setIsLoading(false), 1000);
@@ -85,7 +118,7 @@ export default function ThankYouLastLink() {
         });
       }
     }
-  }, [searchParams, sessionId, utmParams]);
+  }, [searchParams, sessionId, utmParams, trackMainFunnelProgress, trackFunnelConversion, trackCustomEvent]);
 
   if (isLoading) {
     return (

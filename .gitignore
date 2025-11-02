@@ -41,3 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+.env*.local
+
+# GA4 API credentials
+/credentials/*.json
+/credentials/*.key
