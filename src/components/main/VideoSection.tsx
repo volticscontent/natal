@@ -15,7 +15,7 @@ interface VideoSectionProps {
 const VideoSection: React.FC<VideoSectionProps> = ({
   title,
   subtitle,
-  videoUrl = "/videos/modelo/sessãoVideo/mobileVd.webm", // Vídeo de exemplo temporário
+  videoUrl = "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/mobileVd.webm", // Vídeo do R2
   onCtaClick
 }) => {
   const t = useTranslations('video');

@@ -161,10 +161,10 @@ export function useSmartTracking() {
           }
           if (fbEvent) {
             // Eventos padrão
-            window.fbq('track', fbEvent, properties);
+            window.fbq?.('track', fbEvent, properties);
           } else {
             // Eventos customizados devem aparecer com o nome real no Pixel Helper
-            window.fbq('trackCustom', event as string, properties);
+            window.fbq?.('trackCustom', event as string, properties);
           }
         });
       }
@@ -357,10 +357,9 @@ export function useSmartTracking() {
   };
 }
 
-// Tipos para window.gtag e window.fbq
+// Tipos para window.gtag
 declare global {
   interface Window {
     gtag: (command: string, targetId?: string, config?: Record<string, unknown>) => void;
-    fbq: (command: string, eventName?: string, parameters?: Record<string, unknown>) => void;
   }
 }

@@ -1,5 +1,8 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import PixelScripts from '@/components/tracking/PixelScripts';
+import PixelDebugger from '@/components/tracking/PixelDebugger';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Inter } from "next/font/google";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
@@ -35,7 +38,7 @@ export default async function LocaleLayout({
         {/* Preload de recursos críticos com fetchpriority */}
         <link rel="preload" href="/hero/bg-1440.webp" as="image" media="(min-width: 768px)" fetchPriority="high" />
         <link rel="preload" href="/hero/bg-750.webp" as="image" media="(max-width: 767px)" fetchPriority="high" />
-        <link rel="preload" href="/images/logo_65x91.webp" as="image" fetchPriority="high" />
+        <link rel="preload" href="/images/logo.webp" as="image" fetchPriority="high" />
         <link rel="preload" href="https://db.onlinewebfonts.com/t/3bed3a67d2827afda9526cb21311b9f8.woff2" as="font" type="font/woff2" crossOrigin="anonymous" fetchPriority="high" />
         
         {/* Preconnect para recursos críticos externos */}
@@ -58,6 +61,10 @@ export default async function LocaleLayout({
           </a>
           
           {children}
+          {/* Carregamento dos pixels Facebook e TikTok */}
+          {process.env.NODE_ENV === 'production' && <PixelScripts />}
+          {/* Debug dos pixels */}
+          <PixelDebugger />
         </NextIntlClientProvider>
         
         {/* Vercel Analytics */}

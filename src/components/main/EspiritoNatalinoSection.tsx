@@ -23,14 +23,14 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
   title,
   subtitle,
   videos = [
-    { src: "/videos/provas-sociais/VID-20251027-WA0001.webm", instagramHandle: "@carla_santos", name: "Carla Santos" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0002.webm", instagramHandle: "@ana_oliveira", name: "Ana Oliveira" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0003.webm", instagramHandle: "@juliana_costa", name: "Juliana Costa" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0004.webm", instagramHandle: "@patricia_lima", name: "Patrícia Lima" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0005.webm", instagramHandle: "@fernanda_silva", name: "Fernanda Silva" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0006.webm", instagramHandle: "@mariana_rocha", name: "Mariana Rocha" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0007.webm", instagramHandle: "@camila_alves", name: "Camila Alves" },
-    { src: "/videos/provas-sociais/VID-20251027-WA0008.webm", instagramHandle: "@bruna_martins", name: "Bruna Martins" }
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0001.webm", instagramHandle: "@carla_santos", name: "Carla Santos" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0002.webm", instagramHandle: "@ana_oliveira", name: "Ana Oliveira" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0003.webm", instagramHandle: "@juliana_costa", name: "Juliana Costa" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0004.webm", instagramHandle: "@patricia_lima", name: "Patrícia Lima" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0005.webm", instagramHandle: "@fernanda_silva", name: "Fernanda Silva" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0006.webm", instagramHandle: "@mariana_rocha", name: "Mariana Rocha" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0007.webm", instagramHandle: "@camila_alves", name: "Camila Alves" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0008.webm", instagramHandle: "@bruna_martins", name: "Bruna Martins" }
   ],
   onCtaClick
 }) => {

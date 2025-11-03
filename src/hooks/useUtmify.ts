@@ -10,16 +10,6 @@ interface UtmifyConfig {
   apiUrl?: string;
 }
 
-declare global {
-  interface Window {
-    dataLayer: any[];
-    utmify: {
-      track: (event: string, data?: any) => void;
-      init: (pixelId: string) => void;
-    };
-  }
-}
-
 export function useUtmify() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [config] = useState<UtmifyConfig>({

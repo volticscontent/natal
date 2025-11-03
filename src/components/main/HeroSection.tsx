@@ -150,7 +150,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <DynamicVideoPopup
           isOpen={isVideoPopupOpen}
           onClose={() => setIsVideoPopupOpen(false)}
-          videoSrc="/videos/modelo/sessãoVideo/mobileVd.webm"
+          videoSrc="https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/mobileVd.webm"
           title="Veja como será o seu vídeo personalizado!"
         />
       )}
