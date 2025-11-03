@@ -11,7 +11,7 @@ export interface ContactData {
   nome: string;
   email: string;
   telefone: string;
-  cpf: string;     // CPF obrigatório para pessoas físicas
+  cpf?: string | null;     
   cnpj?: string;   // CNPJ opcional para pessoas jurídicas
   pais?: string;   // País para checkout internacional
 }

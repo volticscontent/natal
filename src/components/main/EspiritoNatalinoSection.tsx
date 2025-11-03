@@ -4,9 +4,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { EmblaCarouselType } from 'embla-carousel';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 interface VideoData {
   src: string;
+  thumbnail: string;
   instagramHandle: string;
   name: string;
 }
@@ -23,18 +26,19 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
   title,
   subtitle,
   videos = [
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0001.webm", instagramHandle: "@carla_santos", name: "Carla Santos" },
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0002.webm", instagramHandle: "@ana_oliveira", name: "Ana Oliveira" },
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0003.webm", instagramHandle: "@juliana_costa", name: "Juliana Costa" },
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0004.webm", instagramHandle: "@patricia_lima", name: "Patrícia Lima" },
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0005.webm", instagramHandle: "@fernanda_silva", name: "Fernanda Silva" },
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0006.webm", instagramHandle: "@mariana_rocha", name: "Mariana Rocha" },
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0007.webm", instagramHandle: "@camila_alves", name: "Camila Alves" },
-    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0008.webm", instagramHandle: "@bruna_martins", name: "Bruna Martins" }
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0001.webm", thumbnail: "/images/videoframe_WW001.png", instagramHandle: "@carla_santos", name: "Carla Santos" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0002.webm", thumbnail: "/images/videoframe_WW002.png", instagramHandle: "@ana_oliveira", name: "Ana Oliveira" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0003.webm", thumbnail: "/images/videoframe_WW003.png", instagramHandle: "@juliana_costa", name: "Juliana Costa" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0004.webm", thumbnail: "/images/videoframe_WW004.png", instagramHandle: "@patricia_lima", name: "Patrícia Lima" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0005.webm", thumbnail: "/images/videoframe_WW005.png", instagramHandle: "@fernanda_silva", name: "Fernanda Silva" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0006.webm", thumbnail: "/images/videoframe_WW006.png", instagramHandle: "@mariana_rocha", name: "Mariana Rocha" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0007.webm", thumbnail: "/images/videoframe_WW007.png", instagramHandle: "@camila_alves", name: "Camila Alves" },
+    { src: "https://pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev/videosite/VID-20251027-WA0008.webm", thumbnail: "/images/videoframe_WW008.png", instagramHandle: "@bruna_martins", name: "Bruna Martins" }
   ],
   onCtaClick
 }) => {
   const t = useTranslations('christmasSpirit');
+  const isMobile = useIsMobile();
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: true,
     align: 'center',
@@ -47,6 +51,9 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
   const [nextBtnDisabled, setNextBtnDisabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [videoRefs, setVideoRefs] = useState<(HTMLVideoElement | null)[]>([]);
+  const [loadedVideos, setLoadedVideos] = useState<Set<number>>(new Set());
+  const [shouldDeferHeavy, setShouldDeferHeavy] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -107,8 +114,44 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
       });
     }
   }, [videoRefs]);
+
+  useEffect(() => {
+    try {
+      type NI = { saveData?: boolean; effectiveType?: string };
+      const nav = navigator as unknown as { connection?: NI; mozConnection?: NI; webkitConnection?: NI };
+      const conn: NI | undefined = nav.connection || nav.mozConnection || nav.webkitConnection;
+      const saveData = !!conn?.saveData;
+      const type = (conn?.effectiveType || '').toLowerCase();
+      const isSlow = ['slow-2g', '2g', '3g'].includes(type);
+      setShouldDeferHeavy(saveData || isSlow);
+    } catch {}
+  }, []);
+
+  // Ensure video markup only renders on client to avoid hydration mismatches
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    const head = document.head;
+    const existing = new Set(
+      Array.from(document.querySelectorAll('link[rel="preload"][as="image"][data-preload-thumb="true"]'))
+        .map((el) => el.getAttribute('href') || '')
+    );
+    const toPreload = videos.slice(0, Math.min(8, videos.length));
+    toPreload.forEach((v) => {
+      if (!existing.has(v.thumbnail)) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = v.thumbnail;
+        link.setAttribute('data-preload-thumb', 'true');
+        head.appendChild(link);
+      }
+    });
+  }, [videos]);
   return (
-    <section className="py-10 md:py-20 bg-white">
+    <section id="reviews" className="py-10 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center px-4">
@@ -136,84 +179,89 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
           
           <div className="embla overflow-hidden" ref={emblaRef}>
             <div className="embla__container flex">
-              {videos.map((video, index) => (
+              {videos.map((video, index) => {
+                const leftNeighbor = (selectedIndex - 1 + videos.length) % videos.length;
+                const rightNeighbor = (selectedIndex + 1) % videos.length;
+                const preload = index === selectedIndex || index === leftNeighbor || index === rightNeighbor;
+                const earlyThumb = index < 4;
+                const thumbEager = earlyThumb || isMobile || preload;
+                return (
                 <div key={index} className="embla__slide flex-[0_0_80%] md:flex-[0_0_60%] lg:flex-[0_0_40%] min-w-0 pl-4">
                   <div className="relative group">
-                    <div className="relative aspect-[9/12] bg-gray-200 rounded-2xl overflow-hidden shadow-lg mx-auto max-w-sm">
-                      {/* Carregamento condicional - todos os vídeos com thumbnail */}
-                      {Math.abs(selectedIndex - index) <= 1 ? (
-                        <video 
-                          ref={(el) => {
-                            if (el && videoRefs[index] !== el) {
-                              const newRefs = [...videoRefs];
-                              newRefs[index] = el;
-                              setVideoRefs(newRefs);
-                            }
-                          }}
-                          className="w-full h-full object-cover block relative z-20"
-                          src={video.src}
-                          muted
-                          loop
-                          playsInline
-                          preload={selectedIndex === index ? "auto" : "metadata"}
-                          style={{ display: 'block', visibility: 'visible' }}
-                          onError={(e) => {
-                            console.error('Erro ao carregar vídeo:', video.src, e);
-                            // Tentar carregar versão MP4 se WebM falhar
-                            const videoElement = e.target as HTMLVideoElement;
-                            if (video.src.includes('.webm')) {
-                              const mp4Src = video.src.replace('.webm', '.mp4');
-                              console.log('Tentando carregar versão MP4:', mp4Src);
-                              videoElement.src = mp4Src;
-                            }
-                          }}
-                          onLoadStart={() => {
-                            console.log('Iniciando carregamento do vídeo:', video.src);
-                          }}
-                          onCanPlay={() => {
-                            console.log('Vídeo pronto para reprodução:', video.src);
-                          }}
-                          onLoadedData={() => {
-                            console.log('Dados do vídeo carregados:', video.src);
-                          }}
-                        />
-                      ) : (
-                        <video 
-                          className="w-full h-full object-cover block relative z-20"
-                          src={video.src}
-                          muted
-                          loop
-                          playsInline
-                          preload="none"
-                          style={{ display: 'block', visibility: 'visible' }}
-                        />
-                      )}
+                    <div className="relative aspect-[9/12] bg-white rounded-2xl overflow-hidden shadow-lg mx-auto max-w-sm">
+                      {/* Thumbnail-first loading system */}
+                      <div className="relative w-full h-full">
+                        {/* Thumbnail - Always visible until video is loaded */}
+                        <div className={`absolute inset-0 z-10 transition-opacity duration-300 ${loadedVideos.has(index) ? 'opacity-0' : 'opacity-100'}`}>
+                          <Image
+                            src={video.thumbnail}
+                            alt={`Thumbnail de ${video.name}`}
+                            fill
+                            className="object-cover"
+                            unoptimized
+                            loading={thumbEager ? 'eager' : 'lazy'}
+                            sizes="(max-width: 768px) 80vw, (max-width: 1024px) 60vw, 40vw"
+                            quality={65}
+                            placeholder="blur"
+                            blurDataURL="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                            priority={thumbEager}
+                            fetchPriority={thumbEager ? 'high' : 'low'}
+                          />
+
+                          <div className="bg-white bg-opacity-90 rounded-full p-4 shadow-lg hover:bg-opacity-100 transition-all duration-300">
+                            <svg 
+                              className="w-8 h-8 text-red-500" 
+                              fill="currentColor" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M8 5v14l11-7z"/>
+                              </svg>
+                            </div>
+
+                        </div>
+
+                        {/* Video - Only loads when thumbnail is clicked or slide is active (and not deferring on slow/mobile data) */}
+                        {isHydrated && (loadedVideos.has(index) || (selectedIndex === index && !shouldDeferHeavy)) && (
+                          <video
+                            suppressHydrationWarning
+                            ref={(el) => {
+                              if (el && videoRefs[index] !== el) {
+                                const newRefs = [...videoRefs];
+                                newRefs[index] = el;
+                                setVideoRefs(newRefs);
+                              }
+                            }}
+                            className="w-full h-full object-cover block relative z-20"
+                            muted
+                            loop
+                            playsInline
+                            crossOrigin="anonymous"
+                            preload={selectedIndex === index ? 'metadata' : 'none'}
+                            poster={video.thumbnail}
+                            style={{ display: 'block', visibility: 'visible' }}
+                            onLoadedData={() => {
+                              setLoadedVideos(prev => new Set(prev).add(index));
+                            }}
+                            onError={() => {
+                              // Silenciar erros esperados de rede/tipo; o navegador já tentará a próxima fonte
+                            }}
+                          >
+                            <source suppressHydrationWarning src={video.src} type="video/webm" />
+                            {/* <source suppressHydrationWarning src={video.src.replace('.webm', '.mp4')} type="video/mp4" /> */}
+                          </video>
+                        )}
+                      </div>
 
                       {/* Instagram Handle Overlay - Bottom Left */}
                       <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
                         {video.instagramHandle}
-                      </div>
-
-                      {/* Play Button Overlay - Only visible on active slide */}
-                      <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-                        selectedIndex === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                      }`}>
-                        <div className="bg-white bg-opacity-90 rounded-full p-4 shadow-lg hover:bg-opacity-100 transition-all duration-300 cursor-pointer">
-                          <svg 
-                            className="w-8 h-8 text-red-500" 
-                            fill="currentColor" 
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M8 5v14l11-7z"/>
-                          </svg>
-                        </div>
                       </div>
                       
 
                     </div>
                   </div>
                 </div>
-              ))}
+              );})}
             </div>
           </div>
 
@@ -222,7 +270,7 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
             onClick={scrollPrev}
             disabled={prevBtnDisabled}
             className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Navegar para o item anterior do carrossel"
+            aria-label={t('aria.prevButton')}
           >
             <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -233,7 +281,7 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
             onClick={scrollNext}
             disabled={nextBtnDisabled}
             className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Navegar para o próximo item do carrossel"
+            aria-label={t('aria.nextButton')}
           >
             <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -247,7 +295,7 @@ const EspiritoNatalinoSection: React.FC<EspiritoNatalinoSectionProps> = ({
             onClick={onCtaClick}
             className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-5 px-2 rounded-full transition-all duration-300 transform hover:scale-105 uppercase tracking-wide"
           >
-            Criar vídeo agora
+            {t('ctaButton')}
           </button>
         </div>
       </div>

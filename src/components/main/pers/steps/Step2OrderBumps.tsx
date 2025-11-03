@@ -80,7 +80,7 @@ export default function Step2OrderBumps({
       sessionStorage.setItem(pvKey, '1');
       console.log('📄 Evento perspgview2 disparado - Step 2 visualizado');
     }
-  }, [isInitialLoad]);
+  }, [isInitialLoad, trackEvent, quantidadeCriancas]);
 
   // Salvar dados automaticamente e recalcular preços (apenas após carregamento inicial)
   useEffect(() => {

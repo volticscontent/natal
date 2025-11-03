@@ -287,7 +287,6 @@ export const validateContactData = (contactData: ContactData, locale: string = '
   const phoneValidation = validatePhone(contactData.telefone, locale);
   errors.push(...phoneValidation.errors);
 
-  // CPF removido - não é mais obrigatório
 
   return {
     valid: errors.length === 0,
@@ -392,9 +391,6 @@ export const validateForCompleteCheckout = (
 
   // Validações específicas por provider
   if (provider === 'lastlink') {
-    if (!contactData.cpf) {
-      additionalErrors.push('CPF é obrigatório para checkout no Brasil');
-    }
     if (!contactData.telefone) {
       additionalErrors.push('Telefone é obrigatório para checkout no Brasil');
     }
@@ -612,10 +608,7 @@ export const validateByProvider = (
 
   // Validações específicas por provider
   if (provider === 'lastlink') {
-    // CPF obrigatório para LastLink
-    if (!contactData.cpf) {
-      errors.push('CPF é obrigatório para checkout brasileiro');
-    }
+    
   }
 
   if (provider === 'cartpanda') {

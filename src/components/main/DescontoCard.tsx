@@ -8,7 +8,6 @@ interface DescontoCardProps {
   onCtaClick?: () => void;
   title?: string;
   description?: string;
-  code?: string;
   validUntil?: string;
   buttonText?: string;
 }
@@ -17,7 +16,6 @@ const DescontoCard: React.FC<DescontoCardProps> = ({
   onCtaClick,
   title,
   description,
-  code,
   validUntil,
   buttonText
 }) => {
@@ -55,9 +53,6 @@ const DescontoCard: React.FC<DescontoCardProps> = ({
             
             {/* Code and Date */}
             <div className="space-y-2 mb-10">
-              <div className="text-xl font-bold font-fertigo bg-white text-red-600 px-4 py-2 rounded-lg inline-block mb-2">
-                {t('codeLabel')}: {code || t('code')}
-              </div>
               <div className="text-sm font-medium font-fertigo">
                 {t('validUntil')} {validUntil || t('validUntilDate')}
               </div>

@@ -9,7 +9,7 @@ export interface N8NWebhookPayload {
     nome: string;
     email: string;
     telefone: string;
-    cpf: string;
+    cpf?: string;
   };
   
   // Informações de personalização
@@ -89,13 +89,17 @@ export function convertToN8NPayload(
   const orderBumpsNomes = mapOrderBumpIdsToNames(persData.order_bumps);
   
   // Monta payload
+  const informacoesContato: N8NWebhookPayload['informacoes_contato'] = {
+    nome: contactData.nome,
+    email: contactData.email,
+    telefone: contactData.telefone,
+  };
+  if (contactData.cpf) {
+    informacoesContato.cpf = contactData.cpf;
+  }
+
   const payload: N8NWebhookPayload = {
-    informacoes_contato: {
-      nome: contactData.nome,
-      email: contactData.email,
-      telefone: contactData.telefone,
-      cpf: contactData.cpf,
-    },
+    informacoes_contato: informacoesContato,
     informacoes_pers: {
       criancas: criancasNomes,
       fotos: persData.fotos && persData.fotos.length > 0 ? persData.fotos : null,

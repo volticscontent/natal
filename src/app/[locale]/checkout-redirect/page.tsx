@@ -64,7 +64,7 @@ export default function CheckoutRedirectPage() {
     }, 2000); // 2 segundos de delay para mostrar a tela de loading
 
     return () => clearTimeout(timer);
-  }, [searchParams, router]);
+  }, [searchParams, router, trackEvent]);
 
   const handleTimeout = () => {
     setError('O redirecionamento está demorando mais que o esperado. Redirecionando para a página inicial...');

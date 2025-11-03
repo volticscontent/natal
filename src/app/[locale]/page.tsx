@@ -10,7 +10,6 @@ import {
   ProductCarousel
 } from '@/components/main';
 import { useUtmTracking } from '@/hooks/useUtmTracking';
-import { usePixelTracking } from '@/hooks/usePixelTracking';
 import { usePageTitle } from '@/hooks/usePageTitle';
 
 // Lazy loading para componentes não críticos
@@ -63,8 +62,7 @@ export default function HomePage({
   // Inicializar UTM tracking
   const { sessionId, utmParams, isInitialized, buildPersonalizationLink } = useUtmTracking();
   
-  // Inicializar pixel tracking
-  const { trackEvent } = usePixelTracking();
+  // Pixel tracking via scripts; remover hook não utilizado
   
   // Log para debug
   if (isInitialized) {

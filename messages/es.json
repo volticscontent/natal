@@ -185,7 +185,7 @@
     "productTitle": "Video Personalizado de Papá Noel",
     "price": "$12.99",
     "originalPrice": "$18.99",
-    "discount": "-20%",
+    "discount": "-30%",
     "description": "Video personalizado con el nombre del niño y mensaje especial",
     "features": [
       "Nombre personalizado",
@@ -330,8 +330,8 @@
     "magicPhrase": "magia de la Navidad"
   },
   "descontoCard": {
-    "title": "Descuento Prenatal -20%",
-    "description": "🤱 ¡20% de descuento para futuras mamás!",
+    "title": "Descuento Prenatal -30%",
+    "description": "🤱 ¡30% de descuento para futuras mamás!",
     "code": "PRENATAL20",
     "validUntil": "31.12",
     "buttonText": "Comprar ahora",
@@ -346,10 +346,15 @@
   },
   "christmasSpirit": {
     "title": "Lleva el espíritu navideño a quienes amas.",
-    "subtitle": "Únete a más de 30.000 clientes satisfechos."
+    "subtitle": "Únete a más de 30.000 clientes satisfeitos.",
+    "ctaButton": "Crear video ahora",
+    "aria": {
+      "prevButton": "Video anterior",
+      "nextButton": "Siguiente video"
+    }
   },
   "promoBanner": {
-    "message": "🤱 Descuento Prenatal ya disponible - ¡20% para futuras mamás! 🤱 válido hasta 31.12 Código: PRENATAL20"
+    "message": "🤱 Descuento Prenatal ya disponible - ¡30% para futuras mamás! 🤱 válido hasta 31.12 Código: PRENATAL20"
   },
   "socialCarousel": {
     "title": "#GenerandoSonrisas",

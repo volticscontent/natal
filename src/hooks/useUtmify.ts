@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 
-interface UtmifyEvent {
-  event: string;
-  [key: string]: any;
-}
+// tipo não utilizado removido
 
 interface UtmifyConfig {
   pixelId: string;
@@ -42,7 +39,7 @@ export function useUtmify() {
     return () => clearInterval(interval);
   }, []);
 
-  const trackEvent = (eventName: string, eventData?: any) => {
+  const trackEvent = (eventName: string, eventData?: Record<string, unknown>) => {
     if (typeof window === 'undefined' || !isLoaded) {
       console.warn('UTMify não está carregada ainda');
       return;
@@ -51,10 +48,7 @@ export function useUtmify() {
     try {
       // Enviar evento para o dataLayer da UTMify
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: eventName,
-        ...eventData
-      });
+      window.dataLayer.push({ event: eventName, ...(eventData || {}) });
 
       console.log('Evento UTMify enviado:', { event: eventName, ...eventData });
     } catch (error) {
@@ -62,12 +56,12 @@ export function useUtmify() {
     }
   };
 
-  const trackPageView = (pageName?: string, additionalData?: any) => {
+  const trackPageView = (pageName?: string, additionalData?: Record<string, unknown>) => {
     trackEvent('page_view', {
       page_title: pageName || document.title,
       page_location: window.location.href,
       page_path: window.location.pathname,
-      ...additionalData
+      ...(additionalData || {})
     });
   };
 
@@ -75,7 +69,7 @@ export function useUtmify() {
     transaction_id: string;
     value: number;
     currency?: string;
-    items?: any[];
+    items?: unknown[];
   }) => {
     trackEvent('purchase', {
       transaction_id: transactionData.transaction_id,
@@ -106,7 +100,7 @@ export function useUtmify() {
   const trackBeginCheckout = (checkoutData?: {
     value: number;
     currency?: string;
-    items?: any[];
+    items?: unknown[];
   }) => {
     trackEvent('begin_checkout', {
       currency: checkoutData?.currency || 'BRL',

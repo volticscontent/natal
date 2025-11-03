@@ -83,6 +83,7 @@ const VideoPopup: React.FC<VideoPopupProps> = ({
               muted
               playsInline
               preload="metadata"
+              suppressHydrationWarning
             >
               <source src={videoSrc} type="video/webm" />
               <source src={videoSrc.replace('.webm', '.mp4')} type="video/mp4" />

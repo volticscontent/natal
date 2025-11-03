@@ -18,9 +18,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Tentar parsear JSON com fallback
-    let body: any = {};
+    let parsed: Record<string, unknown> = {};
     try {
-      body = JSON.parse(raw);
+      parsed = JSON.parse(raw) as Record<string, unknown>;
     } catch (parseError) {
       console.warn('📊 [Tracking API] JSON inválido recebido:', parseError);
       return NextResponse.json(
@@ -28,13 +28,15 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+    const events = Array.isArray((parsed as Record<string, unknown>).events) ? (parsed as { events: unknown[] }).events : [];
+    const sessionId = (parsed as Record<string, unknown>).session_id as string | undefined;
+
     // Log dos eventos de tracking para desenvolvimento
     if (process.env.NODE_ENV === 'development') {
       console.log('📊 [Tracking API] Eventos recebidos:', {
-        session_id: body.session_id,
-        events_count: body.events?.length || 0,
-        events: body.events
+        session_id: sessionId,
+        events_count: events.length || 0,
+        events
       });
     }
     
@@ -44,7 +46,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ 
       success: true, 
       message: 'Eventos de tracking recebidos com sucesso',
-      processed_events: body.events?.length || 0
+      processed_events: events.length || 0
     });
     
   } catch (error) {

@@ -112,7 +112,6 @@ export const useCheckoutUrlGenerator = (locale: 'pt' | 'en' | 'es' = 'pt') => {
           nome: persData.contato?.nome,
           email: persData.contato?.email,
           telefone: persData.contato?.telefone,
-          cpf: persData.contato?.cpf,
           cnpj: persData.contato?.cnpj,
         };
         console.log('🔍 Dados do cliente:', customerData);

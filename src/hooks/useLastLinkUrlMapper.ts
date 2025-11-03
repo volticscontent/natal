@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { unformatCPF, unformatPhone } from '../components/main/pers/utils/validation';
+import { unformatPhone } from '../components/main/pers/utils/validation';
 import { Product } from './useProducts';
 
 export interface OrderBumps {
@@ -15,7 +15,6 @@ export interface CustomerData {
   nome?: string;
   email?: string;
   telefone?: string;
-  cpf?: string;
   cnpj?: string;
 }
 
@@ -94,7 +93,6 @@ export const useLastLinkUrlMapper = () => {
         if (customerData.nome) customerParams.name = customerData.nome;
         if (customerData.email) customerParams.email = customerData.email;
         if (customerData.telefone) customerParams.phone = unformatPhone(customerData.telefone);
-        if (customerData.cpf) customerParams.cpf = unformatCPF(customerData.cpf);
       }
 
       return {

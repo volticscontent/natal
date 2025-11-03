@@ -256,9 +256,6 @@ export const useN8NIntegration = () => {
       errors.push('Telefone é obrigatório');
     }
 
-    if (!contactData.cpf?.trim()) {
-      errors.push('CPF é obrigatório');
-    }
 
     // Validar dados de personalização
     if (!persData.children || persData.children.length === 0) {

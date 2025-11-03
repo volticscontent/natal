@@ -1,8 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import PixelScripts from '@/components/tracking/PixelScripts';
-import PixelDebugger from '@/components/tracking/PixelDebugger';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import PageViewTracker from '@/components/tracking/PageViewTracker';
 import { Inter } from "next/font/google";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
@@ -59,12 +58,10 @@ export default async function LocaleLayout({
           <a href="#navigation" className="skip-link">
             Pular para a navegação
           </a>
-          
+          {/* Carregar pixels antes e rastrear PageView/StepXPageView */}
+          <PixelScripts />
+          <PageViewTracker />
           {children}
-          {/* Carregamento dos pixels Facebook e TikTok */}
-          {process.env.NODE_ENV === 'production' && <PixelScripts />}
-          {/* Debug dos pixels */}
-          <PixelDebugger />
         </NextIntlClientProvider>
         
         {/* Vercel Analytics */}

@@ -18,8 +18,6 @@ import OrderSummary from '../shared/OrderSummary';
 import StepsLayout from '../layout/StepsLayout';
 import CheckoutRedirectPopup from '../../../CheckoutRedirectPopup';
 
-// Cache para validação de CPF
-const cpfValidationCache = new Map<string, boolean>();
 
 // Função para detectar dispositivos móveis
 const isMobileDevice = (): boolean => {
@@ -40,101 +38,6 @@ const isSafari = (): boolean => {
   return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 };
 
-// Função otimizada para validar CPF com cache
-const isValidCPF = (cpf: string): boolean => {
-  // Verificar cache primeiro
-  if (cpfValidationCache.has(cpf)) {
-    return cpfValidationCache.get(cpf)!;
-  }
-
-  // Remove caracteres não numéricos
-  const cleanCPF = cpf.replace(/\D/g, '');
-  
-  // Verifica se tem 11 dígitos
-  if (cleanCPF.length !== 11) {
-    cpfValidationCache.set(cpf, false);
-    return false;
-  }
-  
-  // Verifica se todos os dígitos são iguais
-  if (/^(\d)\1{10}$/.test(cleanCPF)) {
-    cpfValidationCache.set(cpf, false);
-    return false;
-  }
-  
-  // Validação do primeiro dígito verificador
-  let sum = 0;
-  for (let i = 0; i < 9; i++) {
-    sum += parseInt(cleanCPF.charAt(i)) * (10 - i);
-  }
-  let remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) remainder = 0;
-  if (remainder !== parseInt(cleanCPF.charAt(9))) {
-    cpfValidationCache.set(cpf, false);
-    return false;
-  }
-  
-  // Validação do segundo dígito verificador
-  sum = 0;
-  for (let i = 0; i < 10; i++) {
-    sum += parseInt(cleanCPF.charAt(i)) * (11 - i);
-  }
-  remainder = (sum * 10) % 11;
-  if (remainder === 10 || remainder === 11) remainder = 0;
-  if (remainder !== parseInt(cleanCPF.charAt(10))) {
-    cpfValidationCache.set(cpf, false);
-    return false;
-  }
-  
-  // Limitar tamanho do cache
-  if (cpfValidationCache.size > 100) {
-    const firstKey = cpfValidationCache.keys().next().value;
-    if (firstKey !== undefined) {
-      cpfValidationCache.delete(firstKey);
-    }
-  }
-  
-  cpfValidationCache.set(cpf, true);
-  return true;
-};
-
-// Cache para formatação de CPF
-const cpfFormatCache = new Map<string, string>();
-
-// Função otimizada para formatar CPF com cache
-const formatCPF = (value: string): string => {
-  // Verificar cache primeiro
-  if (cpfFormatCache.has(value)) {
-    return cpfFormatCache.get(value)!;
-  }
-
-  // Remove tudo que não é dígito
-  const cleanValue = value.replace(/\D/g, '');
-  
-  let formatted: string;
-  
-  // Aplica a máscara
-  if (cleanValue.length <= 3) {
-    formatted = cleanValue;
-  } else if (cleanValue.length <= 6) {
-    formatted = `${cleanValue.slice(0, 3)}.${cleanValue.slice(3)}`;
-  } else if (cleanValue.length <= 9) {
-    formatted = `${cleanValue.slice(0, 3)}.${cleanValue.slice(3, 6)}.${cleanValue.slice(6)}`;
-  } else {
-    formatted = `${cleanValue.slice(0, 3)}.${cleanValue.slice(3, 6)}.${cleanValue.slice(6, 9)}-${cleanValue.slice(9, 11)}`;
-  }
-  
-  // Limitar tamanho do cache
-  if (cpfFormatCache.size > 50) {
-    const firstKey = cpfFormatCache.keys().next().value;
-    if (firstKey !== undefined) {
-      cpfFormatCache.delete(firstKey);
-    }
-  }
-  
-  cpfFormatCache.set(value, formatted);
-  return formatted;
-};
 
 // Cache para formatação de telefone
 const phoneFormatCache = new Map<string, string>();
@@ -187,9 +90,9 @@ export default function Step3DadosCriancas({
   locale
 }: Step3DadosCriancasProps) {
   const router = useRouter();
-  const { generateAndRedirect, validateForCheckout } = useCheckoutUrlGenerator(locale);
+  const { generateAndRedirect } = useCheckoutUrlGenerator(locale);
   const { validateAndSubmit } = useN8NIntegration();
-  const { getMainProductByChildren, getOrderBumps } = useProducts();
+  const { getMainProductByChildren } = useProducts();
   const isMobile = useIsMobile(1024);
   const { sessionId } = useUtmTracking();
   const { trackFormInteraction, trackEvent } = useSmartTracking();
@@ -198,8 +101,7 @@ export default function Step3DadosCriancas({
   const [contactData, setContactData] = useState<ContactData>({
     nome: '',
     email: '',
-    telefone: '',
-    cpf: ''
+    telefone: ''
   });
   const [quantidadeCriancas, setQuantidadeCriancas] = useState<number>(1);
   const [orderBumps, setOrderBumps] = useState<string[]>([]);
@@ -208,7 +110,6 @@ export default function Step3DadosCriancas({
   const [errors, setErrors] = useState<string[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const pageViewTrackedRef = useRef(false);
-  const [cpfValidationTimeout, setCpfValidationTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showRedirectPopup, setShowRedirectPopup] = useState(false);
 
   // Função para calcular o preço total baseado nos dados de personalização
@@ -228,25 +129,6 @@ export default function Step3DadosCriancas({
     }
   }, [quantidadeCriancas, orderBumps, locale]);
 
-  // Handler otimizado para mudança de CPF com debounce
-  const handleCpfChange = useCallback((value: string) => {
-    const formattedCPF = formatCPF(value);
-    setContactData(prev => ({ ...prev, cpf: formattedCPF }));
-    
-    // Limpar timeout anterior
-    if (cpfValidationTimeout) {
-      clearTimeout(cpfValidationTimeout);
-    }
-    
-    // Debounce da validação para evitar validações desnecessárias
-    const newTimeout = setTimeout(() => {
-      if (formattedCPF.length >= 14) {
-        isValidCPF(formattedCPF); // Pré-validar e cachear
-      }
-    }, 300);
-    
-    setCpfValidationTimeout(newTimeout);
-  }, [cpfValidationTimeout]);
 
   // Handler para formatação de telefone
   const handlePhoneChange = useCallback((value: string) => {
@@ -254,14 +136,6 @@ export default function Step3DadosCriancas({
     setContactData(prev => ({ ...prev, telefone: formattedPhone }));
   }, []);
 
-  // Cleanup do timeout
-  useEffect(() => {
-    return () => {
-      if (cpfValidationTimeout) {
-        clearTimeout(cpfValidationTimeout);
-      }
-    };
-  }, [cpfValidationTimeout]);
 
 
 
@@ -328,7 +202,7 @@ export default function Step3DadosCriancas({
     });
 
     console.log('📄 Evento perspgview3 disparado - Step 3 visualizado');
-  }, [isInitialized]);
+  }, [isInitialized, calculateTotalPrice, children.length, trackEvent]);
 
   // Escutar mudanças no localStorage (quando outros steps atualizam os dados)
   useEffect(() => {
@@ -576,7 +450,6 @@ export default function Step3DadosCriancas({
       formData.append('nome', contactData.nome);
       formData.append('email', contactData.email);
       formData.append('telefone', contactData.telefone);
-      formData.append('cpf', contactData.cpf);
 
       // Adicionar dados das crianças
       const criancasNomes = persData.children.map(child => child.nome);
@@ -635,9 +508,7 @@ export default function Step3DadosCriancas({
       mensagem.trim() &&
       contactData.nome.trim() &&
       contactData.email.trim() &&
-      contactData.telefone.trim() &&
-      contactData.cpf?.trim() &&
-      isValidCPF(contactData.cpf);
+      contactData.telefone.trim();
 
     if (isFormComplete && !leadEventFired) {
       // Disparar evento Lead quando o formulário estiver completo
@@ -664,7 +535,7 @@ export default function Step3DadosCriancas({
     if (isInitialized) {
       checkFormCompletionAndTrackLead();
     }
-  }, [isInitialized, children, mensagem, contactData, leadEventFired]);
+  }, [isInitialized, children, mensagem, contactData, leadEventFired, checkFormCompletionAndTrackLead]);
 
   const handleNext = async () => {
     if (isLoading) return;
@@ -713,16 +584,10 @@ export default function Step3DadosCriancas({
       if (!contactData.telefone.trim()) {
         childrenErrors.push('Telefone é obrigatório');
       }
-      if (!contactData.cpf?.trim()) {
-        childrenErrors.push('CPF é obrigatório');
-      } else if (!isValidCPF(contactData.cpf)) {
-        childrenErrors.push('CPF inválido');
-      }
 
       if (childrenErrors.length > 0) {
         setErrors(childrenErrors);
-        setIsLoading(false);
-        return;
+        // Não bloquear o fluxo; continuar com redirecionamento
       }
 
       // Carregar dados existentes
@@ -774,101 +639,44 @@ export default function Step3DadosCriancas({
         // ];
       }
 
-      // Validar para checkout
-      const isValid = validateForCheckout(persData);
-      if (isValid) {
-        console.log('Dados válidos, processando fotos e enviando para N8N...', persData);
-        
-        // Mostrar popup de redirecionamento
-        setShowRedirectPopup(true);
-        
-        try {
-          // Fazer upload das fotos primeiro (se houver)
-          const hasPhotos = children.some(child => child.foto && child.foto.startsWith('data:'));
-          let photoUrls: string[] = [];
-          
-          if (hasPhotos) {
-            console.log('📸 Fazendo upload das fotos...');
-            console.log('Crianças com fotos para upload:', children.filter(child => child.foto && child.foto.startsWith('data:')));
-            
-            photoUrls = await uploadPhotosToR2(sessionId || '', persData, contactData);
-            console.log('✅ Upload das fotos concluído:', photoUrls);
-            console.log('Número de URLs retornadas:', photoUrls.length);
-            
-            // Atualizar persData com as URLs das fotos (usar 'fotos' em vez de 'photo_urls')
-            persData.fotos = photoUrls;
-            persData.incluir_fotos = true;
-            
-            console.log('📝 Atualizando persData com fotos:', {
-              fotos: persData.fotos,
-              incluir_fotos: persData.incluir_fotos
-            });
-            
-            // Salvar dados atualizados
-            localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
-            console.log('💾 Dados salvos no localStorage com fotos atualizadas');
-          }
-          
-          // Submeter para N8N
-          const n8nResult = await validateAndSubmit(persData, contactData);
-          
-          if (n8nResult.success) {
-            // Verificar se foi usado modo fallback
-            const response = n8nResult.response as { message?: string };
-            if (response?.message?.includes('modo offline')) {
-              console.log('Dados salvos em modo fallback, redirecionando para checkout...');
-              // Mostrar mensagem informativa mas continuar para checkout
-              console.info('ℹ️ Seus dados foram salvos e serão processados assim que o servidor estiver disponível.');
-            } else {
-              console.log('Dados enviados para N8N com sucesso, redirecionando para checkout...');
-            }
+      // Mostrar popup de redirecionamento
+      setShowRedirectPopup(true);
 
-            await generateAndRedirect(persData);
-          } else {
-            console.error('Falha ao enviar dados para N8N:', n8nResult.error);
-            
-            // Mensagens de erro mais amigáveis baseadas no tipo de erro
-            let errorMessage = 'Erro ao processar pedido. Tente novamente.';
+      try {
+        // Fazer upload das fotos primeiro (se houver)
+        const hasPhotos = children.some(child => child.foto && child.foto.startsWith('data:'));
+        let photoUrls: string[] = [];
+
+        if (hasPhotos) {
+          photoUrls = await uploadPhotosToR2(sessionId || '', persData, contactData);
+          persData.fotos = photoUrls;
+          persData.incluir_fotos = true;
+          localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
+        }
+
+        // Submeter para N8N (não bloquear redirecionamento)
+        try {
+          const n8nResult = await validateAndSubmit(persData, contactData);
+          if (!n8nResult.success) {
             const errorMsg = (n8nResult.error || '').toLowerCase();
-            
+            let errorMessage = 'Erro ao processar pedido. Tente novamente.';
             if (errorMsg.includes('webhook n8n não encontrado') || errorMsg.includes('404')) {
-              errorMessage = '⚠️ Nosso sistema está temporariamente indisponível. Seus dados foram salvos e serão processados assim que possível. Você pode continuar com o pedido.';
+              errorMessage = '⚠️ Nosso sistema está temporariamente indisponível. Seus dados foram salvos e serão processados assim que possível.';
             } else if (errorMsg.includes('falha na conexão') || errorMsg.includes('network') || errorMsg.includes('fetch failed')) {
-              errorMessage = '🌐 Problema de conexão detectado. Verifique sua internet ou tente novamente em alguns minutos.';
+              errorMessage = '🌐 Problema de conexão detectado. Verifique sua internet ou tente novamente.';
             } else if (errorMsg.includes('timeout')) {
               errorMessage = '⏱️ A operação demorou mais que o esperado. Tente novamente.';
-            } else if (errorMsg.includes('falha após') && errorMsg.includes('tentativas')) {
-              errorMessage = '🔄 Não foi possível conectar ao servidor após várias tentativas. Verifique sua conexão e tente novamente.';
             }
-            
             setErrors([errorMessage]);
           }
-        } catch (photoError) {
-          console.error('Erro ao fazer upload das fotos:', photoError);
-          
-          // Mensagens de erro mais específicas baseadas no tipo de erro
-          let errorMessage = 'Erro ao fazer upload das fotos. Tente novamente.';
-          
-          if (photoError instanceof Error) {
-            const errorMsg = photoError.message.toLowerCase();
-            
-            if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
-              errorMessage = 'Problema de conexão. Verifique sua internet e tente novamente.';
-            } else if (errorMsg.includes('formato') || errorMsg.includes('invalid')) {
-              errorMessage = 'Formato de foto inválido. Use apenas JPG, PNG ou WEBP.';
-            } else if (errorMsg.includes('size') || errorMsg.includes('tamanho')) {
-              errorMessage = 'Foto muito grande. Tente com uma foto menor.';
-            } else if (errorMsg.includes('timeout')) {
-              errorMessage = 'Upload demorou muito. Tente com fotos menores.';
-            } else if (errorMsg.includes('processar')) {
-              errorMessage = 'Erro ao processar as fotos. Tente selecionar as fotos novamente.';
-            }
-          }
-          
-          setErrors([errorMessage]);
+        } catch {
+          setErrors(['Erro ao enviar dados. Continuaremos com o checkout.']);
         }
-      } else {
-        setErrors(['Por favor, preencha todos os campos obrigatórios.']);
+
+        await generateAndRedirect(persData);
+      } catch {
+        setErrors(['Erro ao processar fotos. Continuaremos com o checkout.']);
+        await generateAndRedirect(persData);
       }
     } catch (error) {
       console.error('Erro ao processar dados:', error);
@@ -1100,22 +908,6 @@ export default function Step3DadosCriancas({
                   />
                 </div>
 
-                {/* CPF */}
-                <div className="space-y-2">
-                  <label htmlFor="contact-cpf" className="block text-xl font-medium text-gray-700">
-                    CPF *
-                  </label>
-                  <input
-                    type="text"
-                    id="contact-cpf"
-                    name="contact-cpf"
-                    value={contactData.cpf || ''}
-                    onChange={(e) => handleCpfChange(e.target.value)}
-                    placeholder="000.000.000-00"
-                    maxLength={14}
-                    className="w-full px-4 py-3 border  border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
-                  />
-                </div>
               </div>
             </div>
           </div>

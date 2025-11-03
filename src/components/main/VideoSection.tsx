@@ -133,6 +133,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 preload="auto"
                 autoPlay
                 controls={false}
+                suppressHydrationWarning
               >
                 <source src={videoUrl} type="video/webm" />
                 <source src={videoUrl.replace('.webm', '.mp4')} type="video/mp4" />

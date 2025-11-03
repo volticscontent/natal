@@ -168,7 +168,7 @@ export class MetaPixelManager {
               console.log('⏹️ Meta Pixel - PageView bloqueado em página de personalização:', pathname);
               return;
             }
-          } catch (_) {}
+          } catch {}
           return (originalFbq as unknown as (command: string, ...args: unknown[]) => void)(command, ...(args as unknown[]));
         }) as unknown as (command: string, ...args: unknown[]) => void;
         console.log('🛡️ Meta Pixel - Wrapper instalado para bloquear PageView em /pers/*');
@@ -336,7 +336,7 @@ export class TikTokPixelManager {
                 console.log('⛔ TikTok Pixel - Bloqueado no queue:', { cmd, eventName, pathname });
                 return; // não enfileirar
               }
-            } catch (_) {}
+            } catch {}
             return originalPush.call(ttq as unknown as { push: (args: unknown[]) => void }, args);
           } as unknown as (args: unknown[]) => void;
 
@@ -348,7 +348,7 @@ export class TikTokPixelManager {
                 console.log('⛔ TikTok Pixel - page() bloqueado em /pers/*:', pathname);
                 return;
               }
-            } catch (_) {}
+            } catch {}
             return (originalStubPage as () => void).apply(ttq);
           } as unknown as () => void;
 
@@ -359,7 +359,7 @@ export class TikTokPixelManager {
                 console.log('⛔ TikTok Pixel - track(Pageview) bloqueado em /pers/*:', { eventName, pathname });
                 return;
               }
-            } catch (_) {}
+                  } catch {}
             return (originalStubTrack as (eventName: string, parameters?: TikTokEventParameters) => void).apply(ttq, [eventName, parameters]);
           } as unknown as (eventName: string, parameters?: TikTokEventParameters) => void;
         } catch (e) {
@@ -377,7 +377,7 @@ export class TikTokPixelManager {
                     console.log('⏹️ TikTok Pixel - track(Pageview) bloqueado (ready) em /pers/*:', { eventName, pathname });
                     return;
                   }
-                } catch (_) {}
+                } catch {}
                 return (realTrack as (eventName: string, parameters?: TikTokEventParameters) => void).apply(ttq, [eventName, parameters]);
               } as unknown as (eventName: string, parameters?: TikTokEventParameters) => void;
 
@@ -388,7 +388,7 @@ export class TikTokPixelManager {
                     console.log('⏹️ TikTok Pixel - page() bloqueado (ready) em /pers/*:', pathname);
                     return;
                   }
-                } catch (_) {}
+                } catch {}
                 return (realPage as () => void).apply(ttq);
               } as unknown as () => void;
 

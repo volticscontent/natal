@@ -56,7 +56,7 @@ export default function Step1QuantidadeCriancas({
       sessionStorage.setItem(pvKey, '1');
       console.log('📄 Evento perspgview1 disparado - Step 1 visualizado');
     }
-  }, []);
+  }, [trackEvent]);
 
   // Função para obter preço baseado na quantidade de crianças
   const getPriceForQuantity = (quantity: number) => {
