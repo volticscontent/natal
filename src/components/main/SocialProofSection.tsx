@@ -30,7 +30,7 @@ const SocialProofSection: React.FC<SocialProofSectionProps> = ({
       platform: "Elfi Santa",
       rating: "4,9", 
       totalReviews: "60671",
-      logo: "/images/logo.webp",
+      logo: "/images/logo_65x91.webp",
       bgColor: "bg-red-50",
       ratingColor: "text-red-600"
     },
@@ -65,11 +65,11 @@ const SocialProofSection: React.FC<SocialProofSectionProps> = ({
                   {review.rating}
                 </div>
                 <span className="whitespace-nowrap">{t('reviewsText', { totalReviews: review.totalReviews })}</span>
-                <div className="relative h-6 w-auto flex-shrink-0 min-w-10">
+                <div className="flex items-center justify-center h-5 w-auto flex-shrink-0 min-w-10">
                   <Image
                     src={review.logo}
                     alt={`${review.platform} logo`}
-                    width={review.platform === 'Trustpilot' ? 120 : 80}
+                    width={review.platform === 'Trustpilot' ? 110 : 70}
                     height={40}
                     style={{ width: 'auto', height: 'auto' }}
                     className="object-contain"

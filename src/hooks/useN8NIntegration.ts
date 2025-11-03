@@ -71,11 +71,11 @@ export const useN8NIntegration = () => {
     
     const result: N8NSubmissionResult = {
       success: true,
-      sessionId,
+      sessionId: sessionId || undefined,
       response: {
         success: true,
         message: 'Dados salvos em modo offline. Serão sincronizados quando o servidor estiver disponível.',
-        session_id: sessionId
+        session_id: sessionId || ''
       }
     };
 

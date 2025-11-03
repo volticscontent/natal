@@ -83,7 +83,7 @@ export function buildCompleteUrl(config: UrlConfig): string {
   }
   
   // Gera utm_session_id único se não fornecido
-  const sessionId = utm.utm_session_id || getUtmSessionId(locale, utm.utm_source);
+  const sessionId = utm.utm_session_id || getUtmSessionId();
   
   // Constrói parâmetros da query
   const queryParams = new URLSearchParams();
@@ -220,7 +220,8 @@ export function extractUtmParams(): UtmParams {
   };
 
   // Se não há UTMs na URL, tenta detectar UTMs orgânicas
-  const hasUrlUtms = Object.values(urlUtms).some(value => value !== undefined);
+  const hasUrlUtms = urlUtms.utm_source || urlUtms.utm_medium || urlUtms.utm_campaign || 
+                     urlUtms.fbclid || urlUtms.gclid || urlUtms.click_id;
   
   if (!hasUrlUtms) {
     const organicUtms = detectOrganicUtms();

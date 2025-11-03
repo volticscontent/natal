@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PersData, Crianca, ContactData, STORAGE_KEYS } from '../types';
@@ -9,9 +9,9 @@ import { useCheckoutUrlGenerator } from '../../../../hooks/useCheckoutUrlGenerat
 import { useN8NIntegration } from '../../../../hooks/useN8NIntegration';
 import { useProducts } from '../../../../hooks/useProducts';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
-import { useDataLayer } from '../../../../hooks/useDataLayer';
 import { useUtmTracking } from '../../../../hooks/useUtmTracking';
-import { useDebugTracking } from '../../../../lib/debug-tracking';
+import { useSmartTracking } from '../../../../hooks/useSmartTracking';
+import { calculatePricing } from '../../../../lib/pricing-calculator';
 import ProgressBar from '../shared/ProgressBar';
 import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
@@ -189,11 +189,10 @@ export default function Step3DadosCriancas({
   const router = useRouter();
   const { generateAndRedirect, validateForCheckout } = useCheckoutUrlGenerator(locale);
   const { validateAndSubmit } = useN8NIntegration();
-  const { getMainProductByChildren, getOrderBumps, getProductPrice } = useProducts();
+  const { getMainProductByChildren, getOrderBumps } = useProducts();
   const isMobile = useIsMobile(1024);
-  const { trackPageView, trackFormInteraction, trackStepProgress, trackBeginCheckout, trackMainFunnelProgress } = useDataLayer();
   const { sessionId } = useUtmTracking();
-  const { trackFormFill, trackFinalLinkClick } = useDebugTracking();
+  const { trackFormInteraction, trackEvent } = useSmartTracking();
   const [children, setChildren] = useState<Crianca[]>([{ nome: '' }]); // Inicializar com pelo menos uma criança
   const [mensagem, setMensagem] = useState('');
   const [contactData, setContactData] = useState<ContactData>({
@@ -208,8 +207,26 @@ export default function Step3DadosCriancas({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const pageViewTrackedRef = useRef(false);
   const [cpfValidationTimeout, setCpfValidationTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showRedirectPopup, setShowRedirectPopup] = useState(false);
+
+  // Função para calcular o preço total baseado nos dados de personalização
+  const calculateTotalPrice = useCallback((): number => {
+    try {
+      const persData = getPersonalizationData();
+      const pricingResult = calculatePricing({
+        childrenCount: quantidadeCriancas || persData.quantidade_criancas || 1,
+        orderBumps: orderBumps.length > 0 ? orderBumps : persData.order_bumps || [],
+        locale: locale,
+        isCombo: (orderBumps.length > 0 ? orderBumps : persData.order_bumps || []).includes('combo-addons')
+      });
+      return pricingResult.total;
+    } catch (error) {
+      console.error('Erro ao calcular preço total:', error);
+      return 0;
+    }
+  }, [quantidadeCriancas, orderBumps, locale]);
 
   // Handler otimizado para mudança de CPF com debounce
   const handleCpfChange = useCallback((value: string) => {
@@ -248,16 +265,6 @@ export default function Step3DadosCriancas({
 
 
 
-  // Track page view
-  useEffect(() => {
-    trackPageView({
-      pageTitle: 'Dados das Crianças - Personalização',
-      pagePath: `/${locale}/pers/4`,
-      stepNumber: 4,
-      stepName: 'children_data'
-    });
-  }, [trackPageView, locale]);
-
   // Carregar dados salvos na inicialização usando as funções de dataStorage
   useEffect(() => {
     const persData = getPersonalizationData();
@@ -293,6 +300,35 @@ export default function Step3DadosCriancas({
     // Marcar como inicializado
     setIsInitialized(true);
   }, []);
+
+  // Disparar evento de page view personalizado para Step 3 (apenas uma vez por sessão após inicialização)
+  useEffect(() => {
+    if (!isInitialized) return;
+    if (pageViewTrackedRef.current) return; // Guard contra múltiplas execuções (Strict Mode / remounts)
+
+    const pvKey = 'pv_step_3';
+    if (typeof window === 'undefined') return;
+
+    const hasViewed = sessionStorage.getItem(pvKey);
+    if (hasViewed) {
+      pageViewTrackedRef.current = true;
+      return;
+    }
+
+    // Marcar como visto antes de disparar o evento para evitar duplicidade em execuções consecutivas
+    pageViewTrackedRef.current = true;
+    sessionStorage.setItem(pvKey, '1');
+
+    trackEvent('perspgview3', 'high', {
+      content_type: 'data_collection',
+      step_number: 3,
+      required_fields: children.length * 2 + 4, // nome + idade por criança + dados de contato
+      cart_value: calculateTotalPrice(),
+      timestamp: Date.now()
+    });
+
+    console.log('📄 Evento perspgview3 disparado - Step 3 visualizado');
+  }, [isInitialized]);
 
   // Escutar mudanças no localStorage (quando outros steps atualizam os dados)
   useEffect(() => {
@@ -353,14 +389,6 @@ export default function Step3DadosCriancas({
     const updatedChildren = [...children];
     updatedChildren[index] = { ...updatedChildren[index], [field]: value };
     setChildren(updatedChildren);
-
-    // Track form interaction
-    trackFormInteraction({
-      formName: 'children_data',
-      fieldName: `child_${index + 1}_${field}`,
-      stepNumber: 4,
-      interactionType: 'change'
-    });
   };
 
   const handlePhotoUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -597,8 +625,66 @@ export default function Step3DadosCriancas({
     }
   };
 
+  // Estado para controlar se o evento lead já foi disparado
+  const [leadEventFired, setLeadEventFired] = useState(false);
+
+  // Função para verificar se o formulário está completo e disparar evento Lead
+  const checkFormCompletionAndTrackLead = useCallback(() => {
+    const isFormComplete = 
+      children.every(child => child.nome.trim()) &&
+      mensagem.trim() &&
+      contactData.nome.trim() &&
+      contactData.email.trim() &&
+      contactData.telefone.trim() &&
+      contactData.cpf?.trim() &&
+      isValidCPF(contactData.cpf);
+
+    if (isFormComplete && !leadEventFired) {
+      // Disparar evento Lead quando o formulário estiver completo
+      trackEvent('form_interaction', 'high', {
+        event_category: 'lead_generation',
+        event_action: 'form_completed',
+        step_number: 3,
+        form_name: 'dados_criancas',
+        lead_type: 'qualified',
+        children_count: children.length,
+        has_order_bumps: orderBumps.length > 0,
+        session_id: sessionId,
+        timestamp: Date.now()
+      });
+      
+      setLeadEventFired(true);
+      console.log('🎯 Evento Lead disparado - Formulário completo');
+    }
+  }, [children, mensagem, contactData, orderBumps, sessionId, trackEvent, leadEventFired]);
+
+  // useEffect para verificar completude do formulário e disparar Lead
+  useEffect(() => {
+    // Só verificar após a inicialização para evitar disparos prematuros
+    if (isInitialized) {
+      checkFormCompletionAndTrackLead();
+    }
+  }, [isInitialized, children, mensagem, contactData, leadEventFired]);
+
   const handleNext = async () => {
     if (isLoading) return;
+
+    // Definir mainProduct no início para uso nos eventos
+    const mainProduct = getMainProductByChildren(children.length);
+
+    // Disparar evento Begin Checkout quando o usuário clicar em Finalizar
+    trackEvent('step_3_begin_checkout', 'high', {
+      event_category: 'ecommerce',
+      event_action: 'begin_checkout',
+      step_number: 3,
+      children_count: children.length,
+      has_order_bumps: orderBumps.length > 0,
+      product_name: mainProduct?.title?.[locale] || 'Produto Principal',
+      session_id: sessionId,
+      timestamp: Date.now()
+    });
+    
+    console.log('🛒 Evento Begin Checkout disparado - Usuário clicou em Finalizar');
 
     setIsLoading(true);
     setErrors([]);
@@ -639,13 +725,6 @@ export default function Step3DadosCriancas({
         return;
       }
 
-      // 🎯 DEBUG TRACKING: Formulário preenchido com sucesso para Meta e TikTok
-      trackFormFill(3, 'Dados das Crianças', {
-        children_count: children.length,
-        has_message: !!mensagem.trim(),
-        contact_complete: !!(contactData.nome && contactData.email && contactData.telefone && contactData.cpf)
-      });
-
       // Carregar dados existentes
       const existingData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
       let persData: PersData;
@@ -671,46 +750,28 @@ export default function Step3DadosCriancas({
       // Salvar dados
       localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
 
-      // Track step progress to checkout
-      trackStepProgress({
-        stepFrom: 4,
-        stepTo: 5,
-        stepName: 'children_data_to_checkout'
-      });
-
-      // Track checkout initiation
-      const mainProduct = getMainProductByChildren(persData.quantidade_criancas);
-      const availableOrderBumps = getOrderBumps();
-      
+      // Track checkout initiation (mainProduct já definido no início da função)
       if (mainProduct) {
-        const checkoutItems = [
-          {
-            item_id: mainProduct.id,
-            item_name: mainProduct.title.pt,
-            item_category: 'main_product',
-            price: getProductPrice(mainProduct).price,
-            quantity: 1
-          },
-          ...persData.order_bumps.map(bumpId => {
-            const bump = availableOrderBumps.find(b => b.id === bumpId);
-            return {
-              item_id: bumpId,
-              item_name: bump?.title?.pt || 'Order Bump',
-              item_category: 'order_bump',
-              price: bump ? getProductPrice(bump).price : 0,
-              quantity: 1
-            };
-          })
-        ];
-
-        const totalValue = checkoutItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-        trackBeginCheckout({
-          currency: locale === 'pt' ? 'BRL' : 'USD',
-          value: totalValue,
-          items: checkoutItems,
-          checkoutStep: 1
-        });
+        // Items preparados para tracking de checkout
+        // const checkoutItems = [
+        //   {
+        //     item_id: mainProduct.id,
+        //     item_name: mainProduct.title.pt,
+        //     item_category: 'main_product',
+        //     price: getProductPrice(mainProduct).price,
+        //     quantity: 1
+        //   },
+        //   ...persData.order_bumps.map(bumpId => {
+        //     const bump = availableOrderBumps.find(b => b.id === bumpId);
+        //     return {
+        //       item_id: bumpId,
+        //       item_name: bump?.title?.pt || 'Order Bump',
+        //       item_category: 'order_bump',
+        //       price: bump ? getProductPrice(bump).price : 0,
+        //       quantity: 1
+        //     };
+        //   })
+        // ];
       }
 
       // Validar para checkout
@@ -730,7 +791,7 @@ export default function Step3DadosCriancas({
             console.log('📸 Fazendo upload das fotos...');
             console.log('Crianças com fotos para upload:', children.filter(child => child.foto && child.foto.startsWith('data:')));
             
-            photoUrls = await uploadPhotosToR2(sessionId, persData, contactData);
+            photoUrls = await uploadPhotosToR2(sessionId || '', persData, contactData);
             console.log('✅ Upload das fotos concluído:', photoUrls);
             console.log('Número de URLs retornadas:', photoUrls.length);
             
@@ -761,13 +822,6 @@ export default function Step3DadosCriancas({
             } else {
               console.log('Dados enviados para N8N com sucesso, redirecionando para checkout...');
             }
-
-            // 🎯 DEBUG TRACKING: Clique no botão finalizar para Meta e TikTok
-            trackFinalLinkClick('Finalizar Pedido', window.location.href, {
-              step: 3,
-              children_count: persData.children.length,
-              has_order_bumps: persData.order_bumps.length > 0
-            });
 
             await generateAndRedirect(persData);
           } else {
@@ -1007,12 +1061,7 @@ export default function Step3DadosCriancas({
                     name="contact-name"
                     value={contactData.nome}
                     onChange={(e) => setContactData(prev => ({ ...prev, nome: e.target.value }))}
-                    onFocus={() => trackFormInteraction({
-                      formName: 'contact_data',
-                      fieldName: 'name',
-                      stepNumber: 4,
-                      interactionType: 'start'
-                    })}
+                    onFocus={() => trackFormInteraction('name', 'focus')}
                     placeholder={t('step3.contact.namePlaceholder')}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
                   />
@@ -1029,12 +1078,6 @@ export default function Step3DadosCriancas({
                     name="contact-email"
                     value={contactData.email}
                     onChange={(e) => setContactData(prev => ({ ...prev, email: e.target.value }))}
-                    onFocus={() => trackFormInteraction({
-                      formName: 'contact_data',
-                      fieldName: 'email',
-                      stepNumber: 4,
-                      interactionType: 'start'
-                    })}
                     placeholder={t('step3.contact.emailPlaceholder')}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
                   />
@@ -1051,12 +1094,6 @@ export default function Step3DadosCriancas({
                     name="contact-phone"
                     value={contactData.telefone}
                     onChange={(e) => handlePhoneChange(e.target.value)}
-                    onFocus={() => trackFormInteraction({
-                      formName: 'contact_data',
-                      fieldName: 'phone',
-                      stepNumber: 4,
-                      interactionType: 'start'
-                    })}
                     placeholder={t('step3.contact.phonePlaceholder')}
                     maxLength={15}
                     className="w-full px-4 py-3 border border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"
@@ -1074,12 +1111,6 @@ export default function Step3DadosCriancas({
                     name="contact-cpf"
                     value={contactData.cpf || ''}
                     onChange={(e) => handleCpfChange(e.target.value)}
-                    onFocus={() => trackFormInteraction({
-                      formName: 'contact_data',
-                      fieldName: 'cpf',
-                      stepNumber: 4,
-                      interactionType: 'start'
-                    })}
                     placeholder="000.000.000-00"
                     maxLength={14}
                     className="w-full px-4 py-3 border  border-gray-300 text-black rounded-xl focus:border-transparent transition-all duration-200"

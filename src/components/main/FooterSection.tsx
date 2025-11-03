@@ -3,34 +3,17 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { useGTM } from '../tracking/GTMManager';
 
 const FooterSection: React.FC = () => {
   const [email, setEmail] = useState('');
   const t = useTranslations('footer');
-  const { trackFormInteraction, trackLead } = useGTM();
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Track form submission
-    trackFormInteraction('newsletter', 'submit', 'email');
-    
-    // Track lead generation
-    trackLead({
-      email: email,
-      lead_source: 'newsletter_footer',
-      lead_value: 0
-    });
-    
     // Implementar lógica de newsletter aqui
     console.log('Newsletter signup:', email);
     setEmail('');
-  };
-
-  const handleEmailFocus = () => {
-    // Track form start
-    trackFormInteraction('newsletter', 'start', 'email');
   };
 
   return (
@@ -71,7 +54,6 @@ const FooterSection: React.FC = () => {
                 name="newsletter-email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onFocus={handleEmailFocus}
                 placeholder={t('newsletter.placeholder')}
                 className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-600 placeholder-gray-400 h-[48px]"
                 required

@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useUtmTracking } from '@/hooks/useUtmTracking';
-import { useDataLayer } from '@/hooks/useDataLayer';
-import { useGA4Tracking } from '@/lib/ga4-events';
+import { useSmartTracking } from '@/hooks/useSmartTracking';
+
 
 interface OrderData {
   session_id?: string;
@@ -25,8 +25,7 @@ export default function ThankYouCartPanda() {
   
   // Inicializar UTM tracking para coletar UTMs quando o cliente retorna
   const { sessionId, utmParams } = useUtmTracking();
-  const { trackMainFunnelProgress, trackFunnelConversion, trackCustomEvent } = useDataLayer();
-  const { trackCartaFinalizada } = useGA4Tracking();
+  const { trackMainFunnelProgress, trackFunnelConversion } = useSmartTracking();
 
   // Configurações por idioma
   const getLocalizedContent = () => {
@@ -152,63 +151,17 @@ export default function ThankYouCartPanda() {
         conversionType: 'purchase'
       });
 
-      trackCustomEvent('purchase_confirmed', {
-        transaction_id: orderId,
-        value: parseFloat(totalAmount),
-        currency: 'BRL',
-        provider: 'cartpanda',
-        children_count: childrenCount ? parseInt(childrenCount) : 1,
-        customer_name: customerName || 'Unknown'
-      });
+      // Simular loading para melhor UX
+      setTimeout(() => setIsLoading(false), 1000);
 
-      // Track GA4 - Carta Finalizada (conversão principal)
-      trackCartaFinalizada({
-        transaction_id: orderId,
-        value: parseFloat(totalAmount),
-        children_count: childrenCount ? parseInt(childrenCount) : 1,
-        session_id: sessionIdParam || sessionId
-      });
-    }
-
-    // Simular loading para melhor UX
-    setTimeout(() => setIsLoading(false), 1000);
-
-    // Limpar dados do localStorage após confirmação
-    if (sessionIdParam) {
-      localStorage.removeItem('pers_personalization_data');
-      localStorage.removeItem('pers_session_data');
-      localStorage.removeItem('pers_current_step');
-    }
-
-    // Tracking de conversão
-    if (typeof window !== 'undefined') {
-      // Google Analytics
-      if (window.gtag) {
-        window.gtag('event', 'purchase', {
-          transaction_id: orderId,
-          value: totalAmount ? parseFloat(totalAmount) : 0,
-          currency: 'BRL',
-          items: [{
-            item_id: 'recadinhos-papai-noel',
-            item_name: 'Recadinhos do Papai Noel',
-            category: 'Personalização',
-            quantity: childrenCount || 1,
-            price: totalAmount ? parseFloat(totalAmount) : 0,
-          }]
-        });
-      }
-
-      // Facebook Pixel
-      if (window.fbq) {
-        window.fbq('track', 'Purchase', {
-          value: totalAmount ? parseFloat(totalAmount) : 0,
-          currency: 'BRL',
-          content_ids: ['recadinhos-papai-noel'],
-          content_type: 'product',
-        });
+      // Limpar dados do localStorage após confirmação
+      if (sessionIdParam) {
+        localStorage.removeItem('pers_personalization_data');
+        localStorage.removeItem('pers_session_data');
+        localStorage.removeItem('pers_current_step');
       }
     }
-  }, [searchParams, sessionId, utmParams, trackMainFunnelProgress, trackFunnelConversion, trackCustomEvent]);
+  }, [searchParams, sessionId, utmParams, trackMainFunnelProgress, trackFunnelConversion]);
 
   if (isLoading) {
     return (

@@ -1,158 +1,99 @@
-'use client';
+// 🔗 UTM Session Management - Gerenciamento de Sessão UTM
 
 /**
- * Utilitário para gerenciar utm_session_id único por cliente
- * Gera um ID único que persiste durante toda a sessão do usuário
- */
-
-const UTM_SESSION_KEY = 'utm_session_id';
-const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 horas em millisegundos
-
-interface SessionData {
-  id: string;
-  timestamp: number;
-  locale?: string;
-  source?: string;
-}
-
-/**
- * Gera um ID único baseado em timestamp e random
- * Usa crypto.randomUUID quando disponível para maior unicidade
- */
-function generateSessionId(): string {
-  // Tenta usar crypto.randomUUID para máxima unicidade
-  if (typeof window !== 'undefined' && window.crypto && window.crypto.randomUUID) {
-    try {
-      return window.crypto.randomUUID();
-    } catch {
-      console.warn('crypto.randomUUID não disponível, usando fallback');
-    }
-  }
-  
-  // Fallback: timestamp + random mais robusto
-  const timestamp = Date.now().toString(36);
-  const random1 = Math.random().toString(36).substring(2, 10);
-  const random2 = Math.random().toString(36).substring(2, 10);
-  const performanceNow = typeof performance !== 'undefined' ? performance.now().toString(36) : '';
-  
-  return `${timestamp}_${random1}_${random2}_${performanceNow}`.replace(/\./g, '');
-}
-
-/**
- * Verifica se a sessão ainda é válida (não expirou)
- */
-function isSessionValid(sessionData: SessionData): boolean {
-  const now = Date.now();
-  return (now - sessionData.timestamp) < SESSION_DURATION;
-}
-
-/**
- * Obtém ou cria um utm_session_id único
- */
-export function getUtmSessionId(locale?: string, source?: string): string {
-  if (typeof window === 'undefined') {
-    // Server-side: gera um ID temporário
-    return generateSessionId();
-  }
-
-  try {
-    const stored = localStorage.getItem(UTM_SESSION_KEY);
-    
-    if (stored) {
-      const sessionData: SessionData = JSON.parse(stored);
-      
-      // Verifica se a sessão ainda é válida
-      if (isSessionValid(sessionData)) {
-        return sessionData.id;
-      }
-    }
-  } catch (error) {
-    console.warn('Erro ao recuperar utm_session_id:', error);
-  }
-
-  // Cria nova sessão
-  const newSessionId = generateSessionId();
-  const sessionData: SessionData = {
-    id: newSessionId,
-    timestamp: Date.now(),
-    locale,
-    source
-  };
-
-  try {
-    localStorage.setItem(UTM_SESSION_KEY, JSON.stringify(sessionData));
-  } catch (error) {
-    console.warn('Erro ao salvar utm_session_id:', error);
-  }
-
-  return newSessionId;
-}
-
-/**
- * Força a criação de uma nova sessão
- */
-export function renewUtmSessionId(locale?: string, source?: string): string {
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.removeItem(UTM_SESSION_KEY);
-    } catch (error) {
-      console.warn('Erro ao limpar utm_session_id:', error);
-    }
-  }
-  
-  return getUtmSessionId(locale, source);
-}
-
-/**
- * Obtém dados completos da sessão atual
- */
-export function getSessionData(): SessionData | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  try {
-    const stored = localStorage.getItem(UTM_SESSION_KEY);
-    if (stored) {
-      const sessionData: SessionData = JSON.parse(stored);
-      return isSessionValid(sessionData) ? sessionData : null;
-    }
-  } catch (error) {
-    console.warn('Erro ao recuperar dados da sessão:', error);
-  }
-
-  return null;
-}
-
-/**
- * Limpa a sessão atual
+ * Limpa a sessão UTM do localStorage
  */
 export function clearUtmSession(): void {
   if (typeof window !== 'undefined') {
-    try {
-      localStorage.removeItem(UTM_SESSION_KEY);
-    } catch (error) {
-      console.warn('Erro ao limpar sessão:', error);
-    }
+    localStorage.removeItem('utm_session_id');
+    localStorage.removeItem('utm_session_timestamp');
   }
 }
 
-export function validateSessionId(sessionId: string): boolean {
-  try {
-    // Verificar se tem o formato correto (timestamp + random)
-    if (sessionId.length !== 16) return false;
-    
-    // Verificar se os primeiros 8 caracteres são um timestamp válido
-    const timestampHex = sessionId.substring(0, 8);
-    const timestamp = parseInt(timestampHex, 16);
-    
-    // Verificar se o timestamp é razoável (não muito antigo nem futuro)
-    const now = Date.now();
-    const sessionTime = timestamp * 1000;
-    const maxAge = 24 * 60 * 60 * 1000; // 24 horas
-    
-    return sessionTime > (now - maxAge) && sessionTime <= now;
-  } catch {
-    return false;
+/**
+ * Gera um ID único de sessão UTM baseado nos parâmetros UTM atuais
+ * @returns {string} ID da sessão UTM
+ */
+export function getUtmSessionId(): string {
+  if (typeof window === 'undefined') {
+    return 'server-side-session';
   }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  // Extrair parâmetros UTM
+  const utmParams = {
+    source: urlParams.get('utm_source') || 'direct',
+    medium: urlParams.get('utm_medium') || 'none',
+    campaign: urlParams.get('utm_campaign') || 'none',
+    term: urlParams.get('utm_term') || '',
+    content: urlParams.get('utm_content') || ''
+  };
+
+  // Gerar timestamp da sessão
+  const timestamp = Date.now();
+  
+  // Verificar se já existe uma sessão ativa (dentro de 30 minutos)
+  const existingSession = localStorage.getItem('utm_session_id');
+  const sessionTimestamp = localStorage.getItem('utm_session_timestamp');
+  
+  // Verificar se a sessão existente está no formato antigo (contém "direct-none-none-timestamp")
+  const isOldFormat = existingSession && existingSession.match(/^direct-none-none-\d+$/);
+  
+  if (existingSession && sessionTimestamp && !isOldFormat) {
+    const timeDiff = timestamp - parseInt(sessionTimestamp);
+    const thirtyMinutes = 30 * 60 * 1000; // 30 minutos em ms
+    
+    if (timeDiff < thirtyMinutes) {
+      return existingSession;
+    }
+  }
+
+  // Se é formato antigo, limpar a sessão
+  if (isOldFormat) {
+    clearUtmSession();
+  }
+
+  // Criar nova sessão com ID único
+  // Usar um hash mais limpo baseado nos UTMs + timestamp + random
+  const randomSuffix = Math.random().toString(36).substring(2, 8);
+  const sessionKey = `${utmParams.source}-${utmParams.medium}-${utmParams.campaign}`;
+  const sessionId = `${sessionKey}-${timestamp}-${randomSuffix}`;
+  
+  // Salvar no localStorage
+  localStorage.setItem('utm_session_id', sessionId);
+  localStorage.setItem('utm_session_timestamp', timestamp.toString());
+  
+  return sessionId;
 }
+
+/**
+ * Obtém os parâmetros UTM atuais da URL
+ * @returns {object} Objeto com parâmetros UTM
+ */
+export function getCurrentUtmParams() {
+  if (typeof window === 'undefined') {
+    return {};
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  return {
+    utm_source: urlParams.get('utm_source') || undefined,
+    utm_medium: urlParams.get('utm_medium') || undefined,
+    utm_campaign: urlParams.get('utm_campaign') || undefined,
+    utm_term: urlParams.get('utm_term') || undefined,
+    utm_content: urlParams.get('utm_content') || undefined,
+    fbclid: urlParams.get('fbclid') || undefined,
+    gclid: urlParams.get('gclid') || undefined,
+    click_id: urlParams.get('click_id') || undefined
+  };
+}
+
+const utmSessionModule = {
+  getUtmSessionId,
+  getCurrentUtmParams,
+  clearUtmSession
+};
+
+export default utmSessionModule;

@@ -17,7 +17,7 @@ export default function ThankYouPage({ params }: ThankYouPageProps) {
   const t = useTranslations('redirectPages');
   
   // Título dinâmico da página
-  useThankYouPageTitle(locale, provider);
+  useThankYouPageTitle(locale);
 
   // Renderizar o componente correto baseado no provider
   if (provider === 'lastlink') {

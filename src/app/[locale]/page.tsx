@@ -1,6 +1,6 @@
 'use client';
 
-import { use, lazy, Suspense, useEffect } from 'react';
+import { use, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import { 
@@ -10,9 +10,7 @@ import {
   ProductCarousel
 } from '@/components/main';
 import { useUtmTracking } from '@/hooks/useUtmTracking';
-import { useDataLayer } from '@/hooks/useDataLayer';
-import { useGA4Tracking } from '@/lib/ga4-events';
-import { useDebugTracking, initializeDebugCTATracking } from '@/lib/debug-tracking';
+import { usePixelTracking } from '@/hooks/usePixelTracking';
 import { usePageTitle } from '@/hooks/usePageTitle';
 
 // Lazy loading para componentes não críticos
@@ -65,88 +63,18 @@ export default function HomePage({
   // Inicializar UTM tracking
   const { sessionId, utmParams, isInitialized, buildPersonalizationLink } = useUtmTracking();
   
-  // Inicializar tracking de funis
-  const { 
-    trackMainFunnelProgress, 
-    trackVideoFunnelProgress, 
-    trackCustomEvent 
-  } = useDataLayer();
-  
-  // Inicializar tracking GA4
-  const { trackCartaIniciada } = useGA4Tracking();
-  
-  // Inicializar debug tracking para Meta e TikTok
-  const { trackHomePageView, trackCTAClick } = useDebugTracking();
+  // Inicializar pixel tracking
+  const { trackEvent } = usePixelTracking();
   
   // Log para debug
   if (isInitialized) {
     console.log('UTM Tracking inicializado:', { sessionId, utmParams, locale });
   }
 
-  // Track entrada no funil principal
-  useEffect(() => {
-    trackMainFunnelProgress('homepage');
-    trackVideoFunnelProgress('page_view');
-    
-    // Track página inicial com dados específicos
-    trackCustomEvent('homepage_loaded', {
-      page_type: 'landing_page',
-      locale: locale,
-      timestamp: Date.now()
-    });
-
-    // 🎯 DEBUG TRACKING: page_viewhomepagedebug para Meta e TikTok
-    trackHomePageView();
-
-    // Inicializar tracking automático de CTAs
-    initializeDebugCTATracking();
-  }, [trackMainFunnelProgress, trackVideoFunnelProgress, trackCustomEvent, locale, trackHomePageView]);
-
   // Função para redirecionar para personalização com UTMs
-  const handleCtaClick = (source: string = 'default') => {
-    // Track engajamento antes do redirecionamento
-    trackMainFunnelProgress('engagement');
-    trackVideoFunnelProgress('cta_click');
-    
-    trackCustomEvent('cta_clicked', {
-      cta_source: source,
-      destination: 'personalization',
-      locale: locale
-    });
-
-    // 🎄 GA4 Tracking: Carta Iniciada
-    trackCartaIniciada({
-      page_location: window.location.href,
-      user_language: locale,
-      cta_source: source
-    });
-
-    // 🎯 DEBUG TRACKING: CTAs para Meta e TikTok
-    let ctaNumber = 1; // Default
-    const sourceStr = String(source || 'default'); // Garantir que source seja uma string
-    if (sourceStr.includes('hero')) ctaNumber = 1;
-    else if (sourceStr.includes('video')) ctaNumber = 2;
-    else if (sourceStr.includes('calendario') || sourceStr.includes('desconto')) ctaNumber = 3;
-    
-    trackCTAClick(ctaNumber, source, 'Criar Meu Recadinho');
-
+  const handleCtaClick = () => {
     const persUrl = buildPersonalizationLink('1');
     router.push(persUrl);
-  };
-
-  // Handler para tracking de vídeo
-  const handleVideoProgress = (progress: number) => {
-    if (progress >= 25 && progress < 50) {
-      trackVideoFunnelProgress('video_25');
-    } else if (progress >= 50 && progress < 100) {
-      trackVideoFunnelProgress('video_50');
-    } else if (progress >= 100) {
-      trackVideoFunnelProgress('video_complete');
-    }
-  };
-
-  const handleVideoStart = () => {
-    trackVideoFunnelProgress('video_start');
   };
 
   return (

@@ -261,7 +261,7 @@ export const validateData = (data: unknown): boolean => {
       if (value && typeof value === 'object') {
         // Verificar se é um elemento HTML
         if (value instanceof HTMLElement || value instanceof Element || value instanceof Node) {
-          return `[HTMLElement: ${value.tagName || 'Unknown'}]`;
+          return `[HTMLElement: ${(value as Element).tagName || 'Unknown'}]`;
         }
         
         // Verificar se é um evento

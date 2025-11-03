@@ -8,8 +8,8 @@ import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
 import { useProducts } from '../../../../hooks/useProducts';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
-import { useDataLayer } from '../../../../hooks/useDataLayer';
 import { recalculateAndSavePricing } from '../utils/dataStorage';
+import { useSmartTracking } from '../../../../hooks/useSmartTracking';
 
 interface Step1QuantidadeCriancasProps {
   buildPersonalizationLink: (path: string) => string;
@@ -27,22 +27,9 @@ export default function Step1QuantidadeCriancas({
   const [isLoading, setIsLoading] = useState(false);
   const { getMainProductByChildren, getProductPrice } = useProducts(locale);
   const isMobile = useIsMobile();
-  const { trackPageView, trackStepProgress, trackFormInteraction, trackMainFunnelProgress, trackCustomEvent } = useDataLayer();
+  const { trackMainFunnelProgress, trackFormInteraction, trackEvent } = useSmartTracking();
 
-  // Tracking da visualização da página
-  useEffect(() => {
-    // Track entrada na personalização
-    trackMainFunnelProgress('personalization');
-    
-    trackPageView({
-      pageTitle: 'Personalização - Quantidade de Crianças',
-      pagePath: '/pers/1',
-      stepNumber: 1,
-      stepName: 'quantidade_criancas'
-    });
-  }, [trackPageView, trackMainFunnelProgress]);
-
-  // Carregar dados salvos
+  // Carregar dados salvos e disparar page_view uma única vez
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
     if (savedData) {
@@ -54,6 +41,20 @@ export default function Step1QuantidadeCriancas({
       } catch (error) {
         console.error('Erro ao carregar dados salvos:', error);
       }
+    }
+
+    // Disparar evento de page view personalizado para Step 1 uma única vez por sessão
+    const pvKey = 'pv_step_1';
+    if (!sessionStorage.getItem(pvKey)) {
+      trackEvent('perspgview1', 'high', {
+        content_type: 'personalization_step',
+        step_number: 1,
+        step_name: 'quantity_selection',
+        funnel_position: 'step_1_of_3',
+        timestamp: Date.now()
+      });
+      sessionStorage.setItem(pvKey, '1');
+      console.log('📄 Evento perspgview1 disparado - Step 1 visualizado');
     }
   }, []);
 
@@ -115,15 +116,10 @@ export default function Step1QuantidadeCriancas({
     trackMainFunnelProgress('product_selection');
     
     // Tracking da seleção de quantidade
-    trackFormInteraction({
-      formName: 'quantidade_criancas',
-      fieldName: 'quantidade_selecionada',
-      interactionType: 'change',
-      stepNumber: 1
-    });
+    trackFormInteraction('quantidade_selecionada', 'change');
 
     // Evento customizado para capturar o valor da quantidade selecionada
-    trackCustomEvent('quantity_selected', {
+    trackEvent('product_view', 'medium', {
       step_number: 1,
       quantity_value: quantity,
       form_name: 'quantidade_criancas',
@@ -173,13 +169,6 @@ export default function Step1QuantidadeCriancas({
     if (!selectedQuantity) return;
 
     setIsLoading(true);
-    
-    // Tracking do progresso para o próximo step
-    trackStepProgress({
-      stepFrom: 1,
-      stepTo: 2,
-      stepName: 'quantidade_criancas_to_order_bumps'
-    });
     
     // Usar requestIdleCallback para operações pesadas
     const processData = () => {

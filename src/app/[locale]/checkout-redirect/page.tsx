@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CheckoutRedirectLoading from '@/components/CheckoutRedirectLoading';
-import { useGA4Tracking } from '@/lib/ga4-events';
 import { useCheckoutPageTitle } from '@/hooks/usePageTitle';
+import { useSmartTracking } from '@/hooks/useSmartTracking';
 
 export default function CheckoutRedirectPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
-  const { trackCheckoutIniciado } = useGA4Tracking();
+  const { trackEvent } = useSmartTracking();
   
   // Título dinâmico da página
   useCheckoutPageTitle('pt'); // Default para português, pode ser melhorado com locale dinâmico
@@ -41,12 +41,16 @@ export default function CheckoutRedirectPage() {
         // Decodifica a URL do checkout
         const decodedUrl = decodeURIComponent(checkoutUrl);
         
-        // Track GA4 - Checkout Iniciado
-        trackCheckoutIniciado({
-          product_type: 'video_personalizado',
-          price: 49.99, // Preço base padrão
-          session_id: sessionId
-        });
+        // Track GA4 - Checkout Iniciado (apenas uma vez por sessão)
+        const pvKey = 'pv_checkout_begin';
+        if (!sessionStorage.getItem(pvKey)) {
+          trackEvent('begin_checkout', 'high', {
+            product_type: 'video_personalizado',
+            price: 49.99, // Preço base padrão
+            session_id: sessionId
+          });
+          sessionStorage.setItem(pvKey, '1');
+        }
         
         // Redireciona para o checkout
         window.location.href = decodedUrl;

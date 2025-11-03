@@ -142,7 +142,7 @@ export function useCheckoutPageTitle(locale: string) {
 }
 
 // Hook para páginas de agradecimento
-export function useThankYouPageTitle(locale: string, provider?: string) {
+export function useThankYouPageTitle(locale: string) {
   const titles: Record<string, string> = {
     pt: 'Pedido Confirmado! | Recadinhos do Papai Noel',
     en: 'Order Confirmed! | Santa Messages',

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PersData, STORAGE_KEYS } from '../types';
 import { useProducts } from '../../../../hooks/useProducts';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
-import { useDataLayer } from '../../../../hooks/useDataLayer';
+import { useSmartTracking } from '../../../../hooks/useSmartTracking';
 import ProgressBar from '../shared/ProgressBar';
 import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
@@ -24,9 +24,11 @@ export default function Step2OrderBumps({
 }: Step2OrderBumpsProps) {
   const router = useRouter();
   const [selectedBumps, setSelectedBumps] = useState<string[]>([]);
+  const [quantidadeCriancas, setQuantidadeCriancas] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isMobile = useIsMobile();
-  const { trackPageView, trackStepProgress, trackProductInteraction } = useDataLayer();
+  const { trackEvent } = useSmartTracking();
   
   const { 
     loading: productsLoading, 
@@ -38,22 +40,19 @@ export default function Step2OrderBumps({
 
   const availableOrderBumps = getOrderBumps();
 
-  // Tracking da visualização da página
-  useEffect(() => {
-    trackPageView({
-      pageTitle: 'Personalização - Order Bumps',
-      pagePath: '/pers/2',
-      stepNumber: 2,
-      stepName: 'order_bumps'
-    });
-  }, [trackPageView]);
-
-  // Carregar dados salvos
+  // Carregar dados salvos (apenas uma vez na montagem do componente)
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
     if (savedData) {
       try {
         const parsedData: PersData = JSON.parse(savedData);
+        
+        // Carregar quantidade de crianças
+        if (parsedData.quantidade_criancas) {
+          setQuantidadeCriancas(parsedData.quantidade_criancas);
+        }
+        
+        // Carregar order bumps selecionados
         if (parsedData.order_bumps && parsedData.order_bumps.length > 0) {
           setSelectedBumps(parsedData.order_bumps);
         }
@@ -61,10 +60,33 @@ export default function Step2OrderBumps({
         console.error('Erro ao carregar dados salvos:', error);
       }
     }
-  }, []);
+    
+    // Marcar que o carregamento inicial foi concluído
+    setIsInitialLoad(false);
+  }, []); // Array vazio para executar apenas uma vez
 
-  // Salvar dados automaticamente e recalcular preços
+  // Disparar evento de page view (apenas uma vez após o carregamento inicial)
   useEffect(() => {
+    if (isInitialLoad) return;
+    const pvKey = 'pv_step_2';
+    if (!sessionStorage.getItem(pvKey)) {
+      trackEvent('perspgview2', 'high', {
+        content_type: 'order_bumps',
+        step_number: 2,
+        available_bumps: ['calendario_advento', 'child_photo', 'express_delivery'],
+        base_order_value: quantidadeCriancas * 29.90,
+        timestamp: Date.now()
+      });
+      sessionStorage.setItem(pvKey, '1');
+      console.log('📄 Evento perspgview2 disparado - Step 2 visualizado');
+    }
+  }, [isInitialLoad]);
+
+  // Salvar dados automaticamente e recalcular preços (apenas após carregamento inicial)
+  useEffect(() => {
+    // Não executar durante o carregamento inicial para evitar loops
+    if (isInitialLoad) return;
+    
     const savedData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
     let currentData: PersData;
 
@@ -110,19 +132,9 @@ export default function Step2OrderBumps({
     
     // Disparar evento para notificar outros componentes sobre a mudança
     window.dispatchEvent(new Event('localStorageChange'));
-  }, [selectedBumps, locale]);
+  }, [selectedBumps, locale, isInitialLoad]);
 
   const toggleOrderBump = (id: string) => {
-    // Tracking da interação com order bump
-    trackProductInteraction({
-      itemId: id,
-      itemName: id,
-      interactionType: selectedBumps.includes(id) ? 'remove_from_cart' : 'add_to_cart',
-      itemCategory: 'order_bump',
-      price: 0, // Será calculado depois
-      quantity: 1
-    });
-
     setSelectedBumps(prev => {
       // Se está tentando selecionar o combo
       if (id === 'combo-addons') {
@@ -148,13 +160,6 @@ export default function Step2OrderBumps({
   };
 
   const handleNext = () => {
-    // Tracking do progresso para o próximo step
-    trackStepProgress({
-      stepFrom: 2,
-      stepTo: 3,
-      stepName: 'order_bumps_to_contato'
-    });
-
     setIsLoading(true);
     const nextUrl = buildPersonalizationLink('3');
     router.push(nextUrl);
@@ -166,13 +171,6 @@ export default function Step2OrderBumps({
   };
 
   const handleSkip = () => {
-    // Tracking do skip
-    trackStepProgress({
-      stepFrom: 2,
-      stepTo: 3,
-      stepName: 'order_bumps_skipped'
-    });
-
     setSelectedBumps([]);
     const nextUrl = buildPersonalizationLink('3');
     router.push(nextUrl);
