@@ -444,7 +444,7 @@ export function useAdvancedTracking() {
 
     // Facebook Pixel - Apenas definir external_id se já estiver inicializado
     if (window.fbq && userId) {
-      (window.fbq as any)('set', 'external_id', userId);
+      window.fbq('set', 'external_id', userId);
     }
 
     // DataLayer
