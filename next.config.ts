@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'www.videodonoel.shop',
+        hostname: 'www.videopapainoel.com',
         port: '',
         pathname: '/**',
       },

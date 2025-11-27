@@ -91,13 +91,6 @@ const VideoPopup: React.FC<VideoPopupProps> = ({
             </video>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="p-4 bg-gray-50 text-center">
-          <p className="text-sm text-gray-600">
-            Veja como ficará o seu vídeo personalizado! 🎄✨
-          </p>
-        </div>
       </div>
     </div>
   );

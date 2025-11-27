@@ -5,7 +5,7 @@ import createIntlMiddleware from 'next-intl/middleware';
 const intlMiddleware = createIntlMiddleware({
   locales: ['pt', 'en', 'es'],
   defaultLocale: 'pt',
-  localePrefix: 'never'
+  localePrefix: 'always'
 });
 
 export default function middleware(request: NextRequest) {
@@ -63,6 +63,12 @@ export default function middleware(request: NextRequest) {
     }
     
     return response;
+  }
+
+  const locales = ['pt', 'en', 'es'];
+  const firstSegment = pathname.split('/')[1];
+  if (!locales.includes(firstSegment)) {
+    return NextResponse.rewrite(new URL(`/pt${pathname}`, request.url));
   }
 
   // Aplicar middleware de internacionalização para outras rotas
