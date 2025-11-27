@@ -90,12 +90,22 @@ export default function CheckoutRedirectPage() {
           <p className="text-sm text-gray-600 mb-4">
             {error}
           </p>
-          <button 
-            onClick={() => router.push('/')}
-            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors"
-          >
-            Voltar ao início
-          </button>
+          <div className="flex flex-col space-y-3">
+            <button 
+              onClick={() => router.push('/')}
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              Voltar ao início
+            </button>
+            <a
+              href="https://wa.me/message/6OS5ZU33XBJXN1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              Falar com suporte no WhatsApp
+            </a>
+          </div>
         </div>
       </div>
     );

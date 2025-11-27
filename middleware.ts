@@ -11,9 +11,9 @@ const intlMiddleware = createIntlMiddleware({
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Redirecionamento da raiz para /pt
+  // Redirecionamento da raiz para /pt (rewrite evita loops em algumas CDNs)
   if (pathname === '/') {
-    return NextResponse.redirect(new URL('/pt', request.url));
+    return NextResponse.rewrite(new URL('/pt', request.url));
   }
 
   // Lista de extensões de arquivos estáticos
