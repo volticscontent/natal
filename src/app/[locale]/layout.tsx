@@ -68,10 +68,11 @@ export default async function LocaleLayout({
                   if(f.fbq)return;n=f.fbq=function(){n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)};
                   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
                   s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
-                })(window,document,'https://connect.facebook.net/en_US/fbevents.js');
+                })(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
                 (function(){
                   var id0 = '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}';
-                  if (id0) { fbq('init', id0); fbq('set','autoConfig',false,id0); }
+                  var idNum = parseInt(id0, 10);
+                  if (!isNaN(idNum) && idNum > 0) { fbq('init', id0); fbq('set','autoConfig',false,id0); }
                   var __fbq = window.fbq;
                   window.fbq = function(){
                     var cmd = arguments[0];
@@ -121,15 +122,10 @@ export default async function LocaleLayout({
         <Script
           id="utmify-script"
           strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-              'https://cdn.utmify.com.br/scripts/utms.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_UTMFY_PIXEL_ID}');
-            `
-          }}
+          src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+          data-utmify-prevent-xcod-sck
+          data-utmify-prevent-subids
+          data-utmify-meta-pixel-id={process.env.NEXT_PUBLIC_UTMIFY_META_PIXEL_ID}
         />
       </body>
     </html>

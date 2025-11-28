@@ -66,14 +66,10 @@ export function buildCompleteUrl(config: UrlConfig): string {
     // Sempre adiciona o locale em desenvolvimento
     baseUrl += `/${locale}`;
   } else {
-    // Em produção, usa o domínio configurado
+    // Em produção, usa o domínio configurado e sempre inclui o prefixo de locale
     const domain = DOMAIN_CONFIG[locale];
     baseUrl = `https://${domain}`;
-    
-    // Adiciona locale se não for o padrão (pt para .com.br)
-    if (locale !== 'pt' || domain !== 'www.videopapainoel.com') {
-      baseUrl += `/${locale}`;
-    }
+    baseUrl += `/${locale}`;
   }
   
   // Adiciona o path se fornecido

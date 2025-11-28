@@ -255,16 +255,38 @@ const buildLastLinkCheckoutUrl = (payload: LastLinkPayload, productData: { check
   }
 };
 
-// 🔍 Recuperar parâmetros UTM salvos
 const getUTMParams = (): Record<string, string> => {
   if (typeof window === 'undefined') return {};
-  
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromUrl: Record<string, string | undefined> = {
+    utm_source: urlParams.get('utm_source') || undefined,
+    utm_medium: urlParams.get('utm_medium') || undefined,
+    utm_campaign: urlParams.get('utm_campaign') || undefined,
+    utm_term: urlParams.get('utm_term') || undefined,
+    utm_content: urlParams.get('utm_content') || undefined,
+    utm_session_id: urlParams.get('utm_session_id') || undefined,
+    fbclid: urlParams.get('fbclid') || undefined,
+    gclid: urlParams.get('gclid') || undefined,
+    click_id: urlParams.get('click_id') || undefined,
+  };
+
+  let fromStorage: Record<string, string> = {};
   try {
     const saved = localStorage.getItem('pers_utm_params');
-    return saved ? JSON.parse(saved) : {};
-  } catch {
-    return {};
-  }
+    fromStorage = saved ? JSON.parse(saved) : {};
+  } catch {}
+
+  const merged: Record<string, string> = {};
+  const keys = [
+    'utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_session_id','fbclid','gclid','click_id'
+  ];
+  keys.forEach(k => {
+    const v = (fromUrl as Record<string, string | undefined>)[k] || fromStorage[k];
+    if (v) merged[k] = v;
+  });
+
+  return merged;
 };
 
 // 💰 Calcular preços LastLink
