@@ -119,6 +119,18 @@ export default function CheckoutRedirectLoading({
           Não feche esta página. Você será redirecionado automaticamente.
         </p>
 
+        {/* Suporte */}
+        <div className="mt-4">
+          <a
+            href="https://wa.me/message/6OS5ZU33XBJXN1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+          >
+            Falar com suporte no WhatsApp
+          </a>
+        </div>
+
         {/* Ícones de segurança */}
         <div className="mt-6 flex justify-center items-center space-x-4 text-xs text-gray-500">
           <div className="flex items-center space-x-1">

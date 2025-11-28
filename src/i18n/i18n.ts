@@ -1,52 +1,39 @@
 import { getRequestConfig } from 'next-intl/server';
-import { headers } from 'next/headers';
 
-// Cache para evitar múltiplas importações
-const messagesCache: Record<string, Record<string, string>> = {};
+// Locales suportados e tipos auxiliares
+const supportedLocales = ['pt', 'en', 'es'] as const;
+type SupportedLocale = (typeof supportedLocales)[number];
 
-// Cache para o locale atual da requisição
-let currentRequestLocale: string | null = null;
+// Cache para evitar múltiplas importações (inicialmente vazio, preenchido sob demanda)
+// Use Partial para não exigir que todas as chaves existam na inicialização
+const messagesCache: Partial<Record<SupportedLocale, Record<string, string>>> = {};
 
-export default getRequestConfig(async ({ locale }) => {
-  console.log('i18n config - Locale recebido:', locale);
-  
-  // Se o locale é undefined, tentar obter da URL através dos headers
-  let resolvedLocale = locale;
-  
-  if (!resolvedLocale) {
-    try {
-      const headersList = await headers();
-      const pathname = headersList.get('x-pathname') || '';
-      console.log('i18n config - Pathname dos headers:', pathname);
-      
-      // Extrair locale da URL
-      const pathSegments = pathname.split('/').filter(Boolean);
-      const possibleLocale = pathSegments[0];
-      
-      if (['pt', 'en', 'es'].includes(possibleLocale)) {
-        resolvedLocale = possibleLocale;
-        console.log('i18n config - Locale extraído da URL:', resolvedLocale);
-      }
-    } catch (error) {
-      console.log('i18n config - Erro ao obter headers:', error);
-    }
+// Cache apenas para o locale VÁLIDO da requisição atual
+let currentRequestLocale: SupportedLocale | null = null;
+
+export default getRequestConfig(async ({ locale: rawLocale }) => {
+  console.log('i18n config - Locale recebido:', rawLocale);
+
+  // Validar o locale recebido; tratar valores não suportados (ex.: "video-papai-noel") como indefinidos
+  const isSupported = (val: unknown): val is SupportedLocale =>
+    typeof val === 'string' && supportedLocales.includes(val as SupportedLocale);
+
+  let resolvedLocale: SupportedLocale | null = null;
+
+  if (isSupported(rawLocale)) {
+    resolvedLocale = rawLocale;
+    currentRequestLocale = resolvedLocale; // armazenar SOMENTE valores suportados
   }
-  
-  // Se ainda não temos um locale válido, usar o locale da requisição atual ou fallback para 'pt'
+
+  // Se ainda não temos um locale válido, usar o da requisição atual (se houver) ou fallback para 'pt'
   if (!resolvedLocale) {
-    resolvedLocale = currentRequestLocale || 'pt';
+    resolvedLocale = currentRequestLocale ?? 'pt';
     console.log('i18n config - Usando locale de fallback:', resolvedLocale);
-  } else {
-    // Armazenar o locale válido para futuras chamadas na mesma requisição
-    currentRequestLocale = resolvedLocale;
   }
-  
-  // Validar o locale final
-  const supportedLocales = ['pt', 'en', 'es'];
-  const currentLocale = supportedLocales.includes(resolvedLocale) ? resolvedLocale : 'pt';
-  
+
+  const currentLocale = resolvedLocale;
   console.log('i18n config - Locale usado:', currentLocale);
-  
+
   // Verificar se já temos as mensagens no cache
   if (messagesCache[currentLocale]) {
     console.log('i18n config - Usando cache para locale:', currentLocale);

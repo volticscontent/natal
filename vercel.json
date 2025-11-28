@@ -101,9 +101,8 @@
       "destination": "/api/:path*"
     }
   ],
-  "outputDirectory": ".next",
   "buildCommand": "npm run build",
-  "installCommand": "npm install",
+  "installCommand": "npm install --include=dev",
   "framework": "nextjs",
   "trailingSlash": false
 }

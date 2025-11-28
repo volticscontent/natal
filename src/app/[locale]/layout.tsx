@@ -1,11 +1,11 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import PixelScripts from '@/components/tracking/PixelScripts';
 import PageViewTracker from '@/components/tracking/PageViewTracker';
 import { Inter } from "next/font/google";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
 import Script from 'next/script';
+import SupportWhatsAppButton from '@/components/SupportWhatsAppButton';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -58,10 +58,56 @@ export default async function LocaleLayout({
           <a href="#navigation" className="skip-link">
             Pular para a navegação
           </a>
-          {/* Carregar pixels antes e rastrear PageView/StepXPageView */}
-          <PixelScripts />
+          {/* Meta Pixel */}
+          <Script
+            id="meta-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                !(function(f,b,e,v,n,t,s){
+                  if(f.fbq)return;n=f.fbq=function(){n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+                  s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
+                })(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+                (function(){
+                  var ids = [
+                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}',
+                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID2 || ''}',
+                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID3 || ''}',
+                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID4 || ''}'
+                  ].filter(function(x){ return x && x !== ''; });
+                  for (var i=0; i<ids.length; i++) { fbq('init', ids[i]); }
+                  if (!(window.location.pathname || '').includes('/pers/')) { fbq('track', 'PageView'); }
+                })();
+              `
+            }}
+          />
+          {/* TikTok Pixel */}
+          <Script
+            id="tiktok-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(w,d,t){
+                  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
+                  ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'];
+                  ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat([].slice.call(arguments,0)))};
+                  };
+                  for(var i=0;i<ttq.methods.length;i++) ttq.setAndDefer(ttq,ttq.methods[i]);
+                  ttq.load=function(sdkid){var script=d.createElement('script');script.type='text/javascript';script.async=!0;script.src='https://analytics.tiktok.com/i18n/pixel/events.js?sdkid='+sdkid+'&lib='+t;var a=d.getElementsByTagName('script')[0];a.parentNode.insertBefore(script,a)};
+                  ttq.load('${process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID || ''}');
+                  ttq.page();
+                })(window,document,'ttq');
+              `
+            }}
+          />
+          {/* Page view derivado por URL */}
           <PageViewTracker />
           {children}
+          <noscript>
+            <img height="1" width="1" style={{display:'none'}} alt="" src={`https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}&ev=PageView&noscript=1`} />
+          </noscript>
+          <SupportWhatsAppButton />
         </NextIntlClientProvider>
         
         {/* Vercel Analytics */}

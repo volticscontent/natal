@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { useUtmify } from '@/hooks/useUtmify';
 
 export default function PageViewTracker() {
   const { isLoaded, trackEvent } = useUtmify();
+  const pathname = usePathname();
+  const didInitial = useRef(false);
 
   useEffect(() => {
-    const path = window.location.pathname.toLowerCase();
+    const path = (typeof window !== 'undefined' ? window.location.pathname : pathname || '').toLowerCase();
 
     const isHome = /^\/(pt|en|es)\/?$/.test(path);
     const stepMatch = path.match(/\/pers\/(\d+)/);
@@ -15,26 +18,30 @@ export default function PageViewTracker() {
 
     try {
       if (isHome) {
-        // UTMify: pageview on home
         if (isLoaded) trackEvent('pageview', { page_type: 'home' });
-        // Meta PageView já disparado em PixelScripts
-        // TikTok page() já disparado em PixelScripts
       }
 
       if (step) {
         const stepEvent = `Step${step}PageView`;
-        // Meta: custom pageview by step
         window.fbq?.('trackCustom', stepEvent, { page_type: 'personalization', step });
-        // TikTok: StepXPageView + ViewContent
         window.ttq?.track(stepEvent, { page_type: 'personalization', step });
         window.ttq?.track('ViewContent', { content_type: 'personalization', content_name: stepEvent });
-        // UTMify: custom pageview by step
         if (isLoaded) trackEvent(stepEvent, { page_type: 'personalization', step });
+      }
+
+      if (!isHome && !step) {
+        if (!didInitial.current) {
+          didInitial.current = true;
+        } else {
+          window.fbq?.('track', 'PageView');
+          window.ttq?.page();
+          if (isLoaded) trackEvent('pageview', { page_type: 'generic' });
+        }
       }
     } catch (err) {
       console.error('PageViewTracker error:', err);
     }
-  }, [isLoaded, trackEvent]);
+  }, [isLoaded, trackEvent, pathname]);
 
   return null;
 }

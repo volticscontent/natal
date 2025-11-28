@@ -135,8 +135,8 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 controls={false}
                 suppressHydrationWarning
               >
-                <source src={videoUrl} type="video/webm" />
-                <source src={videoUrl.replace('.webm', '.mp4')} type="video/mp4" />
+                <source suppressHydrationWarning src={videoUrl} type="video/webm" />
+                <source suppressHydrationWarning src={videoUrl.replace('.webm', '.mp4')} type="video/mp4" />
                 {t('videoNotSupported')}
               </video>
 
