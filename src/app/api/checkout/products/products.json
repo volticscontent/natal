@@ -228,9 +228,9 @@
         }
       },
       "description": {
-        "pt": "Receba seu vídeo em até 2 horas",
-        "en": "Receive your video within 2 hours",
-        "es": "Recibe tu video en hasta 2 horas"
+        "pt": "Receba seu vídeo em até 24 horas",
+        "en": "Receive your video within 24 hours",
+        "es": "Recibe tu video en hasta 24 horas"
       },
       "features": {
         "pt": ["Entrega em até 2h", "Prioridade máxima", "Suporte dedicado"],

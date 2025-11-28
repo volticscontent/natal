@@ -18,7 +18,7 @@
   "features": {
     "customize": "Personalize o vídeo em 5 minutos",
     "rating": "Nota 4,7 de 1405 comentários",
-    "delivery": "Entrega a partir de 2 horas",
+    "delivery": "Entrega a partir de 24 horas",
     "support": "Nós apoiamos o Hospital do GRAACC",
     "guarantee": "Você tem 180 dias para devolução gratuita",
     "surprise": "Surpresa de natal para uma criança querida"
@@ -35,7 +35,7 @@
       "quality": "Qualidade cinematográfica",
       "comment": "Adicione seu próprio comentário",
       "quickOrder": "Encomenda rápida: menos de 5 minutos",
-      "fastDelivery": "Entrega no seu e-mail em até 2 horas"
+      "fastDelivery": "Entrega no seu e-mail em até 24 horas"
     }
   },
   "calendar": {
@@ -160,7 +160,7 @@
       "comment": "Adicione seu próprio comentário",
       "fastOrder": "Pedido rápido em 2 minutos",
       "delivery": {
-        "title": "Entrega em até 2 horas",
+        "title": "Entrega em até 24 horas",
         "description": "Receba via WhatsApp ou email"
       }
     }

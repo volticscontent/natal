@@ -175,34 +175,7 @@ export default function Step3DadosCriancas({
     setIsInitialized(true);
   }, []);
 
-  // Disparar evento de page view personalizado para Step 3 (apenas uma vez por sessão após inicialização)
-  useEffect(() => {
-    if (!isInitialized) return;
-    if (pageViewTrackedRef.current) return; // Guard contra múltiplas execuções (Strict Mode / remounts)
-
-    const pvKey = 'pv_step_3';
-    if (typeof window === 'undefined') return;
-
-    const hasViewed = sessionStorage.getItem(pvKey);
-    if (hasViewed) {
-      pageViewTrackedRef.current = true;
-      return;
-    }
-
-    // Marcar como visto antes de disparar o evento para evitar duplicidade em execuções consecutivas
-    pageViewTrackedRef.current = true;
-    sessionStorage.setItem(pvKey, '1');
-
-    trackEvent('perspgview3', 'high', {
-      content_type: 'data_collection',
-      step_number: 3,
-      required_fields: children.length * 2 + 4, // nome + idade por criança + dados de contato
-      cart_value: calculateTotalPrice(),
-      timestamp: Date.now()
-    });
-
-    console.log('📄 Evento perspgview3 disparado - Step 3 visualizado');
-  }, [isInitialized, calculateTotalPrice, children.length, trackEvent]);
+  // Removido disparo de page view para evitar duplicidade com PageViewTracker
 
   // Escutar mudanças no localStorage (quando outros steps atualizam os dados)
   useEffect(() => {
@@ -544,16 +517,7 @@ export default function Step3DadosCriancas({
     const mainProduct = getMainProductByChildren(children.length);
 
     // Disparar evento Begin Checkout quando o usuário clicar em Finalizar
-    trackEvent('step_3_begin_checkout', 'high', {
-      event_category: 'ecommerce',
-      event_action: 'begin_checkout',
-      step_number: 3,
-      children_count: children.length,
-      has_order_bumps: orderBumps.length > 0,
-      product_name: mainProduct?.title?.[locale] || 'Produto Principal',
-      session_id: sessionId,
-      timestamp: Date.now()
-    });
+    // IC será disparado apenas no redirect para evitar duplicidade
     
     console.log('🛒 Evento Begin Checkout disparado - Usuário clicou em Finalizar');
 

@@ -30,6 +30,16 @@ export default function CheckoutRedirectPage() {
           price: 49.99,
           session_id: sessionId || ''
         });
+        try {
+          if (typeof window !== 'undefined' && (window as unknown as { fbq?: (...args: unknown[]) => void }).fbq) {
+            (window as unknown as { fbq: (...args: unknown[]) => void }).fbq('track', 'InitiateCheckout', {
+              value: 49.99,
+              currency: 'BRL',
+              content_type: 'product',
+              num_items: 1
+            });
+          }
+        } catch {}
         sessionStorage.setItem(pvKey, '1');
       }
       window.location.href = decodedUrl;

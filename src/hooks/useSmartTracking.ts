@@ -90,7 +90,7 @@ export function useSmartTracking() {
       funnel_start: 'InitiateCheckout',
       step_completed: 'CompleteRegistration',
       add_to_cart: 'AddToCart',
-      begin_checkout: 'InitiateCheckout',
+      begin_checkout: null,
       purchase: 'Purchase',
       product_view: 'ViewContent',
       form_interaction: 'Lead',
@@ -104,7 +104,7 @@ export function useSmartTracking() {
       perspgview1: null,
       perspgview2: null,
       perspgview3: null,
-      step_3_begin_checkout: 'InitiateCheckout'
+      step_3_begin_checkout: null
     };
     return mapping[event];
   };

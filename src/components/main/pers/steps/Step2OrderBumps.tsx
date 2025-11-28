@@ -65,22 +65,7 @@ export default function Step2OrderBumps({
     setIsInitialLoad(false);
   }, []); // Array vazio para executar apenas uma vez
 
-  // Disparar evento de page view (apenas uma vez após o carregamento inicial)
-  useEffect(() => {
-    if (isInitialLoad) return;
-    const pvKey = 'pv_step_2';
-    if (!sessionStorage.getItem(pvKey)) {
-      trackEvent('perspgview2', 'high', {
-        content_type: 'order_bumps',
-        step_number: 2,
-        available_bumps: ['calendario_advento', 'child_photo', 'express_delivery'],
-        base_order_value: quantidadeCriancas * 29.90,
-        timestamp: Date.now()
-      });
-      sessionStorage.setItem(pvKey, '1');
-      console.log('📄 Evento perspgview2 disparado - Step 2 visualizado');
-    }
-  }, [isInitialLoad, trackEvent, quantidadeCriancas]);
+  // Nenhum disparo de page view para evitar duplicidade com PageViewTracker
 
   // Salvar dados automaticamente e recalcular preços (apenas após carregamento inicial)
   useEffect(() => {

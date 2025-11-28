@@ -68,10 +68,18 @@ export default async function LocaleLayout({
                   if(f.fbq)return;n=f.fbq=function(){n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)};
                   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
                   s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
-                })(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+                })(window,document,'https://connect.facebook.net/en_US/fbevents.js');
                 (function(){
                   var id0 = '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}';
-                  if (id0) { fbq('init', id0); }
+                  if (id0) { fbq('init', id0); fbq('set','autoConfig',false,id0); }
+                  var __fbq = window.fbq;
+                  window.fbq = function(){
+                    var cmd = arguments[0];
+                    var args = Array.prototype.slice.call(arguments,1);
+                    var path = (window.location.pathname || '');
+                    if (cmd === 'track' && args[0] === 'PageView' && path.includes('/pers/')) { return; }
+                    return __fbq.apply(window,[cmd].concat(args));
+                  };
                   if (!(window.location.pathname || '').includes('/pers/')) { fbq('track', 'PageView'); }
                 })();
               `

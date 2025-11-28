@@ -29,7 +29,7 @@ export default function Step1QuantidadeCriancas({
   const isMobile = useIsMobile();
   const { trackMainFunnelProgress, trackFormInteraction, trackEvent } = useSmartTracking();
 
-  // Carregar dados salvos e disparar page_view uma única vez
+  // Carregar dados salvos
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEYS.PERS_DATA);
     if (savedData) {
@@ -43,20 +43,7 @@ export default function Step1QuantidadeCriancas({
       }
     }
 
-    // Disparar evento de page view personalizado para Step 1 uma única vez por sessão
-    const pvKey = 'pv_step_1';
-    if (!sessionStorage.getItem(pvKey)) {
-      trackEvent('perspgview1', 'high', {
-        content_type: 'personalization_step',
-        step_number: 1,
-        step_name: 'quantity_selection',
-        funnel_position: 'step_1_of_3',
-        timestamp: Date.now()
-      });
-      sessionStorage.setItem(pvKey, '1');
-      console.log('📄 Evento perspgview1 disparado - Step 1 visualizado');
-    }
-  }, [trackEvent]);
+  }, []);
 
   // Função para obter preço baseado na quantidade de crianças
   const getPriceForQuantity = (quantity: number) => {
