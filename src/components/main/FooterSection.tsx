@@ -127,7 +127,7 @@ const FooterSection: React.FC = () => {
           {/* Support - WhatsApp */}
           <div className="mt-10">
             <a
-              href="https://wa.me/message/6OS5ZU33XBJXN1"
+              href="https://wa.me/552196590958"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors"

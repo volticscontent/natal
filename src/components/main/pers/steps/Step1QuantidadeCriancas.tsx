@@ -8,7 +8,7 @@ import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
 import { useProducts } from '../../../../hooks/useProducts';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
-import { recalculateAndSavePricing } from '../utils/dataStorage';
+import { recalculateAndSavePricing, savePersonalizationData } from '../utils/dataStorage';
 import { useSmartTracking } from '../../../../hooks/useSmartTracking';
 
 interface Step1QuantidadeCriancasProps {
@@ -150,8 +150,11 @@ export default function Step1QuantidadeCriancas({
         };
       }
 
-      // Salvar dados
-      localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
+      savePersonalizationData({
+        quantidade_criancas: persData.quantidade_criancas,
+        children: persData.children,
+        order_bumps: persData.order_bumps
+      });
 
       // Recalcular preços imediatamente
       recalculateAndSavePricing(locale);
@@ -196,8 +199,11 @@ export default function Step1QuantidadeCriancas({
           };
         }
 
-        // Salvar dados
-        localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
+        savePersonalizationData({
+          quantidade_criancas: persData.quantidade_criancas,
+          children: persData.children,
+          order_bumps: persData.order_bumps
+        });
 
         // Recalcular preços com a nova quantidade
         recalculateAndSavePricing(locale);

@@ -18,7 +18,6 @@ interface OrderData {
 export default function ThankYouLastLink() {
   const searchParams = useSearchParams();
   const [orderData, setOrderData] = useState<OrderData>({});
-  const [isLoading, setIsLoading] = useState(true);
   const t = useTranslations('thankYouLastLink');
   
   // Inicializar UTM tracking para coletar UTMs quando o cliente retorna
@@ -47,8 +46,7 @@ export default function ThankYouLastLink() {
       total_amount: totalAmount || undefined,
     });
 
-    // Simular loading para melhor UX
-    setTimeout(() => setIsLoading(false), 1000);
+    // Renderização imediata, sem loading
 
     // Limpar dados do localStorage após confirmação
     if (sessionIdParam) {
@@ -58,16 +56,7 @@ export default function ThankYouLastLink() {
     }
   }, [searchParams, sessionId, utmParams]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-red-50 to-green-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-600">{t('processing')}</p>
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 to-green-50">

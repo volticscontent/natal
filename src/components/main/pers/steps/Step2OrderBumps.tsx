@@ -9,7 +9,7 @@ import { useSmartTracking } from '../../../../hooks/useSmartTracking';
 import ProgressBar from '../shared/ProgressBar';
 import Navigation from '../shared/Navigation';
 import OrderSummary from '../shared/OrderSummary';
-import { recalculateAndSavePricing } from '../utils/dataStorage';
+import { recalculateAndSavePricing, savePersonalizationData } from '../utils/dataStorage';
 
 interface Step2OrderBumpsProps {
   buildPersonalizationLink: (path: string) => string;
@@ -125,7 +125,12 @@ export default function Step2OrderBumps({
       };
     }
 
-    localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(currentData));
+    savePersonalizationData({
+      quantidade_criancas: currentData.quantidade_criancas,
+      children: currentData.children,
+      order_bumps: currentData.order_bumps,
+      contato: currentData.contato
+    });
     
     // Recalcular preços sempre que os order bumps mudarem
     recalculateAndSavePricing(locale);

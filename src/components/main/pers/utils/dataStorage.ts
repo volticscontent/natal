@@ -117,49 +117,48 @@ const storageManager = new LocalStorageManager();
 export const savePersonalizationData = (data: Partial<PersData>): void => {
   console.group('🎨 Saving Personalization Data');
   console.log('Input data:', data);
-  
-  const existingData = getPersonalizationData();
-  console.log('Existing data:', existingData);
-  
-  const updatedData = { ...existingData, ...data };
-  console.log('Updated data:', updatedData);
-  
-  storageManager.save(STORAGE_KEYS.PERS_DATA, updatedData);
+
+  const existingData = storageManager.get(STORAGE_KEYS.PERS_DATA) as Partial<PersData> | null;
+  const base = existingData && typeof existingData === 'object' ? existingData : {};
+
+  const quantidade_criancas = (data.quantidade_criancas ?? base.quantidade_criancas ?? 1) as number;
+  const order_bumps = (data.order_bumps ?? base.order_bumps ?? []) as string[];
+  const contato = (data.contato ?? base.contato) as PersData['contato'];
+  const rawChildren = (data.children ?? base.children ?? [{ nome: '' }]) as Array<{ nome: string; foto?: string }>;
+  const children = rawChildren.map(c => ({ nome: c.nome }));
+
+  const minimalData: PersData = {
+    quantidade_criancas,
+    children,
+    mensagem: 'default',
+    incluir_fotos: false,
+    fotos: [],
+    order_bumps,
+    observacoes: '',
+    contato
+  };
+
+  storageManager.save(STORAGE_KEYS.PERS_DATA, minimalData);
   console.groupEnd();
 };
 
 export const getPersonalizationData = (): PersData => {
   console.group('🎨 Getting Personalization Data');
-  
-  const data = storageManager.get(STORAGE_KEYS.PERS_DATA) as PersData | null;
+
+  const data = storageManager.get(STORAGE_KEYS.PERS_DATA) as Partial<PersData> | null;
   console.log('Raw data from storage:', data);
-  
-  if (!data || typeof data !== 'object') {
-    const defaultData = {
-      quantidade_criancas: 1,
-      children: [{ nome: '' }], // Garantir pelo menos uma criança
-      mensagem: 'default',
-      incluir_fotos: false,
-      fotos: [],
-      order_bumps: [],
-      observacoes: ''
-    };
-    console.log('Using default data:', defaultData);
-    console.groupEnd();
-    return defaultData;
-  }
-  
-  const result = {
-    quantidade_criancas: data.quantidade_criancas || 1,
-    children: data.children && data.children.length > 0 ? data.children : [{ nome: '' }], // Garantir pelo menos uma criança
-    mensagem: data.mensagem || 'default',
-    incluir_fotos: data.incluir_fotos || false,
-    fotos: data.fotos || [],
-    order_bumps: data.order_bumps || [],
-    observacoes: data.observacoes || '',
-    contato: data.contato
+
+  const result: PersData = {
+    quantidade_criancas: (data?.quantidade_criancas as number) ?? 1,
+    children: (data?.children && data.children.length > 0 ? data.children : [{ nome: '' }]) as { nome: string }[],
+    mensagem: 'default',
+    incluir_fotos: false,
+    fotos: [],
+    order_bumps: (data?.order_bumps as string[]) ?? [],
+    observacoes: '',
+    contato: data?.contato
   };
-  
+
   console.log('Processed data:', result);
   console.groupEnd();
   return result;

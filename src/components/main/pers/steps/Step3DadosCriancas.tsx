@@ -612,8 +612,12 @@ export default function Step3DadosCriancas({
       persData.contato = contactData;
       persData.order_bumps = orderBumps; // Atualizar order bumps com o estado atual
 
-      // Salvar dados
-      localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
+      savePersonalizationData({
+        quantidade_criancas: persData.quantidade_criancas,
+        children: persData.children.map(c => ({ nome: c.nome })),
+        order_bumps: persData.order_bumps,
+        contato: persData.contato
+      });
 
       // Track checkout initiation (mainProduct já definido no início da função)
       if (mainProduct) {
@@ -651,7 +655,12 @@ export default function Step3DadosCriancas({
           photoUrls = await uploadPhotosToR2(sessionId || '', persData, contactData);
           persData.fotos = photoUrls;
           persData.incluir_fotos = true;
-          localStorage.setItem(STORAGE_KEYS.PERS_DATA, JSON.stringify(persData));
+          savePersonalizationData({
+            quantidade_criancas: persData.quantidade_criancas,
+            children: persData.children.map(c => ({ nome: c.nome })),
+            order_bumps: persData.order_bumps,
+            contato: persData.contato
+          });
         }
 
         // Submeter para N8N (não bloquear redirecionamento)

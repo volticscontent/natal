@@ -122,7 +122,7 @@ export default function CheckoutRedirectLoading({
         {/* Suporte */}
         <div className="mt-4">
           <a
-            href="https://wa.me/message/6OS5ZU33XBJXN1"
+            href="https://wa.me/552196590958"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"

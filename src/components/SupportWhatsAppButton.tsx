@@ -3,7 +3,7 @@
 export default function SupportWhatsAppButton() {
   return (
     <a
-      href="https://wa.me/message/6OS5ZU33XBJXN1"
+      href="https://wa.me/552196590958"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Suporte no WhatsApp"
