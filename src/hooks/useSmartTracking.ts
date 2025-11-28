@@ -74,10 +74,6 @@ export function useSmartTracking() {
         last_activity: Date.now()
       };
       isInitialized.current = true;
-      
-      // Removido o disparo automático do funnel_start para evitar InitiateCheckout automático
-      // O evento funnel_start agora deve ser disparado manualmente quando apropriado
-      console.log('🎯 [SmartTracking] Sessão inicializada sem disparo automático de funnel_start');
     }
   }, [sessionId, utmParams]);
 
@@ -120,7 +116,7 @@ export function useSmartTracking() {
     const isPersPgView = event === 'perspgview1' || event === 'perspgview2' || event === 'perspgview3';
     if (isPersPgView) {
       return {
-        name: 'page_view',
+        name: 'pers_page_view',
         paramsEnhancer: (p = {}) => ({
           page_title: typeof document !== 'undefined' ? document.title : 'Personalização',
           page_location: typeof window !== 'undefined' ? window.location.href : undefined,

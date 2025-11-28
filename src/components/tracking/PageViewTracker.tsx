@@ -11,6 +11,7 @@ export default function PageViewTracker() {
 
   useEffect(() => {
     const path = (typeof window !== 'undefined' ? window.location.pathname : pathname || '').toLowerCase();
+    const isPers = path.includes('/pers/');
 
     const isHome = /^\/(pt|en|es)\/?$/.test(path);
     const stepMatch = path.match(/\/pers\/(\d+)/);
@@ -29,7 +30,7 @@ export default function PageViewTracker() {
         if (isLoaded) trackEvent(stepEvent, { page_type: 'personalization', step });
       }
 
-      if (!isHome && !step) {
+      if (!isHome && !step && !isPers) {
         if (!didInitial.current) {
           didInitial.current = true;
         } else {

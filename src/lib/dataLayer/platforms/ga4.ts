@@ -38,10 +38,10 @@ const GA4_EVENT_MAPPING = {
   'step_3_form_submit': 'form_submit',
   'step_3_begin_checkout': 'begin_checkout',
 
-  // Personalization Page Views (renomeados para perspgviewX)
-  'perspgview1': 'page_view',
-  'perspgview2': 'page_view',
-  'perspgview3': 'page_view',
+  // Personalization Page Views (eventos customizados, sem page_view padrão)
+  'perspgview1': 'pers_page_view',
+  'perspgview2': 'pers_page_view',
+  'perspgview3': 'pers_page_view',
   
   // Conversões
   'checkout_initiated': 'begin_checkout',
