@@ -70,13 +70,8 @@ export default async function LocaleLayout({
                   s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
                 })(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
                 (function(){
-                  var ids = [
-                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}',
-                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID2 || ''}',
-                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID3 || ''}',
-                    '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID4 || ''}'
-                  ].filter(function(x){ return x && x !== ''; });
-                  for (var i=0; i<ids.length; i++) { fbq('init', ids[i]); }
+                  var id0 = '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}';
+                  if (id0) { fbq('init', id0); }
                   if (!(window.location.pathname || '').includes('/pers/')) { fbq('track', 'PageView'); }
                 })();
               `

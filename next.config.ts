@@ -265,6 +265,15 @@ const nextConfig: NextConfig = {
           source: '/:path*/a-4-a/c.js',
           destination: '/cjs-stub.js',
         },
+        // Fallback de locale para páginas de personalização: /pers -> /pt/pers
+        {
+          source: '/pers',
+          destination: '/pt/pers',
+        },
+        {
+          source: '/pers/:path*',
+          destination: '/pt/pers/:path*',
+        },
         // Garantir que /pt/videos/... e similares apontem para /videos/...
         {
           source: '/:locale(pt|en|es)/videos/:path*',
