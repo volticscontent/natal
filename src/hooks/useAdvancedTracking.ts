@@ -263,15 +263,7 @@ export function useAdvancedTracking() {
       window.gtag('event', 'view_item', eventData);
     }
 
-    // Facebook Pixel
-    if (window.fbq) {
-      window.fbq('track', 'ViewContent', {
-        content_ids: [item.item_id],
-        content_type: 'product',
-        value: item.price,
-        currency: item.currency || 'BRL'
-      });
-    }
+    
 
     // DataLayer
     if (window.dataLayer) {
@@ -295,15 +287,7 @@ export function useAdvancedTracking() {
       window.gtag('event', 'add_to_cart', eventData);
     }
 
-    // Facebook Pixel
-    if (window.fbq) {
-      window.fbq('track', 'AddToCart', {
-        content_ids: [item.item_id],
-        content_type: 'product',
-        value: item.price * item.quantity,
-        currency: item.currency || 'BRL'
-      });
-    }
+    
 
     // TikTok Pixel
     if (window.ttq) {
@@ -337,16 +321,7 @@ export function useAdvancedTracking() {
       window.gtag('event', 'begin_checkout', eventData);
     }
 
-    // Facebook Pixel
-    if (window.fbq) {
-      window.fbq('track', 'InitiateCheckout', {
-        content_ids: items.map(item => item.item_id),
-        content_type: 'product',
-        value: value,
-        currency: 'BRL',
-        num_items: items.length
-      });
-    }
+    
 
     // DataLayer
     if (window.dataLayer) {
@@ -388,26 +363,7 @@ export function useAdvancedTracking() {
       }
     }
 
-    // Facebook Pixel com Enhanced Matching
-    if (window.fbq) {
-      const fbData: FacebookPixelData = {
-        content_ids: purchaseData.items.map(item => item.item_id),
-        content_type: 'product',
-        value: purchaseData.value,
-        currency: purchaseData.currency,
-        num_items: purchaseData.items.length
-      };
-
-      // Enhanced Matching
-      if (userData) {
-        fbData.em = userData.email; // Email hash será feito automaticamente pelo pixel
-        fbData.ph = userData.phone;
-        fbData.fn = userData.first_name;
-        fbData.ln = userData.last_name;
-      }
-
-      window.fbq('track', 'Purchase', fbData);
-    }
+    
 
     // TikTok Pixel
     if (window.ttq) {
@@ -442,10 +398,7 @@ export function useAdvancedTracking() {
       });
     }
 
-    // Facebook Pixel - Apenas definir external_id se já estiver inicializado
-    if (window.fbq && userId) {
-      window.fbq('set', 'external_id', userId);
-    }
+    
 
     // DataLayer
     if (window.dataLayer) {

@@ -42,7 +42,6 @@ export default function PageViewTracker() {
 
       if (step) {
         const stepEvent = `Step${step}PageView`;
-        window.fbq?.('trackCustom', stepEvent, { page_type: 'personalization', step });
         window.ttq?.track(stepEvent, { page_type: 'personalization', step });
         window.ttq?.track('ViewContent', { content_type: 'personalization', content_name: stepEvent });
         if (isLoadedRef.current) trackEventRef.current(stepEvent, { page_type: 'personalization', step });
@@ -54,7 +53,6 @@ export default function PageViewTracker() {
         if (!didInitial.current) {
           didInitial.current = true;
         } else {
-          window.fbq?.('track', 'PageView');
           window.ttq?.page();
           if (isLoadedRef.current) trackEventRef.current('pageview', { page_type: 'generic' });
           trackSmartEventRef.current('page_view', 'medium', { page_type: 'generic' });

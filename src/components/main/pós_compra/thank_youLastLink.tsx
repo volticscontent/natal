@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useUtmTracking } from '@/hooks/useUtmTracking';
@@ -56,26 +56,25 @@ export default function ThankYouLastLink() {
     }
   }, [searchParams, sessionId, utmParams]);
 
-  
+  // Header color fixed to match logo background
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 to-green-50">
       {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <Image
-            src="/images/logo.webp"
-            alt="Santa Messages"
+      <div className="shadow-sm" id="thankyou-header" style={{ backgroundColor: '#e02119' }}>
+        <div className="max-w-4xl mx-auto px-4 py-2 md:py-4">
+          <NextImage
+            src="/images/mundo-do-noel.jpg"
+            alt="Mundo do Noel"
             width={65}
             height={91}
-            style={{ width: 'auto', height: 'auto' }}
-            className="mx-auto"
+            className="mx-auto h-14 w-auto md:h-20 -mb-2 md:-mb-3"
           />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="max-w-4xl mx-auto px-4 py-4 md:py-12">
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
           {/* Success Icon */}
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -138,40 +137,21 @@ export default function ThankYouLastLink() {
             <div className="text-left space-y-3 text-sm text-blue-800">
               <div className="flex items-start">
                 <span className="font-semibold mr-2">1.</span>
-                <span>{t('step1')}</span>
+                <span>Entre em contato conosco pelo Whatsapp para confirmar as informações do video! (Botão verde flutuante abaixo)</span>
               </div>
               <div className="flex items-start">
                 <span className="font-semibold mr-2">2.</span>
-                <span>{t('step2')}</span>
+                <span>Seu video irá para lista de produção.</span>
               </div>
               <div className="flex items-start">
                 <span className="font-semibold mr-2">3.</span>
-                <span>{t('step3')}</span>
+                <span>Assim que estiver pronto te enviaremos o link do video para que você faça o Download.</span>
               </div>
             </div>
           </div>
 
-          {/* Social Sharing */}
-          <div className="border-t pt-8">
-            <p className="text-gray-600 mb-4">{t('shareText')}</p>
-            <div className="flex justify-center space-x-4">
-              <button 
-                onClick={() => window.open(`https://wa.me/?text=${t('whatsappShare')} ${window.location.origin}`, '_blank')}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                📱 WhatsApp
-              </button>
-              <button 
-                onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}`, '_blank')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                📘 Facebook
-              </button>
-            </div>
-          </div>
-
-          {/* Back to Home */}
-          <div className="mt-8">
+          {/* Back to Home (repositioned) */}
+          <div className="mt-6">
             <Link 
               href="/"
               className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors"

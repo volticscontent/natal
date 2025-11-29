@@ -58,34 +58,7 @@ export default async function LocaleLayout({
           <a href="#navigation" className="skip-link">
             Pular para a navegação
           </a>
-          {/* Meta Pixel */}
-          <Script
-            id="meta-pixel"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                !(function(f,b,e,v,n,t,s){
-                  if(f.fbq)return;n=f.fbq=function(){n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
-                  s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
-                })(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-                (function(){
-                  var id0 = '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}';
-                  var idNum = parseInt(id0, 10);
-                  if (!isNaN(idNum) && idNum > 0) { fbq('init', id0); fbq('set','autoConfig',false,id0); }
-                  var __fbq = window.fbq;
-                  window.fbq = function(){
-                    var cmd = arguments[0];
-                    var args = Array.prototype.slice.call(arguments,1);
-                    var path = (window.location.pathname || '');
-                    if (cmd === 'track' && args[0] === 'PageView' && path.includes('/pers/')) { return; }
-                    return __fbq.apply(window,[cmd].concat(args));
-                  };
-                  if (!(window.location.pathname || '').includes('/pers/')) { fbq('track', 'PageView'); }
-                })();
-              `
-            }}
-          />
+          {/* Meta Pixel injection moved to root layout */}
           {/* TikTok Pixel */}
           <Script
             id="tiktok-pixel"
@@ -108,9 +81,7 @@ export default async function LocaleLayout({
           {/* Page view derivado por URL */}
           <PageViewTracker />
           {children}
-          <noscript>
-            <img height="1" width="1" style={{display:'none'}} alt="" src={`https://www.facebook.com/tr?id=${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || ''}&ev=PageView&noscript=1`} />
-          </noscript>
+          {/* noscript removed to evitar disparo em /pers/* */}
           <SupportWhatsAppButton />
         </NextIntlClientProvider>
         
@@ -118,15 +89,7 @@ export default async function LocaleLayout({
         <SpeedInsights />
         <Analytics />
         
-        {/* UTMify Script */}
-        <Script
-          id="utmify-script"
-          strategy="afterInteractive"
-          src="https://cdn.utmify.com.br/scripts/utms/latest.js"
-          data-utmify-prevent-xcod-sck
-          data-utmify-prevent-subids
-          data-utmify-meta-pixel-id={process.env.NEXT_PUBLIC_UTMIFY_META_PIXEL_ID}
-        />
+        {/* UTMify injection moved to root layout */}
       </body>
     </html>
   );
