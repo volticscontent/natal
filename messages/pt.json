@@ -318,11 +318,11 @@
     "title": "Desconto Pré-Natal -30%",
     "description": "🎅 30% de desconto para quem comprar hoje!",
     "code": "PRENATAL20",
-    "validUntil": "31.12",
+    "validUntil": "15/12",
     "buttonText": "Compre agora",
     "imageAlt": "Desconto Pré-Natal",
     "codeLabel": "Código",
-    "validUntilDate": "31.12"
+    "validUntilDate": "15/12"
   },
   "redirectPages": {
     "notFound": "Página não encontrada",

@@ -315,11 +315,11 @@
     "title": "Prenatal Discount -30%",
     "description": "🤱 30% discount for expecting mothers!",
     "code": "PRENATAL20",
-    "validUntil": "31.12",
+    "validUntil": "15/12",
     "buttonText": "Buy now",
     "imageAlt": "Prenatal Discount",
     "codeLabel": "Code",
-    "validUntilDate": "31.12"
+    "validUntilDate": "15/12"
   },
   "redirectPages": {
     "notFound": "Page not found",
@@ -336,7 +336,7 @@
     }
   },
   "promoBanner": {
-    "message": "🤱 Prenatal discount now available - 30% for expecting mothers! 🤱 valid until 31.12 Code: PRENATAL20"
+    "message": "🤱 Prenatal discount now available - 30% for expecting mothers! 🤱 valid until 15/12 Code: PRENATAL20"
   },
   "socialCarousel": {
     "title": "#GeneratingSmiles",
