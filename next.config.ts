@@ -29,13 +29,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'www.videopapainoel.com',
+        hostname: 'www.santaclausvideo.shop',
         port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'videopapainoel.com',
+        hostname: 'santaclausvideo.shop',
         port: '',
         pathname: '/**',
       },
@@ -57,8 +57,8 @@ const nextConfig: NextConfig = {
     ],
     // Suporte adicional caso o projeto utilize images.domains
     domains: R2_PUBLIC_HOST 
-      ? ['www.videopapainoel.com', 'videopapainoel.com', 'pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev', R2_PUBLIC_HOST] 
-      : ['www.videopapainoel.com', 'videopapainoel.com', 'pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev'],
+      ? ['www.santaclausvideo.shop', 'santaclausvideo.shop', 'pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev', R2_PUBLIC_HOST] 
+      : ['www.santaclausvideo.shop', 'santaclausvideo.shop', 'pub-4a4f09b19c604fc88b20d7ddd1447673.r2.dev'],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,

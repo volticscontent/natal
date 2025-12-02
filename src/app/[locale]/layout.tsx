@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import PageViewTracker from '@/components/tracking/PageViewTracker';
+import ClarityInit from '@/components/tracking/ClarityInit';
 import { Inter } from "next/font/google";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/react';
@@ -78,6 +79,7 @@ export default async function LocaleLayout({
               `
             }}
           />
+          <ClarityInit />
           {/* Page view derivado por URL */}
           <PageViewTracker />
           {children}

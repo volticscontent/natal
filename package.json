@@ -24,6 +24,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.920.0",
     "@aws-sdk/s3-request-presigner": "^3.920.0",
+    "@microsoft/clarity": "^1.0.2",
     "@next/third-parties": "^16.0.0",
     "@stripe/react-stripe-js": "^5.4.1",
     "@stripe/stripe-js": "^8.5.3",
