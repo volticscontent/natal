@@ -6,9 +6,9 @@ import { getUtmSessionId } from './utm-session';
  * Configurações de domínio por locale
  */
 const DOMAIN_CONFIG = {
-  pt: 'www.santaclausvideo.shop',
-  en: 'www.santaclausvideo.shop',
-  es: 'www.santaclausvideo.shop'
+  pt: 'www.videopapainoel.com',
+  en: 'www.videopapainoel.com',
+  es: 'www.videopapainoel.com'
 } as const;
 
 /**
